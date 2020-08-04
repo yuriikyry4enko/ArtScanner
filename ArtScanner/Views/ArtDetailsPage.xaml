@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ArtScanner.Controls"
+    xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
+    xmlns:forms="clr-namespace:Lottie.Forms;assembly=Lottie.Forms"
+    x:Class="ArtScanner.Views.ArtDetailsPage"
+    xmlns:prism="http://prismlibrary.com"
+    prism:ViewModelLocator.AutowireViewModel="True"
+    x:Name="root"
+    BackgroundColor="#010101">
+    <ScrollView
+        Padding="0">
+        <Grid
+            Padding="0"
+            Margin="0,5,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="90"/>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="100"/>
+                <RowDefinition Height="100"/>
+            </Grid.RowDefinitions>
+
+            <Frame
+                Padding="3"
+                BackgroundColor="LightYellow"
+                VerticalOptions="StartAndExpand"
+                HorizontalOptions="EndAndExpand"
+                Grid.Row="1"
+                Grid.RowSpan="2">
+                <controls:TintedCachedImage
+                    Scale="1"
+                    Source="{Binding CurrentArtModel.ImageUrl}"
+                    VerticalOptions="FillAndExpand"
+                    HorizontalOptions="FillAndExpand"
+                    Margin="0,0,0,0"/>
+            </Frame>
+
+
+            <controls:Circle
+                VerticalOptions="StartAndExpand"
+                Padding="0"
+                HeightRequest="45"
+                Margin="25,25,0,0"
+                Color="White"
+                WidthRequest="45"
+                HorizontalOptions="Start">
+                 <controls:TintedCachedImage
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Source="{x:Static resources:Images.BackArrow}"
+                    WidthRequest="20"   
+                    TintColor="Black"
+                    HeightRequest="20"/>
+                <controls:Circle.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding BackCommand}"/>
+                </controls:Circle.GestureRecognizers>
+            </controls:Circle>
+
+            <StackLayout
+                Margin="0,10,0,0"
+                Grid.Row="1"
+                Spacing="3">
+                <Label
+                    Margin="25,0,0,0"
+                    VerticalOptions="Start"
+                    HorizontalOptions="Start"
+                    TextColor="White"
+                    FontSize="25"
+                    FontAttributes="Italic"
+                    Text="{Binding CurrentArtModel.Title}"/>
+                <Label
+                    Margin="29,0,0,0"
+                    VerticalOptions="Start"
+                    HorizontalOptions="Start"
+                    FontSize="12"
+                    TextColor="White"
+                    Text="{Binding CurrentArtModel.Author}"/>
+           
+            </StackLayout>
+
+            <StackLayout
+                Orientation="Horizontal"
+                Margin="25,0,0,0"
+                Grid.Row="2">
+
+                <controls:Circle
+                    Color="White"
+                    VerticalOptions="Start"
+                    Padding="0"
+                    HeightRequest="45"
+                    WidthRequest="45"
+                    HorizontalOptions="Start">
+                    <controls:TintedCachedImage
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Source="{Binding LikeIcon}"
+                        WidthRequest="20"   
+                        TintColor="Black"
+                        HeightRequest="20"/>
+                    <controls:Circle.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding LikeCommand}"/>
+                    </controls:Circle.GestureRecognizers>
+                </controls:Circle>
+
+
+                <controls:Circle
+                    Color="White"
+                    VerticalOptions="Start"
+                    Padding="0"
+                    HeightRequest="45"
+                    WidthRequest="45"
+                    HorizontalOptions="Start">
+                    <controls:TintedCachedImage
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Source="{x:Static resources:Images.Share}"
+                        WidthRequest="20"   
+                        TintColor="Black"
+                        HeightRequest="20"/>
+                    <controls:Circle.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ShareCommand}"/>
+                    </controls:Circle.GestureRecognizers>
+                </controls:Circle>
+
+                <controls:Circle
+                    Color="White"
+                    VerticalOptions="Start"
+                    Padding="0"
+                    HeightRequest="45"
+                    WidthRequest="45"
+                    HorizontalOptions="Start">
+                    <controls:TintedCachedImage
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Source="{x:Static resources:Images.Twitter}"
+                        WidthRequest="20"   
+                        TintColor="Black"
+                        HeightRequest="20"/>
+                    <controls:Circle.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding TwittCommand}"/>
+                    </controls:Circle.GestureRecognizers>
+                </controls:Circle>
+
+            </StackLayout>
+            <Label
+                Grid.Row="3"
+                Margin="25,10"
+                VerticalOptions="Start"
+                HorizontalOptions="Start"
+                TextColor="White"
+                FontSize="14"
+                Text="{Binding CurrentArtModel.Description}"/>
+
+
+
+            <!--<forms:AnimationView
+                x:Name="AnimationView"
+                Grid.Row="4"
+                Animation="loading.json"
+                Loop="True"
+                HeightRequest="200"
+                 
+                AutoPlay="True"
+                WidthRequest="200"
+                VerticalOptions="FillAndExpand"
+                HorizontalOptions="FillAndExpand" />-->
+            
+                <!--IsRunning="{Binding Path=BindingContext.IsActivityLoaderVisible, Source={x:Reference root}}"-->
+
+            <ActivityIndicator
+                x:Name="activity"
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Grid.Row="4"
+                IsVisible="True"
+                IsEnabled="True"
+                IsRunning="{Binding IsActivityLoad}"
+                Color="Orange"
+                BackgroundColor="Transparent"/>
+
+            <controls:Circle
+                Grid.Row="5"
+                Margin="0,0,0,0"    
+                VerticalOptions="Start"
+                Padding="0"
+                HeightRequest="80"
+                WidthRequest="80"
+                IsEnabled="{Binding IsPlayButtonEnable}"
+                Color="White"
+                HorizontalOptions="Center">
+                <controls:TintedCachedImage
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Source="{Binding PlayIcon}"
+                    WidthRequest="35"   
+                    TintColor="Black"
+                    HeightRequest="35"/>
+                <controls:Circle.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding PlayCommand}"/>
+                </controls:Circle.GestureRecognizers>
+            </controls:Circle>
+        </Grid>
+    </ScrollView>
+</ContentPage>

@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ArtScanner.Controls"
+    xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
+    x:Class="ArtScanner.Views.StartPage"
+    BackgroundColor="LightGray">
+    <controls:Circle
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+        WidthRequest="120"
+        HeightRequest="120"
+        Color="White">
+        <controls:TintedCachedImage
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            Source="{x:Static resources:Images.Scan}"
+            WidthRequest="55"   
+            TintColor="Black"
+            HeightRequest="55"/>
+        <controls:Circle.GestureRecognizers>
+            <TapGestureRecognizer Command="{Binding ScannCommand}"/>
+        </controls:Circle.GestureRecognizers>
+    </controls:Circle>
+</ContentPage>

@@ -1,0 +1,50 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+    xmlns:controls="clr-namespace:ArtScanner.Controls"
+    xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
+    x:Class="ArtScanner.Views.ScannerPage">
+    <StackLayout
+        BackgroundColor="Black"
+        Padding="0"
+        Margin="0"
+        Spacing="0">
+        <Grid VerticalOptions="FillAndExpand"
+              HorizontalOptions="FillAndExpand"
+              BackgroundColor="Black">
+            
+            <zxing:ZXingScannerView
+                x:Name="scanView"
+                ScanResultCommand="{Binding QRScanResultCommand}"
+                IsScanning="True"
+                Result="{Binding Result, Mode=TwoWay}"
+                WidthRequest="300"
+                HeightRequest="500"
+                VerticalOptions="CenterAndExpand"
+                HorizontalOptions="CenterAndExpand"/>
+            <zxing:ZXingDefaultOverlay TopText="Align the code within the frame"/>
+        </Grid>
+        <controls:Circle
+            VerticalOptions="Start"
+            Padding="0"
+            HeightRequest="45"
+            Margin="25,0,0,25"
+            WidthRequest="45"
+            HorizontalOptions="Start"
+            Color="White">
+            <controls:TintedCachedImage
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Source="{x:Static resources:Images.BackArrow}"
+                WidthRequest="20"   
+                TintColor="Black"
+                HeightRequest="20"/>
+            <controls:Circle.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding BackCommand}"/>
+            </controls:Circle.GestureRecognizers>
+        </controls:Circle>
+    </StackLayout>
+</ContentPage>
+
