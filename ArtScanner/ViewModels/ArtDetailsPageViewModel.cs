@@ -9,6 +9,9 @@ using Prism.Commands;
 using ArtScanner.Models;
 using Xamarin.Essentials;
 using Acr.UserDialogs;
+using ArtScanner.Services;
+using LinqToTwitter;
+using System.Linq;
 
 namespace ArtScanner.ViewModels
 {
@@ -17,6 +20,7 @@ namespace ArtScanner.ViewModels
         #region Services
 
         private IUserDialogs _userDialogs;
+        private ITwitterService _twitterService;
 
         #endregion
 
@@ -83,9 +87,11 @@ namespace ArtScanner.ViewModels
         #endregion
 
         public ArtDetailsPageViewModel(
+            ITwitterService twitterService,
             INavigationService navigationService,
             IUserDialogs userDialogs) : base(navigationService)
         {
+            this._twitterService = twitterService;
             this._userDialogs = userDialogs;
         }
 
@@ -108,9 +114,39 @@ namespace ArtScanner.ViewModels
             //IsLike = !IsLike;
             await _userDialogs.ConfirmAsync("Not implemented", "Oops", "Ok");
         });
-        public ICommand TwittCommand => new Command(async () =>
+        public ICommand TwittCommand => new Command(() =>
         {
-            await _userDialogs.ConfirmAsync("Not implemented", "Oops", "Ok");
+            //var auth = new ApplicationOnlyAuthorizer()
+            //{
+            //    CredentialStore = new InMemoryCredentialStore
+            //    {
+            //        ConsumerKey = "9rD8HiNF8pvfGeZAeSL18DybE",
+            //        ConsumerSecret = "PiwYPbE8P1TLGJjdbD8zeer0vMHydYw3qSDA6XC60cvmqt92tC",
+            //    },
+            //};
+            //await auth.AuthorizeAsync();
+
+            //var ctx = new TwitterContext(auth);
+
+            //Search searchResponse = await
+            //    (from search in ctx.Search
+            //     where search.Type == SearchType.Search &&
+            //           search.Query == "\"Twitter\""
+            //     select search)
+            //    .SingleAsync();
+
+            //var Tweets =
+            //    (from tweet in searchResponse.Statuses
+            //     select new Tweet
+            //     {
+            //         StatusID = tweet.StatusID,
+            //         ScreenName = tweet.User.ScreenNameResponse,
+            //         Text = tweet.Text,
+            //         ImageUrl = tweet.User.ProfileImageUrl
+            //     })
+            //    .ToList();
+
+            //await _userDialogs.ConfirmAsync("Not implemented", "Oops", "Ok");
         });
 
 
@@ -166,5 +202,16 @@ namespace ArtScanner.ViewModels
                 IsPlayButtonEnable = true;
             }
         }       
+    }
+
+    public class Tweet
+    {
+        public ulong StatusID { get; set; }
+
+        public string ScreenName { get; set; }
+
+        public string Text { get; set; }
+
+        public string ImageUrl { get; set; }
     }
 }

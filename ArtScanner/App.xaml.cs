@@ -1,4 +1,5 @@
 ﻿using Acr.UserDialogs;
+using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
 using ArtScanner.ViewModels;
 using ArtScanner.Views;
@@ -41,6 +42,10 @@ namespace ArtScanner
 
             containerRegistry.RegisterInstance(UserDialogs.Instance);
 
+            containerRegistry.RegisterSingleton<SocialService>();
+            containerRegistry.RegisterSingleton<ITwitterService, TwitterService>();
+
+            containerRegistry.RegisterForNavigation<ProviderLoginPage>();
             containerRegistry.RegisterForNavigation<SharedTransitionNavigationPage>();
             containerRegistry.RegisterForNavigation<StartPage, StartPageViewModel>();
             containerRegistry.RegisterForNavigation<ScannerPage, ScannerPageViewModel>();

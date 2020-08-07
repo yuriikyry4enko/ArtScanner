@@ -78,6 +78,7 @@
     <None Include="Info.plist" />
     <Compile Include="Renderers\CircleRenderer.cs" />
     <Compile Include="Renderers\ExtendedScrollViewRenderer.cs" />
+    <Compile Include="Renderers\ProviderLoginPageRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />

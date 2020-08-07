@@ -12,6 +12,7 @@ using MediaManager;
 using Lottie.Forms.Droid;
 using Plugin.Permissions;
 using Acr.UserDialogs;
+using Xamarin.Auth.Presenters.XamarinAndroid;
 
 namespace ArtScanner.Droid
 {
@@ -32,6 +33,8 @@ namespace ArtScanner.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             CrossMediaManager.Current.Init();
+
+            AuthenticationConfiguration.Init(this, savedInstanceState);
 
             LoadApplication(new App(new AndroidInitializer()));
         }

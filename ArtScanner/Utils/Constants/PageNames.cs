@@ -8,5 +8,6 @@ namespace ArtScanner.Utils.Constants
         public static string ArtDetailsPage = nameof(Views.ArtDetailsPage);
         public static string ItemsGalleryPage = nameof(Views.ItemsGalleryPage);
         public static string ItemsGalleryDetailsPage = nameof(Views.ItemGalleryDetailsPage);
+        public static string ProviderLoginPage = nameof(Views.ProviderLoginPage);
     }
 }

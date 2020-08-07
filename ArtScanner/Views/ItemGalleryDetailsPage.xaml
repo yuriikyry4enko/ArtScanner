@@ -11,7 +11,6 @@
       Background="White">
      <RelativeLayout
          Padding="0">
-        
         <controls:ExtendedScrollView
             Background="White"
             VerticalOptions="FillAndExpand"
@@ -33,11 +32,12 @@
                 </Grid>
             </StackLayout>       
         </controls:ExtendedScrollView>
-        <StackLayout VerticalOptions="End"
-                        Orientation="Horizontal"
-                        RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}"
-                        RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}"
-                        Margin="{OnPlatform Android='0', iOS='10, 30'}">
+        <StackLayout
+            VerticalOptions="End"
+            Orientation="Horizontal"
+            RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}"
+            RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}"
+            Margin="{OnPlatform Android='0', iOS='10, 30'}">
 
              <controls:Circle
                 VerticalOptions="Start"
