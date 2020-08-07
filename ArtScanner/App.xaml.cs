@@ -32,7 +32,7 @@ namespace ArtScanner
             InitializeComponent();
             //NavigationService.NavigateAsync(PageNames.ItemsGalleryPage);
 
-            NavigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(ItemsGalleryPage)}");
+            NavigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(StartPage)}");
 
 
         }

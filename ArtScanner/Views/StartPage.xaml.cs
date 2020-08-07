@@ -6,7 +6,7 @@ using Xamarin.Forms.Xaml;
 namespace ArtScanner.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class StartPage : ContentPage
+    public partial class StartPage : BasePage
     {
         public StartPage()
         {

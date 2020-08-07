@@ -7,11 +7,10 @@ using Xamarin.Forms.Xaml;
 namespace ArtScanner.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ItemGalleryDetailsPage : ContentPage
+    public partial class ItemGalleryDetailsPage : BasePage
     {
         public ItemGalleryDetailsPage()
         {
-            NavigationPage.SetHasNavigationBar(this, false);
             InitializeComponent();
         }
     }

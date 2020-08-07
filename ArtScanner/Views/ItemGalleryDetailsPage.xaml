@@ -1,15 +1,18 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
-<ContentPage
+<views:BasePage
+    xmlns:views="clr-namespace:ArtScanner.Views"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
     xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:controls="clr-namespace:ArtScanner.Controls"
+    xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
     x:Class="ArtScanner.Views.ItemGalleryDetailsPage"
       Background="White">
      <RelativeLayout
          Padding="0">
         
-        <ScrollView
+        <controls:ExtendedScrollView
             Background="White"
             VerticalOptions="FillAndExpand"
             RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}"
@@ -29,23 +32,34 @@
                    
                 </Grid>
             </StackLayout>       
-        </ScrollView>
-        <StackLayout VerticalOptions="Start"
+        </controls:ExtendedScrollView>
+        <StackLayout VerticalOptions="End"
                         Orientation="Horizontal"
                         RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}"
                         RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}"
                         Margin="{OnPlatform Android='0', iOS='10, 30'}">
-            <Button
-                Command="{Binding BackCommand}"
-                Text="Back"
-                TextColor="Black"
-                FontSize="20"
-                WidthRequest="50"
-                BackgroundColor="Transparent"
-                HorizontalOptions="StartAndExpand">
-            </Button>
+
+             <controls:Circle
+                VerticalOptions="Start"
+                Padding="0"
+                HeightRequest="45"
+                Margin="25,25,0,25"
+                Color="White"
+                WidthRequest="45"
+                HorizontalOptions="Start">
+                 <controls:TintedCachedImage
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Source="{x:Static resources:Images.BackArrow}"
+                    WidthRequest="20"   
+                    TintColor="Black"
+                    HeightRequest="20"/>
+                <controls:Circle.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding BackCommand}"/>
+                </controls:Circle.GestureRecognizers>
+            </controls:Circle>
         </StackLayout>
         
     </RelativeLayout>
 
-</ContentPage>
+</views:BasePage>
