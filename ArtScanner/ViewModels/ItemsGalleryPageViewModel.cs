@@ -1,53 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Windows.Input;
-using Acr.UserDialogs;
 using ArtScanner.Models;
 using ArtScanner.Utils.Constants;
+using Prism.Commands;
 using Prism.Navigation;
 using Xamarin.Forms;
 
 namespace ArtScanner.ViewModels
 {
-    class ScannerPageViewModel : BaseViewModel
+    class ItemsGalleryPageViewModel : BaseViewModel
     {
-        private IUserDialogs _userDialogs;
+        public ObservableCollection<ArtModel> Items { get; set; }
 
-        private List<ArtModel> _artModelList;
 
-        public ZXing.Result Result { get; set; }
-
-        public ScannerPageViewModel(
-            INavigationService navigationService,
-            IUserDialogs userDialogs) : base(navigationService)
+        private string _selectedId;
+        public string SelectedId
         {
-            this._userDialogs = userDialogs;
-            _artModelList = GetArts();
+            get => _selectedId;
+            set => SetProperty(ref _selectedId, value);
         }
 
-        public ICommand BackCommand => new Command(async () => { await navigationService.GoBackAsync(); });
+        #region Ctor
 
-        public ICommand QRScanResultCommand => new Command(() =>
+        public ItemsGalleryPageViewModel(INavigationService navigationService) : base(navigationService)
         {
-            Device.BeginInvokeOnMainThread(async () =>
-            {
-                var selectedArt = _artModelList.FirstOrDefault(x => x.Id == Result?.Text);
-                if(selectedArt != null)
-                {
-                    await navigationService.NavigateAsync(PageNames.ArtDetailsPage, CreateParameters(selectedArt));
-                }
-                else
-                {
-                    await _userDialogs.ConfirmAsync("Сould not find by this qr-code...", "Oops", "Ok");
-                }
-            });
-        });
-
-
-        private List<ArtModel> GetArts()
-        {
-            return new List<ArtModel>
+            Items = new ObservableCollection<ArtModel>()
             {
                 new ArtModel
                 {
@@ -70,7 +48,18 @@ namespace ArtScanner.ViewModels
                     WikiUrl= "https://en.wikipedia.org/wiki/Mona_Lisa",
                     Description = "The Mona Lisa is a half-length portrait painting by the Italian artist Leonardo da Vinci. It is considered an archetypal masterpiece of the Italian Renaissance, and has been described as ''the best known, the most visited, the most written about, the most sung about, the most parodied work of art in the world''.",
                 }
+
             };
         }
+
+        #endregion
+
+        public ICommand NavigateToItemDetail => new DelegateCommand<ArtModel>(async(artModel) =>
+        {
+            SelectedId = artModel.Id;
+
+            await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(artModel));
+        });
+
     }
 }

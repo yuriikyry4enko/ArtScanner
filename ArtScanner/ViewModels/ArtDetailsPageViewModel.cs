@@ -6,9 +6,7 @@ using MediaManager;
 using Prism.Navigation;
 using Xamarin.Forms;
 using Prism.Commands;
-using System.Collections.ObjectModel;
 using ArtScanner.Models;
-using System.Collections.Generic;
 using Xamarin.Essentials;
 using Acr.UserDialogs;
 
@@ -16,9 +14,13 @@ namespace ArtScanner.ViewModels
 {
     class ArtDetailsPageViewModel : BaseViewModel
     {
-        #region Properties
+        #region Services
 
         private IUserDialogs _userDialogs;
+
+        #endregion
+
+        #region Properties
 
         private bool _firstLook = false;
 

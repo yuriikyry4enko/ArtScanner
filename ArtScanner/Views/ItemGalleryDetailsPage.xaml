@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
+    xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    x:Class="ArtScanner.Views.ItemGalleryDetailsPage"
+      Background="White">
+     <RelativeLayout
+         Padding="0">
+        
+        <ScrollView
+            Background="White"
+            VerticalOptions="FillAndExpand"
+            RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}"
+            RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}">
+            <StackLayout HorizontalOptions="FillAndExpand"
+                            Padding="0, 0, 0, 80">
+                <Grid HeightRequest="550">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="350" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <ffimageloading:CachedImage
+                        Source="{Binding ItemModel.ImageUrl}"
+                        Grid.RowSpan="2"
+                        sharedTransitions:Transition.Name="artTransition" 
+                        Aspect="AspectFill"/>
+                   
+                </Grid>
+            </StackLayout>       
+        </ScrollView>
+        <StackLayout VerticalOptions="Start"
+                        Orientation="Horizontal"
+                        RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}"
+                        RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}"
+                        Margin="{OnPlatform Android='0', iOS='10, 30'}">
+            <Button
+                Command="{Binding BackCommand}"
+                Text="Back"
+                TextColor="Black"
+                FontSize="20"
+                WidthRequest="50"
+                BackgroundColor="Transparent"
+                HorizontalOptions="StartAndExpand">
+            </Button>
+        </StackLayout>
+        
+    </RelativeLayout>
+
+</ContentPage>

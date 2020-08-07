@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ArtScanner.Controls"
+    x:Class="ArtScanner.Views.ItemsGalleryPage"
+    xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
+    x:Name="itemsGalleryPage"
+    sharedTransitions:SharedTransitionNavigationPage.TransitionSelectedGroup="{Binding SelectedId}">
+   <StackLayout
+        HeightRequest="400"
+        VerticalOptions="Center"
+        Padding="0"
+        Margin="0">
+        <CarouselView
+            ItemsSource="{Binding Items}"
+            PeekAreaInsets="40"
+            HorizontalScrollBarVisibility="Never"
+            VerticalOptions="FillAndExpand">
+            <CarouselView.ItemsLayout>
+                <LinearItemsLayout Orientation="Horizontal"
+                                    SnapPointsAlignment="Center"
+                                    SnapPointsType="MandatorySingle"
+                                    ItemSpacing="20" />
+            </CarouselView.ItemsLayout>
+            <CarouselView.ItemTemplate>
+                    <DataTemplate>
+                        <controls:ItemGalleryComponent>
+                            <controls:ItemGalleryComponent.GestureRecognizers>
+                                 <TapGestureRecognizer
+                                     Command="{Binding BindingContext.NavigateToItemDetail, Source={x:Reference itemsGalleryPage}}"
+                                     CommandParameter="{Binding .}" />
+                            </controls:ItemGalleryComponent.GestureRecognizers>
+                        </controls:ItemGalleryComponent>
+                    </DataTemplate>
+            </CarouselView.ItemTemplate>
+        </CarouselView>
+    </StackLayout>
+</ContentPage>

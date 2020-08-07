@@ -2,6 +2,7 @@
 using ArtScanner.Utils.Constants;
 using ArtScanner.ViewModels;
 using ArtScanner.Views;
+using Plugin.SharedTransitions;
 using Prism;
 using Prism.Ioc;
 using Prism.Unity;
@@ -29,7 +30,9 @@ namespace ArtScanner
         protected override void OnInitialized()
         {
             InitializeComponent();
-            NavigationService.NavigateAsync(PageNames.StartPage);
+            //NavigationService.NavigateAsync(PageNames.ItemsGalleryPage);
+
+            NavigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(ItemsGalleryPage)}");
 
 
         }
@@ -38,9 +41,12 @@ namespace ArtScanner
 
             containerRegistry.RegisterInstance(UserDialogs.Instance);
 
+            containerRegistry.RegisterForNavigation<SharedTransitionNavigationPage>();
             containerRegistry.RegisterForNavigation<StartPage, StartPageViewModel>();
             containerRegistry.RegisterForNavigation<ScannerPage, ScannerPageViewModel>();
             containerRegistry.RegisterForNavigation<ArtDetailsPage, ArtDetailsPageViewModel>();
+            containerRegistry.RegisterForNavigation<ItemsGalleryPage, ItemsGalleryPageViewModel>();
+            containerRegistry.RegisterForNavigation<ItemGalleryDetailsPage, ItemGalleryDetailsPageViewModel>();
 
         }
 
