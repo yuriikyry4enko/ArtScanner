@@ -1,13 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows.Input;
-using ArtScanner.Enums;
-using ArtScanner.Services;
-using ArtScanner.Utils.AuthConfigs;
 using ArtScanner.Utils.Constants;
-using ArtScanner.Views;
-using LinqToTwitter;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Prism.Navigation;
@@ -26,7 +20,12 @@ namespace ArtScanner.ViewModels
 
         #endregion
 
-        #region Commands
+        #region Command
+
+        public ICommand NavigateToGalleyCommand => new Command(async () =>
+        {
+            await navigationService.NavigateAsync(PageNames.ItemsGalleryPage);
+        });
 
         public ICommand BackCommand => new Command(async () => { await navigationService.GoBackAsync(); });
 

@@ -28,6 +28,7 @@
     <PackageReference Include="linqtotwitter" Version="5.1.2" />
     <PackageReference Include="Xamarin.Auth" Version="1.7.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
+    <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\" />
@@ -42,7 +43,7 @@
     <Folder Include="Enums\" />
     <Folder Include="Utils\AuthConfigs\" />
     <Folder Include="Models\Entities\" />
-    <Folder Include="Models\AppModels\" />
+    <Folder Include="Models\AppDomainModels\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\play.svg" />

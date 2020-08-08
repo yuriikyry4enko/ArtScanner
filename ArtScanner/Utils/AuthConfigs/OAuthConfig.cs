@@ -47,8 +47,6 @@ namespace ArtScanner.Utils.AuthConfigs
                         {
                             Debug.WriteLine(ex);
                         }
-
-                        await navigationService.NavigateAsync(PageNames.ItemsGalleryPage);
                     }
                 });
             }

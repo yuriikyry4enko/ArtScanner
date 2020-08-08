@@ -7,17 +7,37 @@
     x:Class="ArtScanner.Views.ItemsGalleryPage"
     xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
     x:Name="itemsGalleryPage"
-    sharedTransitions:SharedTransitionNavigationPage.TransitionSelectedGroup="{Binding SelectedId}">
-   <StackLayout
-        HeightRequest="400"
-        VerticalOptions="Center"
-        Padding="0"
-        Margin="0">
+    sharedTransitions:SharedTransitionNavigationPage.TransitionSelectedGroup="{Binding SelectedId}"
+    xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner">
+    <Grid
+        Padding="0">
+        <controls:Circle
+            VerticalOptions="Start"
+            Padding="0"
+            HeightRequest="45"
+            Margin="{OnPlatform Android='25,25,0,25', iOS='35, 55,25,0'}"
+            Color="White"
+            WidthRequest="45"
+            HorizontalOptions="Start">
+                <controls:TintedCachedImage
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Source="{x:Static resources:Images.BackArrow}"
+                WidthRequest="20"   
+                TintColor="Black"
+                HeightRequest="20"/>
+            <controls:Circle.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding BackCommand}"/>
+            </controls:Circle.GestureRecognizers>
+        </controls:Circle>
+
         <CarouselView
+            Margin="0"
+            HeightRequest="400"
+            VerticalOptions="CenterAndExpand"
             ItemsSource="{Binding Items}"
             PeekAreaInsets="40"
-            HorizontalScrollBarVisibility="Never"
-            VerticalOptions="FillAndExpand">
+            HorizontalScrollBarVisibility="Never">
             <CarouselView.ItemsLayout>
                 <LinearItemsLayout Orientation="Horizontal"
                                     SnapPointsAlignment="Center"
@@ -36,5 +56,5 @@
                     </DataTemplate>
             </CarouselView.ItemTemplate>
         </CarouselView>
-    </StackLayout>
+    </Grid>
 </views:BasePage>

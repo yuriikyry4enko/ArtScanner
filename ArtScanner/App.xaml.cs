@@ -34,7 +34,7 @@ namespace ArtScanner
             InitializeComponent();
             //NavigationService.NavigateAsync(PageNames.ItemsGalleryPage);
 
-            NavigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(ItemsGalleryPage)}");
+            NavigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(StartPage)}");
 
 
         }
@@ -44,6 +44,8 @@ namespace ArtScanner
             containerRegistry.RegisterInstance(UserDialogs.Instance);
             containerRegistry.RegisterInstance(DependencyService.Get<ISQLite>());
 
+            containerRegistry.RegisterSingleton<IBaseDBService, BaseDBService>();
+            containerRegistry.RegisterSingleton<IItemDBService, ItemDBService>();
             containerRegistry.RegisterSingleton<IAppConfig, AppConfig>();
             containerRegistry.RegisterSingleton<IAppInfo, AppInfo>();
             containerRegistry.RegisterSingleton<IAppDatabase, AppDatabase>();

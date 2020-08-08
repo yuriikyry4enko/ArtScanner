@@ -4,6 +4,7 @@ using System.Windows.Input;
 using Acr.UserDialogs;
 using ArtScanner.Models;
 using ArtScanner.Resources;
+using ArtScanner.Services;
 using ArtScanner.Utils.AuthConfigs;
 using ArtScanner.Utils.Constants;
 using MediaManager;
@@ -18,6 +19,7 @@ namespace ArtScanner.ViewModels
     class ItemGalleryDetailsPageViewModel : BaseViewModel
     {
         private IUserDialogs _userDialogs;
+        private IItemDBService _itemDBService;
 
         #region Properties
 
@@ -83,9 +85,11 @@ namespace ArtScanner.ViewModels
 
         public ItemGalleryDetailsPageViewModel(
             INavigationService navigationService,
+            IItemDBService itemDBService,
             IUserDialogs userDialogs) : base(navigationService)
         {
             this._userDialogs = userDialogs;
+            this._itemDBService = itemDBService;
         }
 
         public override void OnNavigatedTo(INavigationParameters parameters)
@@ -106,7 +110,6 @@ namespace ArtScanner.ViewModels
 
         public ICommand LikeCommand => new Command(async () =>
         {
-            //IsLike = !IsLike;
             await _userDialogs.ConfirmAsync("Not implemented", "Oops", "Ok");
         });
         public ICommand TwittCommand => new Command(async () =>

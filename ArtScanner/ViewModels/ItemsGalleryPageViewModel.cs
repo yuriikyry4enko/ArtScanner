@@ -54,6 +54,8 @@ namespace ArtScanner.ViewModels
 
         #endregion
 
+        public ICommand BackCommand => new Command(async () => { await navigationService.GoBackAsync(); });
+
         public ICommand NavigateToItemDetail => new DelegateCommand<ArtModel>(async(artModel) =>
         {
             SelectedId = artModel.Id;
