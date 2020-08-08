@@ -7,6 +7,7 @@ using Plugin.SharedTransitions;
 using Prism;
 using Prism.Ioc;
 using Prism.Unity;
+using Xamarin.Forms;
 
 namespace ArtScanner
 {
@@ -33,7 +34,7 @@ namespace ArtScanner
             InitializeComponent();
             //NavigationService.NavigateAsync(PageNames.ItemsGalleryPage);
 
-            NavigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(StartPage)}");
+            NavigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(ItemsGalleryPage)}");
 
 
         }
@@ -41,9 +42,11 @@ namespace ArtScanner
         {
 
             containerRegistry.RegisterInstance(UserDialogs.Instance);
+            containerRegistry.RegisterInstance(DependencyService.Get<ISQLite>());
 
-            containerRegistry.RegisterSingleton<SocialService>();
-            containerRegistry.RegisterSingleton<ITwitterService, TwitterService>();
+            containerRegistry.RegisterSingleton<IAppConfig, AppConfig>();
+            containerRegistry.RegisterSingleton<IAppInfo, AppInfo>();
+            containerRegistry.RegisterSingleton<IAppDatabase, AppDatabase>();
 
             containerRegistry.RegisterForNavigation<ProviderLoginPage>();
             containerRegistry.RegisterForNavigation<SharedTransitionNavigationPage>();

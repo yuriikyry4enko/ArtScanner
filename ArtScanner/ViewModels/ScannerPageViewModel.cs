@@ -35,7 +35,7 @@ namespace ArtScanner.ViewModels
                 var selectedArt = _artModelList.FirstOrDefault(x => x.Id == Result?.Text);
                 if(selectedArt != null)
                 {
-                    await navigationService.NavigateAsync(PageNames.ArtDetailsPage, CreateParameters(selectedArt));
+                    await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(selectedArt));
                 }
                 else
                 {

@@ -81,6 +81,7 @@
     <Compile Include="SplashActivity.cs" />
     <Compile Include="Renderers\CircleRenderer.cs" />
     <Compile Include="Renderers\ProviderLoginPageRenderer.cs" />
+    <Compile Include="Services\SQLite.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
@@ -112,6 +113,7 @@
   <ItemGroup>
     <Folder Include="Resources\drawable\" />
     <Folder Include="Renderers\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ArtScanner\ArtScanner.csproj">

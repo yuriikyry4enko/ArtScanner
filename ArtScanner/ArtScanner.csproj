@@ -27,6 +27,7 @@
     <PackageReference Include="Xamarin.Plugin.SharedTransitions" Version="2.2.0" />
     <PackageReference Include="linqtotwitter" Version="5.1.2" />
     <PackageReference Include="Xamarin.Auth" Version="1.7.0" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\" />
@@ -40,6 +41,8 @@
     <Folder Include="Services\" />
     <Folder Include="Enums\" />
     <Folder Include="Utils\AuthConfigs\" />
+    <Folder Include="Models\Entities\" />
+    <Folder Include="Models\AppModels\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\play.svg" />

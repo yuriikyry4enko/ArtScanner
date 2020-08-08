@@ -7,7 +7,7 @@ using Xamarin.Forms.Xaml;
 namespace ArtScanner.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ProviderLoginPage : ContentPage
+    public partial class ProviderLoginPage : BasePage
     {
         public ProviderLoginPage()
         {

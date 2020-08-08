@@ -19,7 +19,6 @@ namespace ArtScanner.iOS.Renderers
             base.OnElementChanged(e);
             try
             {
-                //Get and Assign ProviderName from ProviderLoginPage  
                 var loginPage = Element as ProviderLoginPage;
                 if (showLogin && OAuthConfig.User == null)
                 {

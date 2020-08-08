@@ -79,6 +79,7 @@
     <Compile Include="Renderers\CircleRenderer.cs" />
     <Compile Include="Renderers\ExtendedScrollViewRenderer.cs" />
     <Compile Include="Renderers\ProviderLoginPageRenderer.cs" />
+    <Compile Include="Services\SQLite.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
@@ -165,5 +166,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Renderers\" />
+    <Folder Include="Services\" />
   </ItemGroup>
 </Project>
