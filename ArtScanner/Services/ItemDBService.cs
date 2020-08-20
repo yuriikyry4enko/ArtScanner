@@ -33,8 +33,10 @@ namespace ArtScanner.Services
         public async Task<long> DeleateItem(ItemEntity item)
         {
 
-            _appFileSystemService.DeleteFile(_appFileSystemService.GetFilePath(item.MusicFileName));
-            _appFileSystemService.DeleteFile(_appFileSystemService.GetFilePath(item.ImageFileName));
+            if (_appFileSystemService.DoesImageExist(item.ImageFileName))
+            {
+                _appFileSystemService.DeleteFile(_appFileSystemService.GetFilePath(item.ImageFileName));
+            }
 
             var itemEntity = await Connection.DeleteAsync<ItemEntity>(item.LocalId);
 
@@ -45,10 +47,8 @@ namespace ArtScanner.Services
         {
             if (item.LocalId == 0)
             {
-                item.MusicFileName = item.Id + ".mp3";
                 item.ImageFileName = item.Id + ".jpg";
 
-                _appFileSystemService.SaveStreamAudio(item.MusicByteArray, item.MusicFileName);
                 _appFileSystemService.SaveImage(item.ImageByteArray, item.ImageFileName);
 
                 await Connection.InsertAsync(item);

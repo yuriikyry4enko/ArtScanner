@@ -10,10 +10,10 @@ namespace ArtScanner.Services
         public string CurrentUserFolderPath { get; private set; }
 
 
-        public void EnsureFileSystemTreeStructure()
-        {
-            Directory.CreateDirectory(appConfig.RootFolderPath);
-        }
+        //public void EnsureFileSystemTreeStructure()
+        //{
+        //    Directory.CreateDirectory(appConfig.RootFolderPath);
+        //}
 
         public void InitializeFoldersForUser(string userName)
         {
@@ -28,20 +28,20 @@ namespace ArtScanner.Services
             Directory.CreateDirectory(imagesFolderPath);
         }
 
-        public string CopyImageIntoUserFolderIfNeeded(string imagePath)
-        {
-            var folder = Path.GetDirectoryName(imagePath);
+        //public string CopyImageIntoUserFolderIfNeeded(string imagePath)
+        //{
+        //    var folder = Path.GetDirectoryName(imagePath);
 
-            var imagesFolderPath = GetImagesFolderPath();
+        //    var imagesFolderPath = GetImagesFolderPath();
 
-            if (folder == imagesFolderPath) return imagePath;
+        //    if (folder == imagesFolderPath) return imagePath;
 
-            var newImagePath = Path.Combine(imagesFolderPath, $"image_{DateTime.UtcNow:yyyy_MM_dd_HH_mm_ss_fff}");
+        //    var newImagePath = Path.Combine(imagesFolderPath, $"image_{DateTime.UtcNow:yyyy_MM_dd_HH_mm_ss_fff}");
 
-            File.Copy(imagePath, newImagePath, true);
+        //    File.Copy(imagePath, newImagePath, true);
 
-            return newImagePath;
-        }
+        //    return newImagePath;
+        //}
 
         public string SaveImage(byte[] data, string name)
         {
@@ -65,16 +65,16 @@ namespace ArtScanner.Services
             return newImagePath;
         }
 
-        public string Rename(string path, string name)
-        {
-            var imagesFolderPath = GetImagesFolderPath();
+        //public string Rename(string path, string name)
+        //{
+        //    var imagesFolderPath = GetImagesFolderPath();
 
-            var newImagePath = Path.Combine(imagesFolderPath, name);
+        //    var newImagePath = Path.Combine(imagesFolderPath, name);
 
-            File.Move(path, newImagePath);
+        //    File.Move(path, newImagePath);
 
-            return newImagePath;
-        }
+        //    return newImagePath;
+        //}
 
         public bool DoesImageExist(string name)
         {

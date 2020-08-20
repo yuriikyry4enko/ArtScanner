@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
-using ArtScanner.Models;
 using ArtScanner.Models.Entities;
 using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
@@ -15,16 +14,22 @@ namespace ArtScanner.ViewModels
 {
     class ItemsGalleryPageViewModel : BaseViewModel
     {
+        #region Services
+
         private readonly IAppFileSystemService _appFileSystemService;
         private readonly IItemDBService _itemDBService;
 
-        private ObservableCollection<ItemEntity> _items;
+        #endregion
+
+        #region Properties
+
+        private ObservableCollection<ItemEntity> _items = new ObservableCollection<ItemEntity>();
         public ObservableCollection<ItemEntity> Items
         {
             get => _items;
             set => SetProperty(ref _items, value);
         }
-
+        
         private string _selectedId;
         public string SelectedId
         {
@@ -32,13 +37,14 @@ namespace ArtScanner.ViewModels
             set => SetProperty(ref _selectedId, value);
         }
 
+        #endregion 
+
         #region Ctor
 
         public ItemsGalleryPageViewModel
             (INavigationService navigationService,
             IItemDBService itemDBService,
-            IAppFileSystemService appFileSystemService
-            ) : base(navigationService)
+            IAppFileSystemService appFileSystemService) : base(navigationService)
         {
 
             this._itemDBService = itemDBService;
@@ -51,6 +57,8 @@ namespace ArtScanner.ViewModels
 
             try
             {
+                Items.Clear();
+
                 var items = await _itemDBService.GetAll();
                 if (items.Count > 0)
                 {
@@ -63,10 +71,6 @@ namespace ArtScanner.ViewModels
 
                     RaisePropertyChanged(nameof(Items));
                 }
-                else
-                {
-
-                }
             }
             catch (Exception ex)
             {
@@ -77,6 +81,8 @@ namespace ArtScanner.ViewModels
 
         #endregion
 
+        #region Commands
+
         public ICommand BackCommand => new Command(async () => { await navigationService.GoBackAsync(); });
 
         public ICommand NavigateToItemDetail => new DelegateCommand<ItemEntity>(async(itemModel) =>
@@ -85,6 +91,8 @@ namespace ArtScanner.ViewModels
 
             await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(itemModel));
         });
+
+        #endregion
 
     }
 }

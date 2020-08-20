@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
-using ArtScanner.Models;
 using ArtScanner.Models.Entities;
 using ArtScanner.Resources;
 using ArtScanner.Services;
 using ArtScanner.Utils.AuthConfigs;
 using ArtScanner.Utils.Constants;
 using ArtScanner.Utils.Helpers;
-using Plugin.SimpleAudioPlayer;
+using MediaManager;
 using Prism.Commands;
 using Prism.Navigation;
 using Xamarin.Essentials;
@@ -23,7 +20,6 @@ namespace ArtScanner.ViewModels
 {
     class ItemGalleryDetailsPageViewModel : BaseViewModel
     {
-        private ISimpleAudioPlayer player;
         private IUserDialogs _userDialogs;
         private IItemDBService _itemDBService;
         private IAppFileSystemService _appFileSystemService;
@@ -35,7 +31,11 @@ namespace ArtScanner.ViewModels
         public ItemEntity ItemModel
         {
             get { return _itemModel; }
-            set { SetProperty(ref _itemModel, value); }
+            set
+            {
+                SetProperty(ref _itemModel, value);
+                RaisePropertyChanged(nameof(LikeIcon));
+            }
         }
 
         private bool isPlaying;
@@ -77,7 +77,7 @@ namespace ArtScanner.ViewModels
         private string _likeIcon;
         public string LikeIcon
         {
-            get { return ItemModel.Liked ? Images.Like : Images.BackArrow; }
+            get { return ItemModel.Liked ? Images.Like : Images.DefaultLike; }
             set
             {
                 SetProperty(ref _likeIcon, value);
@@ -97,43 +97,72 @@ namespace ArtScanner.ViewModels
             this._itemDBService = itemDBService;
             this._appFileSystemService = appFileSystemService;
             this._restService = restService;
-
-            player = CrossSimpleAudioPlayer.Current;
         }
 
         public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
+
             try
             {
                 if (parameters.GetNavigationMode() != NavigationMode.Back)
                 {
                     ItemModel = GetParameters<ItemEntity>(parameters);
+                    RaisePropertyChanged(nameof(ItemModel));
 
-                    await Task.Run(async () =>
+                    IsPlayButtonEnable = false;
+
+                    IsBusy = true;
+
+                    ItemModel.ImageUrl = string.Format(Utils.Constants.ApiConstants.GetJPGById, ItemModel.Id);
+
+                    CrossMediaManager.Current.AutoPlay = false;
+                    await CrossMediaManager.Current.Play("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3");
+
+                    if (ItemModel.LocalId == 0)
                     {
-                        IsPlayButtonEnable = false;
+                        await CheckForItemExistedInLocalDB();
+                    }
 
-                        if (ItemModel.LocalId > 0)
-                        {
-                            player.Load(new MemoryStream(StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(ItemModel.MusicFileName))));
+                    IsBusy = false;
 
-                            ItemModel.ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(ItemModel.ImageFileName));
-                        }
-                        else
-                        {
-
-                            await LoadAndInitItemModel();
-                        }
-
-                        await Task.CompletedTask;
-
-                        IsPlayButtonEnable = true;
-
-                    });
-
-                    RaisePropertyChanged(nameof(LikeIcon));
+                    IsPlayButtonEnable = true;
                 }
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
+        //TODO: need to find better way 
+        //HACK 
+        private async Task CheckForItemExistedInLocalDB()
+        {
+            try
+            {
+                ////TODO:need to find better way for check existed item 
+                //if (_appFileSystemService.DoesImageExist($"{ItemModel.Id}.jpg"))
+                //{
+                //    ItemModel.Liked = true;
+
+                //    RaisePropertyChanged(nameof(LikeIcon));
+                //}
+
+                var itemEntity = await _itemDBService.GetByIdWithChildren(Int64.Parse(ItemModel.Id));
+
+                if (itemEntity != null)
+                {
+                    ItemModel.Liked = true;
+                    ItemModel = itemEntity;
+                    ItemModel.ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(ItemModel.ImageFileName));
+                }
+                else
+                {
+                    await LoadAndInitItemModel();
+                }
+
+                RaisePropertyChanged(nameof(ItemModel));
             }
             catch(Exception ex)
             {
@@ -144,14 +173,8 @@ namespace ArtScanner.ViewModels
         public override void OnDisappearing()
         {
             base.OnDisappearing();
-            try
-            {
-                player.Pause();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
+
+            CrossMediaManager.Current.Stop();
         }
 
         #region Commands
@@ -174,16 +197,12 @@ namespace ArtScanner.ViewModels
                 }
                 else
                 {
-                    //var itemById = await _itemDBService.GetByIdWithChildren(Int64.Parse(ItemModel.Id));
+                    var imageByteArray = await _restService.GetImageById(ItemModel.Id);
+                    ItemModel.ImageByteArray = imageByteArray;
 
-                    //if (itemById == null)
-                    //{
-                        var resultId = await _itemDBService.InsertOrUpdateWithChildren(ItemModel);
-                        ItemModel.LocalId = resultId;
-                    //}
+                    var resultId = await _itemDBService.InsertOrUpdateWithChildren(ItemModel);
+                    ItemModel.LocalId = resultId;
                 }
-
-
                 _userDialogs.Toast("Gallery updated");
             }
             catch(Exception ex)
@@ -213,20 +232,22 @@ namespace ArtScanner.ViewModels
 
         #endregion
 
-        private void Play()
+        private async void Play()
         {
             try
             {
                 IsPlayButtonEnable = false;
 
+                await CrossMediaManager.Current.Play();
+
                 if (isPlaying)
                 {
-                    player.Pause();
+                    await CrossMediaManager.Current.Pause();
                     IsPlaying = false;
                 }
                 else
                 {
-                    player.Play();
+                    await CrossMediaManager.Current.Play();
                     IsPlaying = true;
                 }
             }
@@ -244,31 +265,21 @@ namespace ArtScanner.ViewModels
         {
             try
             {
-                var musicByteArray = await _restService.GetMusicStreamById(ItemModel.Id);
-
-                if (musicByteArray != null)
-                {
-                    player.Load(new MemoryStream(musicByteArray));
-                }
-
-                var imageByteArray = await _restService.GetImageById(ItemModel.Id);
                 var text = await _restService.GetTextById(ItemModel.Id);
-
-                if (imageByteArray == null ||
-                    text == null)
+                if (text == null)
                 {
                     await _userDialogs.AlertAsync("Сould not find by this qr-code...", "Oops", "Ok");
                     await navigationService.GoBackAsync();
                     return;
                 }
 
-                ItemModel.ImageByteArray = imageByteArray;
                 ItemModel.Title = text.Substring(0, text.IndexOf(Environment.NewLine));
                 ItemModel.Description = text;
-                ItemModel.MusicByteArray = musicByteArray;
-                ItemModel.MusicFileName = ItemModel.Id + ".mp3";
 
+                //TODO:need to find better solution for reload text before img smoothly
                 RaisePropertyChanged(nameof(ItemModel));
+
+             
             }
             catch (Exception ex)
             {

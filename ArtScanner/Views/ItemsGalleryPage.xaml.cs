@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+﻿using Xamarin.Forms.Xaml;
 
 namespace ArtScanner.Views
 {
@@ -11,7 +7,6 @@ namespace ArtScanner.Views
     {
         public ItemsGalleryPage()
         {
-            NavigationPage.SetHasNavigationBar(this, false);
             InitializeComponent();
         }
     }

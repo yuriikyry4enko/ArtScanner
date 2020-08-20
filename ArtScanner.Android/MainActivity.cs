@@ -29,12 +29,10 @@ namespace ArtScanner.Droid
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init(null);
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             UserDialogs.Init(this);
+            CrossMediaManager.Current.Init();
+            AuthenticationConfiguration.Init(this, savedInstanceState);
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-
-            CrossMediaManager.Current.Init();
-
-            AuthenticationConfiguration.Init(this, savedInstanceState);
 
             LoadApplication(new App(new AndroidInitializer()));
         }

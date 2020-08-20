@@ -7,6 +7,13 @@ namespace ArtScanner.ViewModels
 {
     class BaseViewModel : BindableBase, IInitialize, INavigationAware, IDestructible, IPageLifecycleAware
     {
+        private bool _isBusy;
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetProperty(ref _isBusy, value);
+        }
+
         protected const string Params = "params";
 
         protected readonly INavigationService navigationService;

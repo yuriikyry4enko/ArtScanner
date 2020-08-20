@@ -13,6 +13,7 @@
    <ContentPage.Resources>
         <ResourceDictionary>
           <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImage" />
+            <converters:NullToBoolConverter x:Key="NullToBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
     <RelativeLayout
@@ -23,22 +24,22 @@
             RelativeLayout.WidthConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Width}"
             RelativeLayout.HeightConstraint= "{ConstraintExpression Type=RelativeToParent, Property=Height}">
             <StackLayout HorizontalOptions="FillAndExpand"
-                            Padding="0, 0, 0, 80">
+                        Padding="0, 0, 0, 80">
                 <Grid HeightRequest="480">
-                    <ActivityIndicator
-                        x:Name="activity"
-                        VerticalOptions="Center"
-                        HorizontalOptions="Center"
-                        IsVisible="True"
-                        IsEnabled="True"
-                        IsRunning="{Binding IsActivityLoad}"
-                        Color="Orange"
-                        BackgroundColor="Transparent"/>
                     <ffimageloading:CachedImage
+                        IsVisible="{Binding ItemModel.ImageByteArray, Converter={StaticResource NullToBoolConverter}}"
                         Source="{Binding ItemModel.ImageByteArray, 
                             Converter={StaticResource ByteArrayToImage}}"
                         sharedTransitions:Transition.Name="artTransition" 
                         Aspect="AspectFill"/>
+                        
+                     <Image
+                        
+                        IsVisible="{Binding ItemModel.ImageUrl, Converter={StaticResource NullToBoolConverter}}"
+                        Source="{Binding ItemModel.ImageUrl}"
+                        sharedTransitions:Transition.Name="artTransition" 
+                        Aspect="AspectFill"/>
+
                     <Frame
                         Background="White"
                         HeightRequest="75"
@@ -126,7 +127,16 @@
                             </controls:Circle>
 
                         </StackLayout>
-                    </Frame>                   
+                    </Frame>
+                    <ActivityIndicator
+                        Color="Orange"
+                        IsRunning="{Binding IsBusy}"
+                        IsEnabled="True"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        HeightRequest="70"
+                        WidthRequest="70"/>
+
                 </Grid>
                 <Label
                     Margin="25,45,0,0"

@@ -6,7 +6,6 @@ namespace ArtScanner.Services
 {
     class AppConfig : IAppConfig
     {
-        public string ServerUrl => "";
         public string RootFolderName => "artscanner";
         public string RootPath => FileSystem.AppDataDirectory;
         public string RootFolderPath => Path.Combine(RootPath, RootFolderName);

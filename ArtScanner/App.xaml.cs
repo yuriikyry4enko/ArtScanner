@@ -1,6 +1,5 @@
 ﻿using Acr.UserDialogs;
 using ArtScanner.Services;
-using ArtScanner.Utils.Constants;
 using ArtScanner.ViewModels;
 using ArtScanner.Views;
 using Plugin.SharedTransitions;
@@ -32,12 +31,10 @@ namespace ArtScanner
         protected override void OnInitialized()
         {
             InitializeComponent();
-            //NavigationService.NavigateAsync(PageNames.ItemsGalleryPage);
 
             NavigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(StartPage)}");
-
-
         }
+
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
 
@@ -47,21 +44,16 @@ namespace ArtScanner
             containerRegistry.RegisterSingleton<IAppConfig, AppConfig>();
             containerRegistry.RegisterSingleton<IAppInfo, AppInfo>();
             containerRegistry.RegisterSingleton<IAppDatabase, AppDatabase>();
-            
-
-            containerRegistry.RegisterSingleton<ISettings, Settings>();
             containerRegistry.RegisterSingleton<IAppFileSystemService, AppFileSystemService>();
             containerRegistry.RegisterSingleton<IRestService, RestService>();
             containerRegistry.RegisterSingleton<IBaseDBService, BaseDBService>();
             containerRegistry.RegisterSingleton<IItemDBService, ItemDBService>();
     
           
-
             containerRegistry.RegisterForNavigation<ProviderLoginPage>();
             containerRegistry.RegisterForNavigation<SharedTransitionNavigationPage>();
             containerRegistry.RegisterForNavigation<StartPage, StartPageViewModel>();
             containerRegistry.RegisterForNavigation<ScannerPage, ScannerPageViewModel>();
-            containerRegistry.RegisterForNavigation<ArtDetailsPage, ArtDetailsPageViewModel>();
             containerRegistry.RegisterForNavigation<ItemsGalleryPage, ItemsGalleryPageViewModel>();
             containerRegistry.RegisterForNavigation<ItemGalleryDetailsPage, ItemGalleryDetailsPageViewModel>();
 

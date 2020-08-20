@@ -25,15 +25,12 @@ namespace ArtScanner.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-          
-
-            global::Xamarin.Forms.Forms.Init();
-
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             global::ZXing.Net.Mobile.Forms.iOS.Platform.Init();
             AnimationViewRenderer.Init();
 
-
+            global::Xamarin.Forms.Forms.Init();
+          
             LoadApplication(new App(new iOSInitializer()));
 
             return base.FinishedLaunching(app, options);

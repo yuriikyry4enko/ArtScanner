@@ -5,16 +5,16 @@ namespace ArtScanner.Services
     {
         string CurrentUserFolderPath { get; }
 
-        void EnsureFileSystemTreeStructure();
+        //void EnsureFileSystemTreeStructure();
 
         void InitializeFoldersForUser(string userName);
 
         // Returns imagePath if everything is OK or new path if copied
-        string CopyImageIntoUserFolderIfNeeded(string imagePath);
+        //string CopyImageIntoUserFolderIfNeeded(string imagePath);
 
         string SaveImage(byte[] date, string name);
 
-        string Rename(string path, string name);
+        //string Rename(string path, string name);
 
         bool DoesImageExist(string name);
 

@@ -3,7 +3,6 @@ namespace ArtScanner.Services
 {
     interface IAppConfig
     {
-        string ServerUrl { get; }
 
         string RootFolderName { get; }
 

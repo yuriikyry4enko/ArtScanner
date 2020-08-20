@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using ArtScanner.Models;
+﻿
+using ArtScanner.Models.Entities;
 using Prism.Commands;
 using Xamarin.Forms;
 
@@ -8,23 +7,22 @@ namespace ArtScanner.Controls
 {
     public partial class ItemGalleryComponent : Grid
     {
+        //public static readonly BindableProperty ArtProperty =
+        //           BindableProperty.Create(nameof(ArtModel), typeof(ItemEntity), typeof(ItemGalleryComponent), new ItemEntity(), BindingMode.TwoWay);
 
-        public static readonly BindableProperty ArtProperty =
-                   BindableProperty.Create(nameof(ArtModel), typeof(ArtModel), typeof(ItemGalleryComponent), new ArtModel(), BindingMode.TwoWay);
-
-        public ArtModel ArtModel
-        {
-            get { return (ArtModel)GetValue(ArtProperty); }
-            set { SetValue(ArtProperty, value); }
-        }
+        //public ItemEntity ArtModel
+        //{
+        //    get { return (ItemEntity)GetValue(ArtProperty); }
+        //    set { SetValue(ArtProperty, value); }
+        //}
 
         public static readonly BindableProperty ToggleFavoriteCommandProperty =
-                   BindableProperty.Create(nameof(ToggleFavoriteCommand), typeof(DelegateCommand<ArtModel>), typeof(ItemGalleryComponent));
+                   BindableProperty.Create(nameof(ToggleFavoriteCommand), typeof(DelegateCommand<ItemEntity>), typeof(ItemGalleryComponent));
 
 
-        public DelegateCommand<ArtModel> ToggleFavoriteCommand
+        public DelegateCommand<ItemEntity> ToggleFavoriteCommand
         {
-            get { return (DelegateCommand<ArtModel>)GetValue(ToggleFavoriteCommandProperty); }
+            get { return (DelegateCommand<ItemEntity>)GetValue(ToggleFavoriteCommandProperty); }
             set { SetValue(ToggleFavoriteCommandProperty, value); }
         }
 
