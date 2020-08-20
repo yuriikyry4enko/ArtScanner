@@ -6,10 +6,13 @@ using ArtScanner.Models.Entities;
 namespace ArtScanner.Services
 {
     class ItemDBService : BaseDBService, IItemDBService
-    {   
+    {
+        private IAppFileSystemService _appFileSystemService;
         public ItemDBService(
+           IAppFileSystemService appFileSystemService,
            IAppDatabase appDatabase) : base(appDatabase)
         {
+            this._appFileSystemService = appFileSystemService;
 
         }
 
@@ -27,10 +30,27 @@ namespace ArtScanner.Services
             return itemEntity;
         }
 
+        public async Task<long> DeleateItem(ItemEntity item)
+        {
+
+            _appFileSystemService.DeleteFile(_appFileSystemService.GetFilePath(item.MusicFileName));
+            _appFileSystemService.DeleteFile(_appFileSystemService.GetFilePath(item.ImageFileName));
+
+            var itemEntity = await Connection.DeleteAsync<ItemEntity>(item.LocalId);
+
+            return itemEntity;
+        }
+
         public async Task<long> InsertOrUpdateWithChildren(ItemEntity item)
         {
             if (item.LocalId == 0)
             {
+                item.MusicFileName = item.Id + ".mp3";
+                item.ImageFileName = item.Id + ".jpg";
+
+                _appFileSystemService.SaveStreamAudio(item.MusicByteArray, item.MusicFileName);
+                _appFileSystemService.SaveImage(item.ImageByteArray, item.ImageFileName);
+
                 await Connection.InsertAsync(item);
             }
             else

@@ -23,7 +23,7 @@ namespace ArtScanner.ViewModels
         #endregion
 
         #region Properties
-         
+
         private bool _firstLook = false;
 
         private ArtModel _currentArtModel = new ArtModel();
@@ -43,7 +43,7 @@ namespace ArtScanner.ViewModels
                 RaisePropertyChanged(nameof(PlayIcon));
             }
         }
-        
+
         private string _playIcon;
         public string PlayIcon
         {
@@ -72,7 +72,7 @@ namespace ArtScanner.ViewModels
         private bool _isLike;
         public bool IsLike
         {
-            get { return _isLike ; }
+            get { return _isLike; }
             set
             {
                 SetProperty(ref _isLike, value);
@@ -170,7 +170,7 @@ namespace ArtScanner.ViewModels
             {
                 IsPlayButtonEnable = true;
             }
-        }       
+        }
     }
 
     public class Tweet

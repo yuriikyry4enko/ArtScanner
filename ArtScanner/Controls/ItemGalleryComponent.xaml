@@ -6,7 +6,13 @@
     xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     x:Class="ArtScanner.Controls.ItemGalleryComponent"
     xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
+    xmlns:converters="clr-namespace:ArtScanner.Converters"
     x:Name="artItem">
+    <Grid.Resources>
+        <ResourceDictionary>
+          <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImage" />
+        </ResourceDictionary>
+    </Grid.Resources>
     <Grid.RowDefinitions>
         <RowDefinition Height="180"/>
         <RowDefinition Height="*"/>
@@ -17,7 +23,8 @@
         <ffimageloading:CachedImage
             sharedTransitions:Transition.Name="artTransition"
             sharedTransitions:Transition.Group="{Binding Id}"
-            Source="{Binding ImageUrl}"
+             Source="{Binding ImageByteArray, 
+                            Converter={StaticResource ByteArrayToImage}}"
             Aspect="AspectFill"/>
     </yummy:PancakeView>
 

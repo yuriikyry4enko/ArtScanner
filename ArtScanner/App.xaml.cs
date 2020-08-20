@@ -44,11 +44,18 @@ namespace ArtScanner
             containerRegistry.RegisterInstance(UserDialogs.Instance);
             containerRegistry.RegisterInstance(DependencyService.Get<ISQLite>());
 
-            containerRegistry.RegisterSingleton<IBaseDBService, BaseDBService>();
-            containerRegistry.RegisterSingleton<IItemDBService, ItemDBService>();
             containerRegistry.RegisterSingleton<IAppConfig, AppConfig>();
             containerRegistry.RegisterSingleton<IAppInfo, AppInfo>();
             containerRegistry.RegisterSingleton<IAppDatabase, AppDatabase>();
+            
+
+            containerRegistry.RegisterSingleton<ISettings, Settings>();
+            containerRegistry.RegisterSingleton<IAppFileSystemService, AppFileSystemService>();
+            containerRegistry.RegisterSingleton<IRestService, RestService>();
+            containerRegistry.RegisterSingleton<IBaseDBService, BaseDBService>();
+            containerRegistry.RegisterSingleton<IItemDBService, ItemDBService>();
+    
+          
 
             containerRegistry.RegisterForNavigation<ProviderLoginPage>();
             containerRegistry.RegisterForNavigation<SharedTransitionNavigationPage>();

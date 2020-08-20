@@ -10,7 +10,7 @@ namespace ArtScanner.Services
         public string RootFolderName => "artscanner";
         public string RootPath => FileSystem.AppDataDirectory;
         public string RootFolderPath => Path.Combine(RootPath, RootFolderName);
-        public string ImagesFolderName => "images";
+        public string ImagesFolderName => "files";
         public string DatabaseName => "database";
         public bool NewDBEachAppVersion => true;
     }

@@ -11,6 +11,8 @@ namespace ArtScanner.Services
 
         Task<ItemEntity> GetByIdWithChildren(long id);
 
+        Task<long> DeleateItem(ItemEntity item);
+
         Task<List<ItemEntity>> GetAll();
     }
 }

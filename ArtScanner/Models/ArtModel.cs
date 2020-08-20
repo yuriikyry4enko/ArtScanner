@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+
 namespace ArtScanner.Models
 {
     public class ArtModel : BaseModel
@@ -10,6 +12,13 @@ namespace ArtScanner.Models
         public string MusicUrl { get; set; }
         public string ImageUrl { get; set; }
         public string WikiUrl { get; set; }
+        public bool Liked { get; set; }
+
+
+        public byte[] ImageByteArray { get; set; }
+        public byte[] MusicByteArray { get; set; }
+        public string MusicFileName { get; set; }
+
 
     }
 }

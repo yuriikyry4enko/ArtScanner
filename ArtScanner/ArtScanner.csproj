@@ -29,6 +29,7 @@
     <PackageReference Include="Xamarin.Auth" Version="1.7.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
     <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
+    <PackageReference Include="Xam.Plugin.SimpleAudioPlayer" Version="1.4.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\" />
@@ -44,6 +45,8 @@
     <Folder Include="Utils\AuthConfigs\" />
     <Folder Include="Models\Entities\" />
     <Folder Include="Models\AppDomainModels\" />
+    <Folder Include="Utils\Helpers\" />
+    <Folder Include="Converters\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\play.svg" />
@@ -54,6 +57,7 @@
     <None Remove="Resources\back_arrow.svg" />
     <None Remove="Resources\scan.svg" />
     <None Remove="Resources\default_like.svg" />
+    <None Remove="Resources\liked.svg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\play.svg" />
@@ -64,5 +68,6 @@
     <EmbeddedResource Include="Resources\back_arrow.svg" />
     <EmbeddedResource Include="Resources\scan.svg" />
     <EmbeddedResource Include="Resources\default_like.svg" />
+    <EmbeddedResource Include="Resources\liked.svg" />
   </ItemGroup>
 </Project>

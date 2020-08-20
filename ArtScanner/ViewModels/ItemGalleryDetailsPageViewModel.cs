@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
 using ArtScanner.Models;
+using ArtScanner.Models.Entities;
 using ArtScanner.Resources;
 using ArtScanner.Services;
 using ArtScanner.Utils.AuthConfigs;
 using ArtScanner.Utils.Constants;
-using MediaManager;
+using ArtScanner.Utils.Helpers;
+using Plugin.SimpleAudioPlayer;
 using Prism.Commands;
 using Prism.Navigation;
 using Xamarin.Essentials;
@@ -18,15 +23,16 @@ namespace ArtScanner.ViewModels
 {
     class ItemGalleryDetailsPageViewModel : BaseViewModel
     {
+        private ISimpleAudioPlayer player;
         private IUserDialogs _userDialogs;
         private IItemDBService _itemDBService;
+        private IAppFileSystemService _appFileSystemService;
+        private IRestService _restService;
 
         #region Properties
 
-        private bool _firstLook = false;
-
-        private ArtModel _itemModel = new ArtModel();
-        public ArtModel ItemModel
+        private ItemEntity _itemModel = new ItemEntity();
+        public ItemEntity ItemModel
         {
             get { return _itemModel; }
             set { SetProperty(ref _itemModel, value); }
@@ -68,39 +74,85 @@ namespace ArtScanner.ViewModels
         }
 
 
-        private bool _isLike;
-        public bool IsLike
+        private string _likeIcon;
+        public string LikeIcon
         {
-            get { return _isLike; }
+            get { return ItemModel.Liked ? Images.Like : Images.BackArrow; }
             set
             {
-                SetProperty(ref _isLike, value);
-                RaisePropertyChanged(nameof(LikeIcon));
+                SetProperty(ref _likeIcon, value);
             }
         }
-
-        public string LikeIcon => _isLike ? Images.Like : Images.DefaultLike;
 
         #endregion
 
         public ItemGalleryDetailsPageViewModel(
             INavigationService navigationService,
             IItemDBService itemDBService,
+            IRestService restService,
+            IAppFileSystemService appFileSystemService,
             IUserDialogs userDialogs) : base(navigationService)
         {
             this._userDialogs = userDialogs;
             this._itemDBService = itemDBService;
+            this._appFileSystemService = appFileSystemService;
+            this._restService = restService;
+
+            player = CrossSimpleAudioPlayer.Current;
         }
 
-        public override void OnNavigatedTo(INavigationParameters parameters)
+        public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
-            if (parameters.GetNavigationMode() != NavigationMode.Back)
+            try
             {
-                ItemModel = GetParameters<ArtModel>(parameters);
+                if (parameters.GetNavigationMode() != NavigationMode.Back)
+                {
+                    ItemModel = GetParameters<ItemEntity>(parameters);
+
+                    await Task.Run(async () =>
+                    {
+                        IsPlayButtonEnable = false;
+
+                        if (ItemModel.LocalId > 0)
+                        {
+                            player.Load(new MemoryStream(StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(ItemModel.MusicFileName))));
+
+                            ItemModel.ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(ItemModel.ImageFileName));
+                        }
+                        else
+                        {
+
+                            await LoadAndInitItemModel();
+                        }
+
+                        await Task.CompletedTask;
+
+                        IsPlayButtonEnable = true;
+
+                    });
+
+                    RaisePropertyChanged(nameof(LikeIcon));
+                }
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex);
             }
         }
 
+        public override void OnDisappearing()
+        {
+            base.OnDisappearing();
+            try
+            {
+                player.Pause();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
 
         #region Commands
 
@@ -110,8 +162,37 @@ namespace ArtScanner.ViewModels
 
         public ICommand LikeCommand => new Command(async () =>
         {
-            await _userDialogs.ConfirmAsync("Not implemented", "Oops", "Ok");
+            try
+            {
+                ItemModel.Liked = !ItemModel.Liked;
+                RaisePropertyChanged(nameof(LikeIcon));
+
+                if (!ItemModel.Liked && ItemModel.LocalId != 0)
+                {
+                    await _itemDBService.DeleateItem(ItemModel);
+                    ItemModel.LocalId = 0;
+                }
+                else
+                {
+                    //var itemById = await _itemDBService.GetByIdWithChildren(Int64.Parse(ItemModel.Id));
+
+                    //if (itemById == null)
+                    //{
+                        var resultId = await _itemDBService.InsertOrUpdateWithChildren(ItemModel);
+                        ItemModel.LocalId = resultId;
+                    //}
+                }
+
+
+                _userDialogs.Toast("Gallery updated");
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+
         });
+
         public ICommand TwittCommand => new Command(async () =>
         {
             if (OAuthConfig.User == null)
@@ -132,36 +213,21 @@ namespace ArtScanner.ViewModels
 
         #endregion
 
-        private async void Play()
+        private void Play()
         {
             try
             {
                 IsPlayButtonEnable = false;
 
-                if (!_firstLook)
+                if (isPlaying)
                 {
-                    IsActivityLoad = true;
-
-                    IsPlaying = true;
-
-                    await CrossMediaManager.Current.Play(ItemModel.MusicUrl);
-
-                    _firstLook = true;
-
-                    IsActivityLoad = false;
+                    player.Pause();
+                    IsPlaying = false;
                 }
                 else
                 {
-                    if (isPlaying)
-                    {
-                        await CrossMediaManager.Current.Pause();
-                        IsPlaying = false;
-                    }
-                    else
-                    {
-                        await CrossMediaManager.Current.Play();
-                        IsPlaying = true;
-                    }
+                    player.Play();
+                    IsPlaying = true;
                 }
             }
             catch (Exception ex)
@@ -173,6 +239,41 @@ namespace ArtScanner.ViewModels
                 IsPlayButtonEnable = true;
             }
         }
-    }
 
+        private async Task LoadAndInitItemModel()
+        {
+            try
+            {
+                var musicByteArray = await _restService.GetMusicStreamById(ItemModel.Id);
+
+                if (musicByteArray != null)
+                {
+                    player.Load(new MemoryStream(musicByteArray));
+                }
+
+                var imageByteArray = await _restService.GetImageById(ItemModel.Id);
+                var text = await _restService.GetTextById(ItemModel.Id);
+
+                if (imageByteArray == null ||
+                    text == null)
+                {
+                    await _userDialogs.AlertAsync("Сould not find by this qr-code...", "Oops", "Ok");
+                    await navigationService.GoBackAsync();
+                    return;
+                }
+
+                ItemModel.ImageByteArray = imageByteArray;
+                ItemModel.Title = text.Substring(0, text.IndexOf(Environment.NewLine));
+                ItemModel.Description = text;
+                ItemModel.MusicByteArray = musicByteArray;
+                ItemModel.MusicFileName = ItemModel.Id + ".mp3";
+
+                RaisePropertyChanged(nameof(ItemModel));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+    }
 }

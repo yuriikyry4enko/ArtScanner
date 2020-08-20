@@ -15,5 +15,20 @@ namespace ArtScanner.Models.Entities
         public string ImageUrl { get; set; }
         public string WikiUrl { get; set; }
 
+
+        public bool Liked { get; set; }
+
+
+        [Ignore]
+        public byte[] ImageByteArray { get; set; }
+
+        [Ignore]
+        public byte[] MusicByteArray { get; set; }
+
+        public string MusicFileName { get; set; }
+
+        public string ImageFileName { get; set; }
+
+
     }
 }

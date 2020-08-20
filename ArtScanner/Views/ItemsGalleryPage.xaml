@@ -19,7 +19,7 @@
             Color="White"
             WidthRequest="45"
             HorizontalOptions="Start">
-                <controls:TintedCachedImage
+            <controls:TintedCachedImage
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
                 Source="{x:Static resources:Images.BackArrow}"
@@ -39,10 +39,11 @@
             PeekAreaInsets="40"
             HorizontalScrollBarVisibility="Never">
             <CarouselView.ItemsLayout>
-                <LinearItemsLayout Orientation="Horizontal"
-                                    SnapPointsAlignment="Center"
-                                    SnapPointsType="MandatorySingle"
-                                    ItemSpacing="20" />
+                <LinearItemsLayout
+                    Orientation="Horizontal"
+                    SnapPointsAlignment="Center"
+                    SnapPointsType="MandatorySingle"
+                    ItemSpacing="20" />
             </CarouselView.ItemsLayout>
             <CarouselView.ItemTemplate>
                     <DataTemplate>

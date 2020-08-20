@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
+using Plugin.SimpleAudioPlayer;
 using Prism.Navigation;
 using Xamarin.Forms;
 
@@ -11,16 +14,40 @@ namespace ArtScanner.ViewModels
 {
     class StartPageViewModel : BaseViewModel
     {
+        private IAppFileSystemService _appFileSystemService;
+        private IAppDatabase _appDatabase;
+        private ISettings _settings;
+
         #region Ctor
 
         public StartPageViewModel(
+            ISettings settings,
+            IAppDatabase appDatabase,
+            IAppFileSystemService appFileSystemService,
             INavigationService navigationService) : base(navigationService)
         {
+            this._appFileSystemService = appFileSystemService;
+            this._settings = settings;
+            this._appDatabase = appDatabase;
         }
+
 
         #endregion
 
         #region Command
+
+        public override void Initialize(INavigationParameters parameters)
+        {
+            base.Initialize(parameters);
+
+            if (!_settings.IsUserFolderInitialized)
+            {
+                this._appFileSystemService.InitializeFoldersForUser("sources");
+                this._appDatabase.Initialize(_appFileSystemService.CurrentUserFolderPath);
+
+                _settings.IsUserFolderInitialized = true;
+            }
+        }
 
         public ICommand NavigateToGalleyCommand => new Command(async () =>
         {
@@ -42,6 +69,7 @@ namespace ArtScanner.ViewModels
                     }
 
                     status = await CrossPermissions.Current.RequestPermissionAsync<CameraPermission>();
+                    return;
                 }
 
                 if (status == PermissionStatus.Granted)
@@ -57,8 +85,6 @@ namespace ArtScanner.ViewModels
             {
                 Debug.WriteLine(ex);
             }
-
-           
         });
 
         #endregion

@@ -7,9 +7,15 @@
     xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:controls="clr-namespace:ArtScanner.Controls"
     xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
+    xmlns:converters="clr-namespace:ArtScanner.Converters"
     x:Class="ArtScanner.Views.ItemGalleryDetailsPage"
-      Background="White">
-     <RelativeLayout
+    Background="White">
+   <ContentPage.Resources>
+        <ResourceDictionary>
+          <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImage" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <RelativeLayout
          Padding="0">
         <controls:ExtendedScrollView
             Background="White"
@@ -29,7 +35,8 @@
                         Color="Orange"
                         BackgroundColor="Transparent"/>
                     <ffimageloading:CachedImage
-                        Source="{Binding ItemModel.ImageUrl}"
+                        Source="{Binding ItemModel.ImageByteArray, 
+                            Converter={StaticResource ByteArrayToImage}}"
                         sharedTransitions:Transition.Name="artTransition" 
                         Aspect="AspectFill"/>
                     <Frame
