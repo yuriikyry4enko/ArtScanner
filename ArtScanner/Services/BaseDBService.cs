@@ -20,6 +20,10 @@ namespace ArtScanner.Services
             this.appDatabase = appDatabase;
         }
 
+        public Task<TEntity> FindItem <TEntity>(Expression<Func<TEntity, bool>> expression)
+          where TEntity : BaseEntity, new()
+          => Connection.FindAsync<TEntity>(expression);
+
         public Task<int> DeleteAllAsync<TEntity>(IEnumerable<TEntity> items)
            where TEntity : BaseEntity, new()
            => Connection.DeleteAllAsync<TEntity>();

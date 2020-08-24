@@ -8,6 +8,9 @@ namespace ArtScanner.Services
 {
     interface IBaseDBService
     {
+        Task<TEntity> FindItem<TEntity>(Expression<Func<TEntity, bool>> expression)
+            where TEntity : BaseEntity, new();
+
         Task<int> DeleteAllAsync<TEntity>(IEnumerable<TEntity> items)
           where TEntity : BaseEntity, new();
 

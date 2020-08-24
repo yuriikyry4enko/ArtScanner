@@ -16,6 +16,13 @@ namespace ArtScanner.Services
 
         }
 
+        public async Task<ItemEntity> GetByServerId(string id)
+        {
+            var item = await FindItem<ItemEntity>(x => x.Id == id);
+
+            return item;
+        }
+
         public async Task<List<ItemEntity>> GetAll()
         {
             var itemEntities = await Connection.Table<ItemEntity>().ToListAsync();

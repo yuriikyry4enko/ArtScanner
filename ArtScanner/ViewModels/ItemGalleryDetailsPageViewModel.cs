@@ -117,7 +117,7 @@ namespace ArtScanner.ViewModels
                     ItemModel.ImageUrl = string.Format(Utils.Constants.ApiConstants.GetJPGById, ItemModel.Id);
 
                     CrossMediaManager.Current.AutoPlay = false;
-                    await CrossMediaManager.Current.Play("https://www.soundhelix.com/examples/mp3/SoundHelix-Song-11.mp3");
+                    await CrossMediaManager.Current.Play(string.Format(Utils.Constants.ApiConstants.GetAudioStreamById, ItemModel.Id));
 
                     if (ItemModel.LocalId == 0)
                     {
@@ -135,21 +135,12 @@ namespace ArtScanner.ViewModels
             }
         }
 
-        //TODO: need to find better way 
-        //HACK 
         private async Task CheckForItemExistedInLocalDB()
         {
             try
             {
-                ////TODO:need to find better way for check existed item 
-                //if (_appFileSystemService.DoesImageExist($"{ItemModel.Id}.jpg"))
-                //{
-                //    ItemModel.Liked = true;
 
-                //    RaisePropertyChanged(nameof(LikeIcon));
-                //}
-
-                var itemEntity = await _itemDBService.GetByIdWithChildren(Int64.Parse(ItemModel.Id));
+                var itemEntity = await _itemDBService.GetByServerId(ItemModel.Id);
 
                 if (itemEntity != null)
                 {

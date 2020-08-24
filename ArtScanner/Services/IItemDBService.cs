@@ -14,5 +14,7 @@ namespace ArtScanner.Services
         Task<long> DeleateItem(ItemEntity item);
 
         Task<List<ItemEntity>> GetAll();
+
+        Task<ItemEntity> GetByServerId(string id);
     }
 }
