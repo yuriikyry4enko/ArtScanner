@@ -28,7 +28,7 @@ namespace ArtScanner.iOS
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
             global::ZXing.Net.Mobile.Forms.iOS.Platform.Init();
             AnimationViewRenderer.Init();
-
+            Rg.Plugins.Popup.Popup.Init();
             global::Xamarin.Forms.Forms.Init();
           
             LoadApplication(new App(new iOSInitializer()));

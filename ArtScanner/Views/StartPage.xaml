@@ -2,6 +2,7 @@
 <views:BasePage
     xmlns:views="clr-namespace:ArtScanner.Views"
     xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:resourcesResx="clr-namespace:ArtScanner.Resx"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:ArtScanner.Controls"
     xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
@@ -22,7 +23,7 @@
                 FontSize="15"
                 TextColor="Orange"
                 FontAttributes="Bold"
-                Text="Press again"/>
+                Text="{x:Static resourcesResx:AppResources.PressAgain}"/>
 
             <controls:Circle
                 WidthRequest="120"
@@ -40,6 +41,25 @@
                 </controls:Circle.GestureRecognizers>
             </controls:Circle>
         </StackLayout>
+
+        <controls:Circle
+            VerticalOptions="End"
+            HorizontalOptions="End"
+            WidthRequest="60"
+            HeightRequest="60"
+            Margin="30,30,90,30"
+            Color="White">
+            <controls:TintedCachedImage
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Source="{x:Static resources:Images.Settings}"
+                WidthRequest="30"   
+                TintColor="Black"
+                HeightRequest="30"/>
+            <controls:Circle.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding SettingsCommand}"/>
+            </controls:Circle.GestureRecognizers>
+        </controls:Circle>
 
         <controls:Circle
             VerticalOptions="End"

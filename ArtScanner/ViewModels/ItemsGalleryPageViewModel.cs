@@ -78,7 +78,6 @@ namespace ArtScanner.ViewModels
             }
         }
 
-
         #endregion
 
         #region Commands

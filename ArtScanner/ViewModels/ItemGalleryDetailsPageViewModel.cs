@@ -108,25 +108,33 @@ namespace ArtScanner.ViewModels
                 if (parameters.GetNavigationMode() != NavigationMode.Back)
                 {
                     ItemModel = GetParameters<ItemEntity>(parameters);
-                    RaisePropertyChanged(nameof(ItemModel));
 
-                    IsPlayButtonEnable = false;
-
-                    IsBusy = true;
-
-                    ItemModel.ImageUrl = string.Format(Utils.Constants.ApiConstants.GetJPGById, ItemModel.Id);
-
-                    CrossMediaManager.Current.AutoPlay = false;
-                    await CrossMediaManager.Current.Play(string.Format(Utils.Constants.ApiConstants.GetAudioStreamById, ItemModel.Id));
-
-                    if (ItemModel.LocalId == 0)
+                    if (ItemModel.Id != "2")
                     {
-                        await CheckForItemExistedInLocalDB();
+                        RaisePropertyChanged(nameof(ItemModel));
+
+                        IsPlayButtonEnable = false;
+
+                        IsBusy = true;
+
+                        ItemModel.ImageUrl = string.Format(Utils.Constants.ApiConstants.GetJPGById, ItemModel.Id);
+
+                        CrossMediaManager.Current.AutoPlay = false;
+                        await CrossMediaManager.Current.Play(string.Format(Utils.Constants.ApiConstants.GetAudioStreamById, ItemModel.Id));
+
+                        if (ItemModel.LocalId == 0)
+                        {
+                            await CheckForItemExistedInLocalDB();
+                        }
+
+                        IsBusy = false;
+
+                        IsPlayButtonEnable = true;
                     }
-
-                    IsBusy = false;
-
-                    IsPlayButtonEnable = true;
+                    else
+                    {
+                        await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage);
+                    }
                 }
             }
             catch(Exception ex)

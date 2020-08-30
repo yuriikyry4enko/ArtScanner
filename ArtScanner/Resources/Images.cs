@@ -17,6 +17,9 @@ namespace ArtScanner.Resources
         public static string BackArrow => GetSvgImageUrl("back_arrow");
         public static string Scan => GetSvgImageUrl("scan");
         public static string DefaultLike => GetSvgImageUrl("like");
+        public static string Settings => GetSvgImageUrl("settings");
+        public static string Museum => GetSvgImageUrl("museum");
+        public static string SadIdiom => GetSvgImageUrl("ideogram");
 
         static string GetSvgImageUrl(string name) => $"{SvgResourcesUrl}.{name}.svg";
     }

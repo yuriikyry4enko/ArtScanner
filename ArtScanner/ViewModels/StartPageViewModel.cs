@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Windows.Input;
+using ArtScanner.Popups;
 using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Prism.Navigation;
+using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
 
 namespace ArtScanner.ViewModels
@@ -51,12 +54,20 @@ namespace ArtScanner.ViewModels
             await navigationService.NavigateAsync(PageNames.ItemsGalleryPage);
         });
 
+        public ICommand CloseCommand => new Command(async () =>
+        {
+            await PopupNavigation.Instance.PopAsync();
+        });
+
         public ICommand BackCommand => new Command(async () => { await navigationService.GoBackAsync(); });
+
+        public ICommand SettingsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.ChooseLanguagePage); });
 
         public ICommand ScannCommand => new Command(async () =>
         {
             try
             {
+
                 var status = await CrossPermissions.Current.CheckPermissionStatusAsync<CameraPermission>();
                 if (status != PermissionStatus.Granted)
                 {
@@ -67,7 +78,7 @@ namespace ArtScanner.ViewModels
 
                     status = await CrossPermissions.Current.RequestPermissionAsync<CameraPermission>();
 
-                    if(status == PermissionStatus.Granted)
+                    if (status == PermissionStatus.Granted)
                     {
                         IsMessageAlertVisible = true;
                     }

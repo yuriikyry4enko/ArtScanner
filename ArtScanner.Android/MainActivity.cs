@@ -31,6 +31,7 @@ namespace ArtScanner.Droid
             UserDialogs.Init(this);
             CrossMediaManager.Current.Init();
             AuthenticationConfiguration.Init(this, savedInstanceState);
+            Rg.Plugins.Popup.Popup.Init(this, savedInstanceState);
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 

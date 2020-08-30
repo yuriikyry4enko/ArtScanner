@@ -29,6 +29,8 @@
     <PackageReference Include="Xamarin.Auth" Version="1.7.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
     <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
+    <PackageReference Include="Rg.Plugins.Popup" Version="2.0.0.4" />
+    <PackageReference Include="Prism.Plugin.Popups" Version="7.2.0.1046" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\" />
@@ -46,6 +48,8 @@
     <Folder Include="Models\AppDomainModels\" />
     <Folder Include="Utils\Helpers\" />
     <Folder Include="Converters\" />
+    <Folder Include="Resx\" />
+    <Folder Include="Popups\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\play.svg" />
@@ -57,6 +61,9 @@
     <None Remove="Resources\scan.svg" />
     <None Remove="Resources\default_like.svg" />
     <None Remove="Resources\liked.svg" />
+    <None Remove="Resources\settings.svg" />
+    <None Remove="Resources\museum.svg" />
+    <None Remove="Resources\ideogram.svg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\play.svg" />
@@ -68,5 +75,19 @@
     <EmbeddedResource Include="Resources\scan.svg" />
     <EmbeddedResource Include="Resources\default_like.svg" />
     <EmbeddedResource Include="Resources\liked.svg" />
+    <EmbeddedResource Include="Resources\settings.svg" />
+    <EmbeddedResource Include="Resources\museum.svg" />
+    <EmbeddedResource Include="Resources\ideogram.svg" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Update="Resx\AppResources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Resx\AppResources.Designer.cs">
+      <DependentUpon>AppResources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

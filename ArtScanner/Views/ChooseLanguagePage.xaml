@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<views:BasePage
+    xmlns:views="clr-namespace:ArtScanner.Views"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:resourceResx="clr-namespace:ArtScanner.Resx"
+    xmlns:resources="clr-namespace:ArtScanner.Resources"
+    xmlns:controls="clr-namespace:ArtScanner.Controls"
+    xmlns:converters="clr-namespace:ArtScanner.Converters"
+    x:Class="ArtScanner.Views.ChooseLanguagePage">
+    <Grid
+        Margin="{OnPlatform Android='25,25,25,25', iOS='35, 55,25,0'}"
+        Padding="0">
+        <controls:Circle
+            IsVisible="{Binding IsWellcomeContentVisible, Converter={converters:InverseBoolConverter}}"
+            VerticalOptions="Start"
+            Padding="0"
+            HeightRequest="45"
+            
+            Color="White"
+            WidthRequest="45"
+            HorizontalOptions="Start">
+            <controls:TintedCachedImage
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Source="{x:Static resources:Images.BackArrow}"
+                WidthRequest="20"   
+                TintColor="Black"
+                HeightRequest="20"/>
+            <controls:Circle.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding BackCommand}"/>
+            </controls:Circle.GestureRecognizers>
+        </controls:Circle>
+        <StackLayout
+            Padding="0"
+            Margin="25,0"
+            VerticalOptions="CenterAndExpand">
+
+            <controls:TintedCachedImage
+                IsVisible="{Binding IsWellcomeContentVisible}"
+                VerticalOptions="Start"
+                HorizontalOptions="Center"
+                Source="{x:Static resources:Images.Museum}"
+                WidthRequest="90"   
+                TintColor="Black"
+                HeightRequest="130"/>
+            <Label
+                IsVisible="{Binding IsWellcomeContentVisible}"
+                HorizontalOptions="Center"
+                FontSize="20"
+                TextColor="Black"
+                FontAttributes="Bold"
+                Text="{x:Static resourceResx:AppResources.Welcome}"
+                Margin="0,0,0,100"/>
+               
+             <Label
+                FontAttributes="Italic"
+                TextColor="Black"
+                Text="{x:Static resourceResx:AppResources.SelectLanguagePreff}"/>
+            <Picker
+                x:Name="picker"
+                SelectedItem="{Binding SelectedItem}">
+                <Picker.Items>
+                    <x:String>English</x:String>
+                    <x:String>German</x:String>
+                    <x:String>Spanish</x:String>
+                    <x:String>French</x:String>
+                </Picker.Items>
+            </Picker>
+
+            <Button
+                CornerRadius="7"
+                Text="{x:Static resourceResx:AppResources.ChooseAndGo}"
+                Command="{Binding OnUpdateLangugeClickedCommand}"
+                BackgroundColor="Black"
+                TextColor="White"/>
+        </StackLayout>
+    </Grid>
+</views:BasePage>
