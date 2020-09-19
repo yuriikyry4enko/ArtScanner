@@ -64,15 +64,30 @@
                 Margin="0,10,0,30"
                 Text="{x:Static resourceResx:AppResources.NoTranslationApologise}"
                 HorizontalOptions="Center"/>
-            <Picker
-                BackgroundColor="LightGray"
-                />
+             <Picker
+                HorizontalOptions="FillAndExpand"
+                SelectedIndex="0"
+                SelectedItem="{Binding SelectedCulture}"
+                ItemDisplayBinding="{Binding NativeName}"
+                ItemsSource="{Binding AvailableCulturesList}"/>
+
+            <StackLayout>
+                <Switch
+                    VerticalOptions="Center"
+                    HorizontalOptions="Start"
+                    IsToggled="{Binding IsSavePreference}"/>
+                <Label
+                    VerticalOptions="Center"
+                    HorizontalOptions="Start"
+                    Text="{x:Static resourceResx:AppResources.SaveToPref}"/>
+            </StackLayout>
             <Button
                 Text="Ok"
                 Margin="10,10"
                 TextColor="White"
                 BackgroundColor="Black"
                 CornerRadius="7"
+                Command="{Binding OkCommand}"
                 HorizontalOptions="FillAndExpand"/>
 
         </StackLayout>

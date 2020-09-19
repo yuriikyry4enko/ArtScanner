@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Acr.UserDialogs;
 using ArtScanner.Models.Entities;
 using ArtScanner.Resources;
+using ArtScanner.Resx;
 using ArtScanner.Services;
 using ArtScanner.Utils.AuthConfigs;
 using ArtScanner.Utils.Constants;
@@ -108,33 +109,27 @@ namespace ArtScanner.ViewModels
                 if (parameters.GetNavigationMode() != NavigationMode.Back)
                 {
                     ItemModel = GetParameters<ItemEntity>(parameters);
+                       
+                    RaisePropertyChanged(nameof(ItemModel));
 
-                    if (ItemModel.Id != "2")
+                    IsPlayButtonEnable = false;
+
+                    IsBusy = true;
+
+                    ItemModel.ImageUrl = string.Format(Utils.Constants.ApiConstants.GetJPGById, ItemModel.LangTag, ItemModel.Id);
+
+                    CrossMediaManager.Current.AutoPlay = false;
+                    await CrossMediaManager.Current.Play(string.Format(Utils.Constants.ApiConstants.GetAudioStreamById, ItemModel.LangTag, ItemModel.Id));
+
+                    if (ItemModel.LocalId == 0)
                     {
-                        RaisePropertyChanged(nameof(ItemModel));
-
-                        IsPlayButtonEnable = false;
-
-                        IsBusy = true;
-
-                        ItemModel.ImageUrl = string.Format(Utils.Constants.ApiConstants.GetJPGById, ItemModel.Id);
-
-                        CrossMediaManager.Current.AutoPlay = false;
-                        await CrossMediaManager.Current.Play(string.Format(Utils.Constants.ApiConstants.GetAudioStreamById, ItemModel.Id));
-
-                        if (ItemModel.LocalId == 0)
-                        {
-                            await CheckForItemExistedInLocalDB();
-                        }
-
-                        IsBusy = false;
-
-                        IsPlayButtonEnable = true;
+                        await CheckForItemExistedInLocalDB();
                     }
-                    else
-                    {
-                        await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage);
-                    }
+
+                    IsBusy = false;
+
+                    IsPlayButtonEnable = true;
+                    
                 }
             }
             catch(Exception ex)
@@ -180,8 +175,6 @@ namespace ArtScanner.ViewModels
 
         public ICommand PlayCommand => new DelegateCommand(Play).ObservesCanExecute(() => IsPlayButtonEnable);
 
-        public ICommand BackCommand => new Command(async () => { await navigationService.GoBackAsync(); });
-
         public ICommand LikeCommand => new Command(async () =>
         {
             try
@@ -196,13 +189,13 @@ namespace ArtScanner.ViewModels
                 }
                 else
                 {
-                    var imageByteArray = await _restService.GetImageById(ItemModel.Id);
+                    var imageByteArray = await _restService.GetImageById(ItemModel.LangTag, ItemModel.Id);
                     ItemModel.ImageByteArray = imageByteArray;
 
                     var resultId = await _itemDBService.InsertOrUpdateWithChildren(ItemModel);
                     ItemModel.LocalId = resultId;
                 }
-                _userDialogs.Toast("Gallery updated");
+                _userDialogs.Toast(AppResources.GalleryUpdated);
             }
             catch(Exception ex)
             {
@@ -264,16 +257,16 @@ namespace ArtScanner.ViewModels
         {
             try
             {
-                var text = await _restService.GetTextById(ItemModel.Id);
-                if (text == null)
+                var textModel = await _restService.GetTextById(ItemModel.LangTag, ItemModel.Id);
+                if (textModel == null)
                 {
                     await _userDialogs.AlertAsync("Сould not find by this qr-code...", "Oops", "Ok");
                     await navigationService.GoBackAsync();
                     return;
                 }
 
-                ItemModel.Title = text.Substring(0, text.IndexOf(Environment.NewLine));
-                ItemModel.Description = text;
+                ItemModel.Title = textModel.Title;
+                ItemModel.Description = textModel.Description;
 
                 //TODO:need to find better solution for reload text before img smoothly
                 RaisePropertyChanged(nameof(ItemModel));

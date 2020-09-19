@@ -21,17 +21,48 @@
     <value>Align the code within the frame</value>
 </data>
 <data name="NoTranslationApologise" xml:space="preserve">
-    <value>There seems to be no translation&#x0a;in your chosen language. &#x0a;You can choose another translation &#x0a;language from the list.</value>
+    <value>There is no translation for the found&#x0a; object based on your preferences.&#x0a;You can choose the translation language&#x0a; from the list below and continue</value>
 </data>
 
 <data name="ChooseAndGo" xml:space="preserve">
     <value>Choose and Go</value>
 </data>
 <data name="SelectLanguagePreff" xml:space="preserve">
-    <value>Select your language preference</value>
+    <value>Select your item language preference</value>
 </data>
 <data name="Welcome" xml:space="preserve">
     <value>Welcome to ArtScanner</value>
 </data>    
     
+  <data name="SaveToPref" xml:space="preserve">
+    <value>save to language preferences</value>
+</data>    
+    
+       
+<data name="CannotRemove" xml:space="preserve">
+    <value>You cannot delete the only item in the list</value>
+</data>    
+    
+<data name="EmptyListRow" xml:space="preserve">
+    <value>Empty row. You have to select a language from the list</value>
+</data>    
+    
+          
+<data name="EmptyRow" xml:space="preserve">
+    <value>Empty row. You have to select a language from the list</value>
+</data>      
+          
+<data name="GalleryUpdated" xml:space="preserve">
+    <value>Gallery updated</value>
+</data>      
+  
+ <data name="СouldNotFindQRCODE" xml:space="preserve">
+    <value>Сould not find by this qr-code...</value>
+</data>      
+         
+    
+  
+   
+
+   
 </root>

@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<views:BasePage
+    xmlns:views="clr-namespace:ArtScanner.Views"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ArtScanner.Controls"
+    xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
+    x:Class="ArtScanner.Views.BookleItemDetailsFolderPage">
+    <Grid>
+       <Grid.RowDefinitions>
+           <RowDefinition Height="180"/>
+           <RowDefinition Height="*"/>
+       </Grid.RowDefinitions>
+        <StackLayout
+            Margin="0"
+            Padding="0"
+            BackgroundColor="MediumVioletRed"
+            VerticalOptions="FillAndExpand"
+            HorizontalOptions="FillAndExpand"
+            Grid.Row="0">
+            <Label
+                Padding="30"
+                Margin="0,55,0,0"
+                TextColor="White"
+                FontAttributes="Bold"
+                FontSize="Large"
+                VerticalOptions="Center"
+                HorizontalOptions="FillAndExpand"
+                Text="Museum"/>
+        </StackLayout>
+        <ListView
+            Grid.Row="1"
+            VerticalOptions="FillAndExpand"
+            HorizontalOptions="FillAndExpand"
+            HasUnevenRows="True"
+            SeparatorColor="Transparent"
+            ItemsSource="{Binding BookletItems}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout
+                              Orientation="Horizontal"
+                              Margin="0,3"  
+                              HeightRequest="90"
+                              BackgroundColor="{Binding BookletColor}">
+                              <ImageButton
+                                  Margin="10,0"
+                                  BackgroundColor="DarkBlue"
+                                  HeightRequest="70"
+                                  WidthRequest="70"
+                                  VerticalOptions="Center"
+                                  HorizontalOptions="Start"/>
+                              <Label
+                                  VerticalOptions="Center"
+                                  Padding="30"
+                                  TextColor="White"
+                                  FontAttributes="Bold"
+                                  FontSize="Small"
+                                  HorizontalOptions="Start"
+                                  Text="{Binding Title}"/>
+                            </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
+        <controls:Circle
+            Grid.Row="1"
+            VerticalOptions="End"
+            Padding="0"
+            HeightRequest="45"
+            Margin="25,0,0,25"
+            WidthRequest="45"
+            HorizontalOptions="Start"
+            Color="White">
+            <controls:TintedCachedImage
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Source="{x:Static resources:Images.BackArrow}"
+                WidthRequest="20"   
+                TintColor="Black"
+                HeightRequest="20"/>
+            <controls:Circle.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding BackCommand}"/>
+            </controls:Circle.GestureRecognizers>
+        </controls:Circle>
+    </Grid>
+</views:BasePage>

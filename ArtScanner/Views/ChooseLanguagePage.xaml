@@ -7,16 +7,17 @@
     xmlns:resources="clr-namespace:ArtScanner.Resources"
     xmlns:controls="clr-namespace:ArtScanner.Controls"
     xmlns:converters="clr-namespace:ArtScanner.Converters"
+    x:Name="root"
     x:Class="ArtScanner.Views.ChooseLanguagePage">
     <Grid
-        Margin="{OnPlatform Android='25,25,25,25', iOS='35, 55,25,0'}"
+        Margin="{OnPlatform Android='25,0,25,25', iOS='35, 0,25,0'}"
         Padding="0">
         <controls:Circle
             IsVisible="{Binding IsWellcomeContentVisible, Converter={converters:InverseBoolConverter}}"
             VerticalOptions="Start"
             Padding="0"
+            Margin="0,50,0,0"
             HeightRequest="45"
-            
             Color="White"
             WidthRequest="45"
             HorizontalOptions="Start">
@@ -57,19 +58,61 @@
                 FontAttributes="Italic"
                 TextColor="Black"
                 Text="{x:Static resourceResx:AppResources.SelectLanguagePreff}"/>
-            <Picker
-                x:Name="picker"
-                SelectedItem="{Binding SelectedItem}">
-                <Picker.Items>
-                    <x:String>English</x:String>
-                    <x:String>German</x:String>
-                    <x:String>Spanish</x:String>
-                    <x:String>French</x:String>
-                </Picker.Items>
-            </Picker>
+            <StackLayout
+                BindableLayout.ItemsSource="{Binding LanguagePreferencesList}"
+                Orientation="Vertical">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout
+                            Orientation="Horizontal">
+                            <!--<Label
+                                VerticalOptions="Center"
+                                Text="{Binding Index}"/>-->
+                            <Picker
+                                HorizontalOptions="FillAndExpand"
+                                SelectedIndex="{Binding SelectedCultureIndex}"
+                                SelectedItem="{Binding SelectedCulture}"
+                                ItemDisplayBinding="{Binding NativeName}"
+                                ItemsSource="{Binding Path=BindingContext.CulturesList, Source={x:Reference root}}">
+
+                            </Picker>
+                            <Button
+                              
+                                HorizontalOptions="End"
+                                CornerRadius="7"
+                                Padding="18,0"
+                                BorderColor="Black"
+                                BorderWidth="1"
+                                FontSize="16"
+                                FontAttributes="Bold"
+                                Text="-"
+                                Command="{Binding Path=BindingContext.RemoveItemCommand, Source={x:Reference root}}"
+                                CommandParameter="{Binding .}"
+                                BackgroundColor="White"
+                                TextColor="Black"/>
+                        </StackLayout>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
 
             <Button
+                 Margin="0,15,0,10"
+                HorizontalOptions="FillAndExpand"
                 CornerRadius="7"
+                Padding="17,0"
+                BorderColor="Black"
+                BorderWidth="1"
+                FontSize="16"
+                FontAttributes="Bold"
+                Text="+"
+                Command="{Binding AddLangItemCommand}"
+                BackgroundColor="White"
+                TextColor="Black"/>
+
+            <Button
+                HorizontalOptions="Fill"
+                CornerRadius="7"
+                Padding="25,0"
                 Text="{x:Static resourceResx:AppResources.ChooseAndGo}"
                 Command="{Binding OnUpdateLangugeClickedCommand}"
                 BackgroundColor="Black"

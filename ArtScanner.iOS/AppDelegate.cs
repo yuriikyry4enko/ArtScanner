@@ -30,7 +30,12 @@ namespace ArtScanner.iOS
             AnimationViewRenderer.Init();
             Rg.Plugins.Popup.Popup.Init();
             global::Xamarin.Forms.Forms.Init();
-          
+
+            //#region screen height & width
+            //App.screenWidth = (int)UIScreen.MainScreen.Bounds.Width;
+            //App.screenHeight = (int)UIScreen.MainScreen.Bounds.Height;
+            //#endregion
+
             LoadApplication(new App(new iOSInitializer()));
 
             return base.FinishedLaunching(app, options);

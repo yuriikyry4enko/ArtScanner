@@ -1,13 +1,15 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using ArtScanner.Models;
 
 namespace ArtScanner.Services
 {
     interface IRestService
     {
-        Task<byte[]> GetImageById(string id);
-        Task<string> GetTextById(string id);
+        Task<byte[]> GetImageById(string langTag, string id);
+        Task<TextItemInfoModel> GetTextById(string langTag, string id);
+        Task<GeneralItemInfoModel> GetGeneralItemInfo(string id);
 
     }
 }

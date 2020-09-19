@@ -19,14 +19,19 @@ namespace ArtScanner
 {
     public partial class App : PrismApplication
     {
+        public static int screenHeight, screenWidth;
+
         protected override void OnStart()
         {
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.CurrentCulture;
+
+            AppResources.Culture = CultureInfo.CurrentCulture;
         }
 
         protected override void OnSleep()
         {
         }
-
+            
         protected override void OnResume()
         {
         }
@@ -37,11 +42,9 @@ namespace ArtScanner
 
         protected override void OnInitialized()
         {
-            Thread.CurrentThread.CurrentUICulture = CultureInfo.InstalledUICulture;
-
             InitializeComponent();
 
-            //System.Globalization.CultureInfo.CurrentUICulture = new CultureInfo("de");
+           
 
             var settings = (IAppSettings)Container.Resolve(typeof(IAppSettings));
 
@@ -60,12 +63,10 @@ namespace ArtScanner
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
         {
-
             containerRegistry.RegisterInstance(UserDialogs.Instance);
             containerRegistry.RegisterInstance(PopupNavigation.Instance);
             containerRegistry.RegisterInstance(DependencyService.Get<ISQLite>());
 
-           
             containerRegistry.RegisterSingleton<IAppSettings, AppSettings>();
             containerRegistry.RegisterSingleton<IAppConfig, AppConfig>();
             containerRegistry.RegisterSingleton<IAppInfo, AppInfo>();
@@ -82,6 +83,9 @@ namespace ArtScanner
             containerRegistry.RegisterForNavigation<ChooseLanguagePage, ChooseLanguagePageViewModel>();
             containerRegistry.RegisterForNavigation<StartPage, StartPageViewModel>();
             containerRegistry.RegisterForNavigation<ScannerPage, ScannerPageViewModel>();
+            containerRegistry.RegisterForNavigation<BookletPage, BookletPageViewModel>();
+            containerRegistry.RegisterForNavigation<BookletItemDetailsPage, BookletItemDetailsPageViewModel>();
+            containerRegistry.RegisterForNavigation<BookleItemDetailsFolderPage, BookleItemDetailsFolderPageViewModel>();
             containerRegistry.RegisterForNavigation<ItemsGalleryPage, ItemsGalleryPageViewModel>();
             containerRegistry.RegisterForNavigation<ItemGalleryDetailsPage, ItemGalleryDetailsPageViewModel>();
 

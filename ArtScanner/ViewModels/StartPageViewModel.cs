@@ -45,6 +45,7 @@ namespace ArtScanner.ViewModels
 
             this._appFileSystemService.InitializeFoldersForUser("sources");
             this._appDatabase.Initialize(_appFileSystemService.CurrentUserFolderPath);
+            
         }
 
         #region Commands
@@ -59,7 +60,8 @@ namespace ArtScanner.ViewModels
             await PopupNavigation.Instance.PopAsync();
         });
 
-        public ICommand BackCommand => new Command(async () => { await navigationService.GoBackAsync(); });
+
+        public ICommand NavigateToBookletsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.BookletPage); });
 
         public ICommand SettingsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.ChooseLanguagePage); });
 

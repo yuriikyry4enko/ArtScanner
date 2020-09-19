@@ -8,7 +8,6 @@ using ArtScanner.Utils.Constants;
 using ArtScanner.Utils.Helpers;
 using Prism.Commands;
 using Prism.Navigation;
-using Xamarin.Forms;
 
 namespace ArtScanner.ViewModels
 {
@@ -81,8 +80,6 @@ namespace ArtScanner.ViewModels
         #endregion
 
         #region Commands
-
-        public ICommand BackCommand => new Command(async () => { await navigationService.GoBackAsync(); });
 
         public ICommand NavigateToItemDetail => new DelegateCommand<ItemEntity>(async(itemModel) =>
         {

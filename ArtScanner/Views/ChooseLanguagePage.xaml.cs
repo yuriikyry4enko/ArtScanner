@@ -14,7 +14,14 @@ namespace ArtScanner.Views
     {
         public ChooseLanguagePage()
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
+            }
+            catch(Exception ex)
+            {
+
+            }
 
         }
     }

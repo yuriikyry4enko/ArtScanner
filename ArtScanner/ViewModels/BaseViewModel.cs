@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Windows.Input;
 using Prism.AppModel;
 using Prism.Mvvm;
 using Prism.Navigation;
+using Xamarin.Forms;
 
 namespace ArtScanner.ViewModels
 {
@@ -13,6 +15,9 @@ namespace ArtScanner.ViewModels
             get => _isBusy;
             set => SetProperty(ref _isBusy, value);
         }
+
+        public ICommand BackCommand => new Command(async () => { await navigationService.GoBackAsync(); });
+
 
         protected const string Params = "params";
 

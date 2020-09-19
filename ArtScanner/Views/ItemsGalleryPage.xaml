@@ -11,6 +11,31 @@
     xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner">
     <Grid
         Padding="0">
+      
+        <CarouselView
+            Margin="0"
+            VerticalOptions="FillAndExpand"
+            ItemsSource="{Binding Items}"
+            
+            HorizontalScrollBarVisibility="Never">
+            <CarouselView.ItemsLayout>
+                <LinearItemsLayout
+                    Orientation="Horizontal"
+                    SnapPointsAlignment="Center"
+                    SnapPointsType="MandatorySingle"/>
+            </CarouselView.ItemsLayout>
+            <CarouselView.ItemTemplate>
+                    <DataTemplate>
+                        <controls:ItemGalleryComponent>
+                            <controls:ItemGalleryComponent.GestureRecognizers>
+                                 <TapGestureRecognizer
+                                     Command="{Binding BindingContext.NavigateToItemDetail, Source={x:Reference itemsGalleryPage}}"
+                                     CommandParameter="{Binding .}" />
+                            </controls:ItemGalleryComponent.GestureRecognizers>
+                        </controls:ItemGalleryComponent>
+                    </DataTemplate>
+            </CarouselView.ItemTemplate>
+        </CarouselView>
         <controls:Circle
             VerticalOptions="Start"
             Padding="0"
@@ -31,31 +56,7 @@
             </controls:Circle.GestureRecognizers>
         </controls:Circle>
 
-        <CarouselView
-            Margin="0"
-            HeightRequest="400"
-            VerticalOptions="CenterAndExpand"
-            ItemsSource="{Binding Items}"
-            PeekAreaInsets="40"
-            HorizontalScrollBarVisibility="Never">
-            <CarouselView.ItemsLayout>
-                <LinearItemsLayout
-                    Orientation="Horizontal"
-                    SnapPointsAlignment="Center"
-                    SnapPointsType="MandatorySingle"
-                    ItemSpacing="20" />
-            </CarouselView.ItemsLayout>
-            <CarouselView.ItemTemplate>
-                    <DataTemplate>
-                        <controls:ItemGalleryComponent>
-                            <controls:ItemGalleryComponent.GestureRecognizers>
-                                 <TapGestureRecognizer
-                                     Command="{Binding BindingContext.NavigateToItemDetail, Source={x:Reference itemsGalleryPage}}"
-                                     CommandParameter="{Binding .}" />
-                            </controls:ItemGalleryComponent.GestureRecognizers>
-                        </controls:ItemGalleryComponent>
-                    </DataTemplate>
-            </CarouselView.ItemTemplate>
-        </CarouselView>
+         
+
     </Grid>
 </views:BasePage>

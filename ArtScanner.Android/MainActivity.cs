@@ -35,6 +35,19 @@ namespace ArtScanner.Droid
 
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
+            //#region screen height and width
+
+            //var pixels = Resources.DisplayMetrics.WidthPixels;
+            //var scale = Resources.DisplayMetrics.Density;
+            //var dps = (double)((pixels - 0.5f) / scale);
+            //App.screenWidth = (int)dps;
+
+            //pixels = Resources.DisplayMetrics.HeightPixels;
+            //dps = (double)((pixels - 0.5f) / scale);
+            //App.screenHeight = (int)dps;
+
+            //#endregion
+
             LoadApplication(new App(new AndroidInitializer()));
         }
 

@@ -45,7 +45,6 @@
     <Folder Include="Enums\" />
     <Folder Include="Utils\AuthConfigs\" />
     <Folder Include="Models\Entities\" />
-    <Folder Include="Models\AppDomainModels\" />
     <Folder Include="Utils\Helpers\" />
     <Folder Include="Converters\" />
     <Folder Include="Resx\" />
@@ -64,6 +63,7 @@
     <None Remove="Resources\settings.svg" />
     <None Remove="Resources\museum.svg" />
     <None Remove="Resources\ideogram.svg" />
+    <None Remove="Resources\flyer.svg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\play.svg" />
@@ -78,6 +78,7 @@
     <EmbeddedResource Include="Resources\settings.svg" />
     <EmbeddedResource Include="Resources\museum.svg" />
     <EmbeddedResource Include="Resources\ideogram.svg" />
+    <EmbeddedResource Include="Resources\flyer.svg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resx\AppResources.resx">

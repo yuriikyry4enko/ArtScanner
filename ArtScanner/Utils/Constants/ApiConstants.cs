@@ -9,11 +9,14 @@ namespace ArtScanner.Utils.Constants
 
         public const string HOST_CORE = "https://via-net.de";
 
-        public const string GetJPGById = HOST_CORE + "/art-scanner-backend/jpg/{0}";
+        public const string GetJPGById = HOST_CORE + "/art-scanner-backend-0-2/item/jpg/{0}/{1}";
 
-        public const string GetAudioStreamById = HOST_CORE + "/art-scanner-backend/mp3/{0}";
+        public const string GetAudioStreamById = HOST_CORE + "/art-scanner-backend-0-2/item/mp3/{0}/{1}";
 
-        public const string GetTextById = HOST_CORE + "/art-scanner-backend/txt/{0}";
+        public const string GetTextById = HOST_CORE + "/art-scanner-backend-0-2/item/txt/{0}/{1}";
+
+        public const string GetGeneralItemInfo = HOST_CORE + "/art-scanner-backend-0-2/item/general/{0}";
+
 
     }
 }

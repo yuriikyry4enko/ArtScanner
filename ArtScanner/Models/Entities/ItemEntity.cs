@@ -16,6 +16,8 @@ namespace ArtScanner.Models.Entities
         public string WikiUrl { get; set; }
 
 
+        public string LangTag { get; set; }
+
         public bool Liked { get; set; }
 
 

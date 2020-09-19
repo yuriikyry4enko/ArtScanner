@@ -79,5 +79,24 @@
                 <TapGestureRecognizer Command="{Binding NavigateToGalleyCommand}"/>
             </controls:Circle.GestureRecognizers>
         </controls:Circle>
+
+        <controls:Circle
+            VerticalOptions="End"
+            HorizontalOptions="Start"
+            WidthRequest="60"
+            HeightRequest="60"
+            Margin="30"
+            Color="White">
+            <controls:TintedCachedImage
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Source="{x:Static resources:Images.Flyer}"
+                WidthRequest="30"   
+                TintColor="Black"
+                HeightRequest="30"/>
+            <controls:Circle.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding NavigateToBookletsCommand}"/>
+            </controls:Circle.GestureRecognizers>
+        </controls:Circle>
     </Grid>
 </views:BasePage>

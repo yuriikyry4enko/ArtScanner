@@ -6,7 +6,10 @@
     xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     x:Class="ArtScanner.Controls.ItemGalleryComponent"
     xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
-    xmlns:converters="clr-namespace:ArtScanner.Converters"
+    xmlns:converters="clr-namespace:ArtScanner.Converters" xmlns:controls="clr-namespace:ArtScanner.Controls"
+    VerticalOptions="FillAndExpand"
+    HorizontalOptions="FillAndExpand"
+    xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
     x:Name="artItem">
     <Grid.Resources>
         <ResourceDictionary>
@@ -14,38 +17,55 @@
         </ResourceDictionary>
     </Grid.Resources>
     <Grid.RowDefinitions>
-        <RowDefinition Height="180"/>
         <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
+  
+    <!--<Grid  x:Name="bottomSheet" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.93,Constant=0}"
+            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=1,Constant=0}"
+            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height,Factor=1,Constant=0}">
+        <Grid.GestureRecognizers>
+            <PanGestureRecognizer PanUpdated="PanGestureRecognizer_PanUpdated"></PanGestureRecognizer>
+        </Grid.GestureRecognizers> -->
+
     <yummy:PancakeView
-        CornerRadius="20"
-        Grid.RowSpan="2">
+        x:Name="artItemImage">
         <ffimageloading:CachedImage
             sharedTransitions:Transition.Name="artTransition"
             sharedTransitions:Transition.Group="{Binding Id}"
              Source="{Binding ImageByteArray, 
                             Converter={StaticResource ByteArrayToImage}}"
             Aspect="AspectFill"/>
+
     </yummy:PancakeView>
 
-    <yummy:PancakeView
-        CornerRadius="0, 0, 20, 20"
-        Grid.Row="1"
-        BackgroundColor="#90000000">
-        <StackLayout
-            Padding="10, 0"
-            VerticalOptions="CenterAndExpand"
-            Spacing="2">
-        <Label
-            Text="{Binding Author}"
-            FontSize="15"
-            TextColor="White"/>
-        <Label
-            Text="{Binding Title}"
-            FontSize="18"
-            FontAttributes="Bold"
-            TextColor="#F0F0F0"/>
-        </StackLayout>
-    </yummy:PancakeView>
-  
+    <controls:Circle
+        x:Name="itemInfoCircleButton"
+        VerticalOptions="End"
+        Padding="0"
+        HeightRequest="45"
+        Rotation="90"
+        Margin="{OnPlatform Android='25,25,25,25', iOS='35, 55,35,0'}"
+        Color="White"
+        WidthRequest="45"
+        HorizontalOptions="Center">
+        <controls:TintedCachedImage
+            VerticalOptions="Center"
+            HorizontalOptions="Center"
+            Source="{x:Static resources:Images.BackArrow}"
+            WidthRequest="20"   
+            TintColor="IndianRed"
+            HeightRequest="20"/>
+        <controls:Circle.GestureRecognizers>
+            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+        </controls:Circle.GestureRecognizers>
+    </controls:Circle>
+    <Label
+        x:Name="titleItem"
+        VerticalOptions="End"
+        HorizontalOptions="Start"
+        Text="{Binding Title}"
+        FontSize="Medium"
+        TextColor="Black"
+        Margin="15,0,0,0"/>
+   
 </Grid>

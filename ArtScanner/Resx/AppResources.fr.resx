@@ -12,5 +12,27 @@
 	<resheader name="writer">
 		<value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
 	</resheader>
+    
+    
+<data name="PressAgain" xml:space="preserve">
+    <value>Appuyez à nouveau</value>
+</data>
+<data name="AlignCode" xml:space="preserve">
+    <value>Alignez le code dans le cadre</value>
+</data>
+<data name="NoTranslationApologise" xml:space="preserve">
+    <value>Es scheint keine Übersetzung&#x0a; in die von Ihnen gewählte Sprache zu geben. &#x0a;Sie können eine andere Übersetzungssprache &#x0a;aus der Liste auswählen.</value>
+</data>
 
+   
+<data name="ChooseAndGo" xml:space="preserve">
+    <value>Wählen Sie und gehen Sie</value>
+</data>
+<data name="SelectLanguagePreff" xml:space="preserve">
+    <value>Wählen Sie Ihre Artikelspracheneinstellung</value>
+</data>
+<data name="Welcome" xml:space="preserve">
+    <value>Willkommen bei ArtScanner</value>
+</data>    
+    
 </root>

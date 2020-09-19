@@ -82,5 +82,41 @@ namespace ArtScanner.Resx {
                 return ResourceManager.GetString("Welcome", resourceCulture);
             }
         }
+        
+        public static string SaveToPref {
+            get {
+                return ResourceManager.GetString("SaveToPref", resourceCulture);
+            }
+        }
+        
+        public static string CannotRemove {
+            get {
+                return ResourceManager.GetString("CannotRemove", resourceCulture);
+            }
+        }
+        
+        public static string EmptyListRow {
+            get {
+                return ResourceManager.GetString("EmptyListRow", resourceCulture);
+            }
+        }
+        
+        public static string EmptyRow {
+            get {
+                return ResourceManager.GetString("EmptyRow", resourceCulture);
+            }
+        }
+        
+        public static string GalleryUpdated {
+            get {
+                return ResourceManager.GetString("GalleryUpdated", resourceCulture);
+            }
+        }
+        
+        public static string СouldNotFindQRCODE {
+            get {
+                return ResourceManager.GetString("СouldNotFindQRCODE", resourceCulture);
+            }
+        }
     }
 }

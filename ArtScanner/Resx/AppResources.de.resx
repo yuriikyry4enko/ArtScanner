@@ -21,7 +21,7 @@
     <value>Richten Sie den Code innerhalb des Rahmens aus</value>
 </data>
 <data name="NoTranslationApologise" xml:space="preserve">
-    <value>Es scheint keine Übersetzung&#x0a; in die von Ihnen gewählte Sprache zu geben. &#x0a;Sie können eine andere Übersetzungssprache &#x0a;aus der Liste auswählen.</value>
+    <value>Es gibt keine Übersetzung für das&#x0a; gefundene Objekt basierend auf Ihren Einstellungen.&#x0a; Sie können die Übersetzungssprache aus der folgenden&#x0a; Liste auswählen und fortfahren</value>
 </data>
 
    
@@ -29,14 +29,35 @@
     <value>Wählen Sie und gehen Sie</value>
 </data>
 <data name="SelectLanguagePreff" xml:space="preserve">
-    <value>Wählen Sie Ihre Spracheinstellung</value>
+    <value>Wählen Sie Ihre Artikelspracheneinstellung</value>
 </data>
 <data name="Welcome" xml:space="preserve">
     <value>Willkommen bei ArtScanner</value>
 </data>    
     
     
+<data name="SaveToPref" xml:space="preserve">
+    <value>In Spracheinstellungen speichern</value>
+</data>    
+        
+<data name="CannotRemove" xml:space="preserve">
+    <value>Sie können nicht das einzige Element in der Liste löschen</value>
+</data>    
     
-
+    <data name="EmptyListRow" xml:space="preserve">
+    <value>Leere Leitung. Sie müssen eine Sprache aus der Liste auswählen</value>
+</data>    
+    
+<data name="EmptyRow" xml:space="preserve">
+    <value>Leere Reihe. Sie müssen eine Sprache aus der Liste auswählen</value>
+</data>      
+          
+<data name="GalleryUpdated" xml:space="preserve">
+    <value>Galerie aktualisiert</value>
+</data> 
+    
+<data name="СouldNotFindQRCODE" xml:space="preserve">
+    <value>Konnte mit diesem QR-Code nicht gefunden werden ...</value>
+</data>      
     
 </root>
