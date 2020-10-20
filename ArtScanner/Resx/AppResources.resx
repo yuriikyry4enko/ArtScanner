@@ -21,7 +21,7 @@
     <value>Align the code within the frame</value>
 </data>
 <data name="NoTranslationApologise" xml:space="preserve">
-    <value>There is no translation for the found&#x0a; object based on your preferences.&#x0a;You can choose the translation language&#x0a; from the list below and continue</value>
+    <value>There is no translation for the found&#x0a; object based on your preferences.&#x0a;You can choose the translation language&#x0a; from drop-down block below and continue</value>
 </data>
 
 <data name="ChooseAndGo" xml:space="preserve">

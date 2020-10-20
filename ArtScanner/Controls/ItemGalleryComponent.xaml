@@ -6,10 +6,11 @@
     xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     x:Class="ArtScanner.Controls.ItemGalleryComponent"
     xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
-    xmlns:converters="clr-namespace:ArtScanner.Converters" xmlns:controls="clr-namespace:ArtScanner.Controls"
+    xmlns:converters="clr-namespace:ArtScanner.Converters"
+    xmlns:controls="clr-namespace:ArtScanner.Controls"
     VerticalOptions="FillAndExpand"
     HorizontalOptions="FillAndExpand"
-    xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
+        xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
     x:Name="artItem">
     <Grid.Resources>
         <ResourceDictionary>
@@ -19,13 +20,6 @@
     <Grid.RowDefinitions>
         <RowDefinition Height="*"/>
     </Grid.RowDefinitions>
-  
-    <!--<Grid  x:Name="bottomSheet" RelativeLayout.YConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height, Factor=0.93,Constant=0}"
-            RelativeLayout.WidthConstraint="{ConstraintExpression Type=RelativeToParent, Property=Width,Factor=1,Constant=0}"
-            RelativeLayout.HeightConstraint="{ConstraintExpression Type=RelativeToParent, Property=Height,Factor=1,Constant=0}">
-        <Grid.GestureRecognizers>
-            <PanGestureRecognizer PanUpdated="PanGestureRecognizer_PanUpdated"></PanGestureRecognizer>
-        </Grid.GestureRecognizers> -->
 
     <yummy:PancakeView
         x:Name="artItemImage">
@@ -35,37 +29,73 @@
              Source="{Binding ImageByteArray, 
                             Converter={StaticResource ByteArrayToImage}}"
             Aspect="AspectFill"/>
-
+        <yummy:PancakeView.GestureRecognizers>
+            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+        </yummy:PancakeView.GestureRecognizers>
     </yummy:PancakeView>
 
-    <controls:Circle
-        x:Name="itemInfoCircleButton"
+    <StackLayout
+        Opacity="0"
+        Margin="0,15,0,0"
+        BackgroundColor="White"
         VerticalOptions="End"
-        Padding="0"
-        HeightRequest="45"
-        Rotation="90"
-        Margin="{OnPlatform Android='25,25,25,25', iOS='35, 55,35,0'}"
-        Color="White"
-        WidthRequest="45"
-        HorizontalOptions="Center">
-        <controls:TintedCachedImage
-            VerticalOptions="Center"
-            HorizontalOptions="Center"
-            Source="{x:Static resources:Images.BackArrow}"
-            WidthRequest="20"   
-            TintColor="IndianRed"
-            HeightRequest="20"/>
-        <controls:Circle.GestureRecognizers>
-            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
-        </controls:Circle.GestureRecognizers>
-    </controls:Circle>
-    <Label
-        x:Name="titleItem"
-        VerticalOptions="End"
-        HorizontalOptions="Start"
-        Text="{Binding Title}"
-        FontSize="Medium"
-        TextColor="Black"
-        Margin="15,0,0,0"/>
+        HorizontalOptions="FillAndExpand"
+        
+        x:Name="titleItem">
+        <Label
+            
+            VerticalOptions="End"
+            HorizontalOptions="StartAndExpand"
+            Text="{Binding Title}"
+            FontSize="Medium"
+            TextColor="Black"
+            Margin="15,0,0,0"/>
+
+        <StackLayout
+            HorizontalOptions="StartAndExpand"
+            Margin="0,15,0,0"
+            TranslationX="30"
+            Orientation="Horizontal">
+            <controls:Circle
+                Color="Gray"
+                VerticalOptions="Start"
+                Padding="0"
+                HeightRequest="60"
+                WidthRequest="60"
+                HorizontalOptions="Start">
+                <controls:TintedCachedImage
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Source="{x:Static resources:Images.Share}"
+                    WidthRequest="32"   
+                    TintColor="White"
+                    HeightRequest="32"/>
+                <controls:Circle.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ShareCommand}"/>
+                </controls:Circle.GestureRecognizers>
+            </controls:Circle>
+
+            <controls:Circle
+                Color="Gray"
+                VerticalOptions="Start"
+                Padding="0"
+                HeightRequest="60"
+                WidthRequest="60"
+                HorizontalOptions="Start">
+                <controls:TintedCachedImage
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Source="{x:Static resources:Images.Twitter}"
+                    WidthRequest="32"   
+                        TintColor="White"
+                    HeightRequest="32"/>
+                <controls:Circle.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding TwittCommand}"/>
+                </controls:Circle.GestureRecognizers>
+            </controls:Circle>
+
+        </StackLayout>
+    </StackLayout>
+    
    
 </Grid>

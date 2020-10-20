@@ -39,8 +39,8 @@ namespace ArtScanner.ViewModels
             }
         }
 
-        private bool _isSavePreference;
-        public bool IsSavePreference
+        private bool _isSavePreference = true;
+        public bool IsSavePreference 
         {
             get => _isSavePreference;
             set
@@ -60,47 +60,64 @@ namespace ArtScanner.ViewModels
         {
             base.OnNavigatedTo(parameters);
 
-            _NavArgs = GetParameters<ApologizeNavigationArgs>(parameters);
+            if (parameters.GetNavigationMode() != NavigationMode.Back)
+            {
+                _NavArgs = GetParameters<ApologizeNavigationArgs>(parameters);
 
-            try
-            {
-                foreach (var item in _NavArgs.LanguageTags)
+                try
                 {
-                    AvailableCulturesList.Add(new CultureInfo(item));
+                    foreach (var item in _NavArgs.LanguageTags)
+                    {
+                        AvailableCulturesList.Add(new CultureInfo(item));
+                    }
                 }
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-            finally
-            {
-                _NavArgs.PageApologizeFinishedLoading.Invoke();
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
+                finally
+                {
+                    _NavArgs.PageApologizeFinishedLoading.Invoke();
+                }
             }
         }
 
         public ICommand CloseCommand => new Command(async () =>
         {
-            await navigationService.GoBackAsync();
-            _NavArgs.PopupResultAction.Invoke(null);
+            try
+            {
+                await navigationService.GoBackAsync();
+                _NavArgs.PopupResultAction.Invoke(null);
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         });
 
         public ICommand OkCommand => new Command(async () =>
         {
-            if(IsSavePreference && SelectedCulture != null)
+            try
             {
-                var item = new LangPreferencesItemEntity()
+                if (IsSavePreference && SelectedCulture != null)
                 {
-                    LangTag = SelectedCulture.TwoLetterISOLanguageName,
-                    NativeName = SelectedCulture.NativeName,
-                    
-                };
+                    var item = new LangPreferencesItemEntity()
+                    {
+                        LangTag = SelectedCulture.TwoLetterISOLanguageName,
+                        NativeName = SelectedCulture.NativeName,
 
-                await _baseDBService.Add(item);
+                    };
+
+                    await _baseDBService.Add(item);
+                }
+
+                await navigationService.GoBackAsync();
+                _NavArgs.PopupResultAction.Invoke(SelectedCulture.TwoLetterISOLanguageName);
             }
-
-            await navigationService.GoBackAsync();
-            _NavArgs.PopupResultAction.Invoke(SelectedCulture.TwoLetterISOLanguageName);
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         });
 
 

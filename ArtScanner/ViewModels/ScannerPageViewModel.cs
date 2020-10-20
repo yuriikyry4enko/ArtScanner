@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
 using ArtScanner.Models;
@@ -42,23 +43,21 @@ namespace ArtScanner.ViewModels
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
-            IsScannerEnabled = true;
-        }
 
-        public override void OnNavigatedFrom(INavigationParameters parameters)
-        {
-            base.OnNavigatedFrom(parameters);
-            IsScannerEnabled = true;
+            if (parameters.GetNavigationMode() == NavigationMode.Back)
+            {
+                IsScannerEnabled = true;
+            }
         }
 
         #region Commands
-
 
         public ICommand QRScanResultCommand => new Command(() =>
         {
             try
             {
                 IsBusy = true;
+                bool isCanceled = false;
 
                 if (IsScannerEnabled)
                 {
@@ -67,60 +66,85 @@ namespace ArtScanner.ViewModels
                         Id = Result?.Text,
                     };
 
-                    Device.BeginInvokeOnMainThread(async () =>
+                   Device.BeginInvokeOnMainThread(async () =>
                     {
-                        GeneralItemInfoModel result = await _restService.GetGeneralItemInfo(foundedItem.Id);
+                        await navigationService.NavigateAsync(PageNames.LoadingPopupPage, CreateParameters(new LoadingNavigationArgs()
+                        {
+                            PageLoadingCanceled = async () =>
+                            {
+                                isCanceled = true;
+                                await Task.CompletedTask;
+                                return;
+                            },
+                        }));
+
+                        var qrcodeData = await _restService.GetIdByQRCode(foundedItem.Id);
+
+                        if (qrcodeData == null)
+                        {
+                            await _userDialogs.AlertAsync(AppResources.СouldNotFindQRCODE + "id: " + foundedItem.Id, "Oops", "Ok");
+                            return;
+                        }
+
+                        GeneralItemInfoModel result = await _restService.GetGeneralItemInfo(qrcodeData.ItemId);
 
                         if(result == null)
                         {
-                            IsBusy = false;
-                            await _userDialogs.AlertAsync(AppResources.СouldNotFindQRCODE, "Oops", "Ok");
+                            await _userDialogs.AlertAsync(AppResources.СouldNotFindQRCODE + "id: " + foundedItem.Id, "Oops", "Ok");
+
+                            await navigationService.GoBackAsync();
                             return;
                         }
 
                         var langPrefs = await _baseDBService.GetAllAsync<LangPreferencesItemEntity>();
                         var intersectList = result.Languages.Where(x => langPrefs.Any(y => x == y.LangTag)).ToList();
 
-                        if (intersectList.Count() > 0)
+                        if (!isCanceled)
                         {
-                            foundedItem.LangTag = intersectList.FirstOrDefault();
-                            await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(foundedItem));
+                            if (intersectList.Count() > 0)
+                            {
+                                foundedItem.LangTag = intersectList.FirstOrDefault();
+                                foundedItem.ParentId = result.ParentId;
+                                await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(foundedItem));
+                            }
+                            else
+                            {
+                                await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
+                                {
+                                    LanguageTags = result.Languages,
+                                    PopupResultAction = async (string langTagSelected) =>
+                                    {
+                                        if (!string.IsNullOrEmpty(langTagSelected))
+                                        {
+                                            foundedItem.ParentId = result.ParentId;
+                                            foundedItem.LangTag = langTagSelected;
+                                            await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(foundedItem));
+                                            IsBusy = false;
+                                        }
+                                        else
+                                        {
+                                            IsScannerEnabled = true;
+                                        }
+                                    },
+                                    PageApologizeFinishedLoading = () =>
+                                    {
+                                        IsBusy = false;
+                                    }
+                                }));
+                            }
                         }
                         else
                         {
-                            await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
-                            {
-                                LanguageTags = result.Languages,
-                                PopupResultAction = async (string langTagSelected) =>
-                                {
-                                    if(!string.IsNullOrEmpty(langTagSelected))
-                                    {
-                                        foundedItem.LangTag = langTagSelected;
-                                        await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(foundedItem));
-                                    }
-                                    else
-                                    {
-                                        IsScannerEnabled = true;
-                                    }
-                                },
-                                PageApologizeFinishedLoading = () =>
-                                {
-                                    IsBusy = false;
-                                }
-                            }));
+                            isCanceled = false;
                         }
                     });
-
-                    IsScannerEnabled = false;
                 }
+
+                IsScannerEnabled = false;
             }
             catch(Exception ex)
             {
                 Debug.WriteLine(ex);
-            }
-            finally
-            {
-                IsBusy = false;
             }
         });
 

@@ -11,5 +11,8 @@ namespace ArtScanner.Models
 
         [JsonProperty("languages")]
         public List<string> Languages { get; set; }
+
+        [JsonProperty("parentId")]
+        public long ParentId { get; set; }
     }
 }

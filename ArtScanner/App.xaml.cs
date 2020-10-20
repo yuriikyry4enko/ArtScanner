@@ -10,6 +10,7 @@ using ArtScanner.Views;
 using Plugin.SharedTransitions;
 using Prism;
 using Prism.Ioc;
+using Prism.Navigation;
 using Prism.Plugin.Popups;
 using Prism.Unity;
 using Rg.Plugins.Popup.Services;
@@ -19,7 +20,8 @@ namespace ArtScanner
 {
     public partial class App : PrismApplication
     {
-        public static int screenHeight, screenWidth;
+        public static double ScreenWidth;
+        public static double ScreenHeight;
 
         protected override void OnStart()
         {
@@ -79,7 +81,9 @@ namespace ArtScanner
           
             containerRegistry.RegisterForNavigation<ProviderLoginPage>();
             containerRegistry.RegisterForNavigation<SharedTransitionNavigationPage>();
-            containerRegistry.RegisterForNavigation<ApologizeLanguagePopupPage, ApologizeLanguagePopupPageViewModel>();
+           
+
+            containerRegistry.RegisterForNavigation<ItemGalleryDetailsPage, ItemGalleryDetailsPageViewModel>();
             containerRegistry.RegisterForNavigation<ChooseLanguagePage, ChooseLanguagePageViewModel>();
             containerRegistry.RegisterForNavigation<StartPage, StartPageViewModel>();
             containerRegistry.RegisterForNavigation<ScannerPage, ScannerPageViewModel>();
@@ -89,6 +93,10 @@ namespace ArtScanner
             containerRegistry.RegisterForNavigation<ItemsGalleryPage, ItemsGalleryPageViewModel>();
             containerRegistry.RegisterForNavigation<ItemGalleryDetailsPage, ItemGalleryDetailsPageViewModel>();
 
+
+            containerRegistry.RegisterForNavigation<ApologizeLanguagePopupPage, ApologizeLanguagePopupPageViewModel>();
+            containerRegistry.RegisterForNavigation<LoadingPopupPage, LoadingPopupPageViewModel>();
+            containerRegistry.RegisterForNavigation<BurgerMenuPopupPage, BurgerMenuPopupPageViewModel>();
 
             containerRegistry.RegisterPopupNavigationService();
         }

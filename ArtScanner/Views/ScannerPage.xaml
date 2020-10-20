@@ -28,14 +28,14 @@
                 HorizontalOptions="CenterAndExpand"/>
             <zxing:ZXingDefaultOverlay TopText="{x:Static resourceResx:AppResources.AlignCode}"/>
 
-            <ActivityIndicator
+            <!--<ActivityIndicator
                 Color="Orange"
                 IsRunning="{Binding IsBusy}"
                 IsEnabled="True"
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
                 HeightRequest="70"
-                WidthRequest="70"/>
+                WidthRequest="70"/>-->
         </Grid>
         <controls:Circle
             VerticalOptions="Start"

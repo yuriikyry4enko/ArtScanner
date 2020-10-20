@@ -14,5 +14,8 @@ namespace ArtScanner.Views
             InitializeComponent();
         }
 
+        void ListView_ItemSelected(System.Object sender, Xamarin.Forms.SelectedItemChangedEventArgs e)
+        {
+        }
     }
 }

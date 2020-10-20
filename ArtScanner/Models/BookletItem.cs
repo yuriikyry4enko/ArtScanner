@@ -8,6 +8,8 @@ namespace ArtScanner.Models
         public string Title { get; set; }
 
         public Color BookletColor { get; set; }
-        
+
+        public byte[] ImageByteArray { get; set; }
+
     }
 }

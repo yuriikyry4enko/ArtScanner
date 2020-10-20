@@ -113,10 +113,9 @@ namespace ArtScanner.ViewModels
                     RaisePropertyChanged(nameof(ItemModel));
 
                     IsPlayButtonEnable = false;
-
                     IsBusy = true;
 
-                    ItemModel.ImageUrl = string.Format(Utils.Constants.ApiConstants.GetJPGById, ItemModel.LangTag, ItemModel.Id);
+                    ItemModel.ImageByteArray = await _restService.GetImageById(ItemModel.LangTag, ItemModel.Id);
 
                     CrossMediaManager.Current.AutoPlay = false;
                     await CrossMediaManager.Current.Play(string.Format(Utils.Constants.ApiConstants.GetAudioStreamById, ItemModel.LangTag, ItemModel.Id));
@@ -127,9 +126,7 @@ namespace ArtScanner.ViewModels
                     }
 
                     IsBusy = false;
-
                     IsPlayButtonEnable = true;
-                    
                 }
             }
             catch(Exception ex)
@@ -142,7 +139,6 @@ namespace ArtScanner.ViewModels
         {
             try
             {
-
                 var itemEntity = await _itemDBService.GetByServerId(ItemModel.Id);
 
                 if (itemEntity != null)
@@ -182,6 +178,8 @@ namespace ArtScanner.ViewModels
                 ItemModel.Liked = !ItemModel.Liked;
                 RaisePropertyChanged(nameof(LikeIcon));
 
+                _userDialogs.Toast(AppResources.GalleryUpdated);
+
                 if (!ItemModel.Liked && ItemModel.LocalId != 0)
                 {
                     await _itemDBService.DeleateItem(ItemModel);
@@ -194,8 +192,9 @@ namespace ArtScanner.ViewModels
 
                     var resultId = await _itemDBService.InsertOrUpdateWithChildren(ItemModel);
                     ItemModel.LocalId = resultId;
+
+                    await InitParentEntities();
                 }
-                _userDialogs.Toast(AppResources.GalleryUpdated);
             }
             catch(Exception ex)
             {
@@ -250,6 +249,54 @@ namespace ArtScanner.ViewModels
             finally
             {
                 IsPlayButtonEnable = true;
+            }
+        }
+
+        private async Task InitParentEntities()
+        {
+            try
+            {
+                if (ItemModel.Liked)
+                {
+                    var categoryItem = await _itemDBService.FindCategoryById(ItemModel.ParentId);
+                    if(categoryItem == null)
+                    {
+                        var category = await _restService.GetGeneralItemInfo(ItemModel.ParentId);
+
+                        var imageCategoryByteArray = await _restService.GetImageById(ItemModel.LangTag, ItemModel.ParentId.ToString());
+                        if (imageCategoryByteArray == null)
+                        {
+                            await _userDialogs.AlertAsync("I can't find pictures for category with such " + "id: " + ItemModel.ParentId, "Oops", "Ok");
+                            return;
+                        }
+                        else
+                        {
+                            await _itemDBService.InsertOrUpdateCategoryWithChildren(new CategoryItemEntity { Id = ItemModel.ParentId, Title = category.DefaultTitle, ParentId = category.ParentId, ImageByteArray = imageCategoryByteArray, });
+                        }
+
+
+                        var folderItem = await _itemDBService.FindCategoryById(category.ParentId);
+                        if (folderItem == null)
+                        {
+                            var folder = await _restService.GetGeneralItemInfo(category.ParentId);
+
+                            var imageFolderByteArray = await _restService.GetImageById(ItemModel.LangTag, category.ParentId.ToString());
+                            if(imageFolderByteArray == null)
+                            {
+                                await _userDialogs.AlertAsync("I can't find pictures for folder with such " + "id: " + ItemModel.ParentId, "Oops", "Ok");
+
+                            }
+                            else
+                            {
+                                await _itemDBService.InsertOrUpdateFolderWithChildren(new FolderItemEntity { Id = category.ParentId, Title = folder.DefaultTitle, ImageByteArray = imageFolderByteArray, });
+                            }
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                Debug.WriteLine(ex);
             }
         }
 

@@ -16,9 +16,9 @@ namespace ArtScanner.Services
 
         }
 
-        public async Task<GeneralItemInfoModel> GetGeneralItemInfo(string id)
+        public async Task<GeneralItemInfoModel> GetGeneralItemInfo(long itemId)
         {
-            Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetGeneralItemInfo, id));
+            Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetGeneralById, itemId));
             try
             {
                 using (client = new HttpClient())
@@ -37,7 +37,7 @@ namespace ArtScanner.Services
 
         public async Task<byte[]> GetImageById(string langTag, string id)
         {
-            Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetJPGById, langTag, id));
+            Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetJPGById, id));
             try
             {
                 using (client = new HttpClient())
@@ -65,6 +65,53 @@ namespace ArtScanner.Services
                     {
                         var result = await client.GetStringAsync(uri);
                         return JsonConvert.DeserializeObject<TextItemInfoModel>(result);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+            }
+
+            return null;
+        }
+
+        public async Task<QRcodeDataResultModel> GetIdByQRCode(string qrcodeData)
+        {
+            Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetIdByQRCode, qrcodeData));
+            try
+            {
+                using (client = new HttpClient())
+                {
+                    HttpResponseMessage response = await client.GetAsync(uri);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var result = await client.GetStringAsync(uri);
+                        return JsonConvert.DeserializeObject<QRcodeDataResultModel>(result);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+            }
+
+            return null;
+        }
+
+
+        public async Task<GeneralItemInfoModel> GetGeneralInfoById(long id)
+        {
+            Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetGeneralById, id));
+            try
+            {
+                using (client = new HttpClient())
+                {
+                    HttpResponseMessage response = await client.GetAsync(uri);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var result = await client.GetStringAsync(uri);
+                        return JsonConvert.DeserializeObject<GeneralItemInfoModel>(result);
                     }
                 }
             }

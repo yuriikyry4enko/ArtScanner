@@ -9,7 +9,11 @@ namespace ArtScanner.Utils.Constants
         public static string ItemsGalleryDetailsPage = nameof(Views.ItemGalleryDetailsPage);
         public static string ProviderLoginPage = nameof(Views.ProviderLoginPage);
         public static string ChooseLanguagePage = nameof(Views.ChooseLanguagePage);
+
         public static string ApologizeLanguagePopupPage = nameof(Popups.ApologizeLanguagePopupPage);
+        public static string LoadingPopupPage = nameof(Popups.LoadingPopupPage);
+        public static string BurgerMenuPopupPage = nameof(Popups.BurgerMenuPopupPage);
+
         public static string BookletPage = nameof(Views.BookletPage);
         public static string BookletItemDetailsPage = nameof(Views.BookletItemDetailsPage);
         public static string BookleItemDetailsFolderPage = nameof(Views.BookleItemDetailsFolderPage);

@@ -65,6 +65,11 @@ namespace ArtScanner.ViewModels
 
         public ICommand SettingsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.ChooseLanguagePage); });
 
+        public ICommand OpenBurgerMenuCommand => new Command(async () =>
+        {
+            await navigationService.NavigateAsync(PageNames.BurgerMenuPopupPage);
+        });
+
         public ICommand ScannCommand => new Command(async () =>
         {
             try

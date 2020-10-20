@@ -30,14 +30,12 @@
                         IsVisible="{Binding ItemModel.ImageByteArray, Converter={StaticResource NullToBoolConverter}}"
                         Source="{Binding ItemModel.ImageByteArray, 
                             Converter={StaticResource ByteArrayToImage}}"
-                        sharedTransitions:Transition.Name="artTransition" 
                         Aspect="AspectFill"/>
                         
                      <Image
                         
                         IsVisible="{Binding ItemModel.ImageUrl, Converter={StaticResource NullToBoolConverter}}"
                         Source="{Binding ItemModel.ImageUrl}"
-                        sharedTransitions:Transition.Name="artTransition" 
                         Aspect="AspectFill"/>
 
                     <Frame

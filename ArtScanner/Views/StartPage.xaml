@@ -10,6 +10,12 @@
     <Grid
         Padding="0"
         Margin="0">
+        
+        <Image
+            VerticalOptions="FillAndExpand"
+            HorizontalOptions="FillAndExpand"
+            Aspect="AspectFill"
+            Source="bookshelf.png"/>
         <StackLayout
             Padding="0"
             Margin="0"
@@ -98,5 +104,25 @@
                 <TapGestureRecognizer Command="{Binding NavigateToBookletsCommand}"/>
             </controls:Circle.GestureRecognizers>
         </controls:Circle>
+
+        <controls:Circle
+            VerticalOptions="Start"
+            HorizontalOptions="End"
+            WidthRequest="60"
+            HeightRequest="60"
+            Margin="30"
+            Color="White">
+            <controls:TintedCachedImage
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Source="{x:Static resources:Images.Flyer}"
+                WidthRequest="30"   
+                TintColor="Black"
+                HeightRequest="30"/>
+            <controls:Circle.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OpenBurgerMenuCommand}"/>
+            </controls:Circle.GestureRecognizers>
+        </controls:Circle>
+
     </Grid>
 </views:BasePage>

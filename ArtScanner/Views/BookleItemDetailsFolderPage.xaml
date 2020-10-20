@@ -5,19 +5,34 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:ArtScanner.Controls"
     xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
+    xmlns:converters="clr-namespace:ArtScanner.Converters"
+    xmlns:context="clr-namespace:ContextMenu.Views;assembly=ContextMenu"
+    xmlns:forms="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+    x:Name="root"
     x:Class="ArtScanner.Views.BookleItemDetailsFolderPage">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+          <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImage" />
+            <converters:MenuFitWidthConverter x:Key="MenuFitWidthConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <Grid>
        <Grid.RowDefinitions>
            <RowDefinition Height="180"/>
            <RowDefinition Height="*"/>
        </Grid.RowDefinitions>
-        <StackLayout
+        <Grid
             Margin="0"
             Padding="0"
-            BackgroundColor="MediumVioletRed"
             VerticalOptions="FillAndExpand"
             HorizontalOptions="FillAndExpand"
             Grid.Row="0">
+             <Image
+                VerticalOptions="FillAndExpand"
+                HorizontalOptions="FillAndExpand"
+                Aspect="AspectFill"
+                Source="{Binding NavigatedItem.ImageByteArray, 
+                            Converter={StaticResource ByteArrayToImage}}"/>
             <Label
                 Padding="30"
                 Margin="0,55,0,0"
@@ -27,43 +42,87 @@
                 VerticalOptions="Center"
                 HorizontalOptions="FillAndExpand"
                 Text="Museum"/>
-        </StackLayout>
-        <ListView
-            Grid.Row="1"
-            VerticalOptions="FillAndExpand"
-            HorizontalOptions="FillAndExpand"
-            HasUnevenRows="True"
-            SeparatorColor="Transparent"
-            ItemsSource="{Binding BookletItems}">
+        </Grid>
+        <ListView x:Name="CollectionView"
+                HasUnevenRows="True"
+                Grid.Row="1"
+                SelectedItem="{Binding SelectedBookletItem, Mode=TwoWay}"
+                ItemsSource="{Binding BookletItems}"
+                SelectionMode="Single"
+                BackgroundColor="Transparent">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
-                        <StackLayout
-                              Orientation="Horizontal"
-                              Margin="0,3"  
-                              HeightRequest="90"
-                              BackgroundColor="{Binding BookletColor}">
-                              <ImageButton
-                                  Margin="10,0"
-                                  BackgroundColor="DarkBlue"
-                                  HeightRequest="70"
-                                  WidthRequest="70"
-                                  VerticalOptions="Center"
-                                  HorizontalOptions="Start"/>
-                              <Label
-                                  VerticalOptions="Center"
-                                  Padding="30"
-                                  TextColor="White"
-                                  FontAttributes="Bold"
-                                  FontSize="Small"
-                                  HorizontalOptions="Start"
-                                  Text="{Binding Title}"/>
-                            </StackLayout>
+                        <context:SideContextMenuView
+                            ForceCloseCommand="{Binding ForceCloseCommand}">
+                            <context:SideContextMenuView.View>
+                                <Frame
+                                    HorizontalOptions="FillAndExpand"
+                                    Padding="0"
+                                    HasShadow="False"
+                                    WidthRequest="{Binding Source={x:Reference CollectionView}, Path=Width, Converter={StaticResource MenuFitWidthConverter}, ConverterParameter='0'}">
+                                
+                                    <StackLayout
+                                      Orientation="Horizontal"
+                                      Margin="0,3"
+                                      BackgroundColor="White"
+                                      HeightRequest="90">
+                                        <Image
+                                            Margin="10,0"
+                                            HeightRequest="90"
+                                            Aspect="AspectFit"
+                                            WidthRequest="90"
+                                            Source="{Binding ImageByteArray, 
+                                                    Converter={StaticResource ByteArrayToImage}}"
+                                            VerticalOptions="Center"
+                                            HorizontalOptions="Start"/>
+                                        <Label
+                                            VerticalOptions="Center"
+                                            Padding="15"
+                                            TextColor="Black"
+                                            FontAttributes="Bold"
+                                            FontSize="Micro"
+                                            HorizontalOptions="Start"
+                                            Text="{Binding Description}"/>
+                                    </StackLayout>
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Path=BindingContext.ItemTappedCommad,Source={x:Reference root}}" CommandParameter="{Binding .}"/>
+                                    </Frame.GestureRecognizers>
+                                </Frame>
+
+                            </context:SideContextMenuView.View>
+                            <context:SideContextMenuView.ContextTemplate>
+                                <DataTemplate>
+                                    <Frame
+                                        Padding="30,0"
+                                            IsClippedToBounds="true"
+                                            HasShadow="False"
+                                            BackgroundColor="Red">
+                                        <StackLayout
+                                            VerticalOptions="Center">
+                                            <controls:TintedCachedImage
+                                                TintColor="White"
+                                                Source="{x:Static resources:Images.Trash}"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="EndAndExpand"
+                                                WidthRequest="35"
+                                                HeightRequest="35">
+                                                <forms:SvgCachedImage.GestureRecognizers>
+                                                    <TapGestureRecognizer
+                                                        Command="{Binding Source={x:Reference CollectionView}, Path=BindingContext.DeleteCommand}"
+                                                        CommandParameter="{Binding}"/>
+                                                </forms:SvgCachedImage.GestureRecognizers>
+                                            </controls:TintedCachedImage>
+                                    </StackLayout>
+                                    </Frame>
+                                </DataTemplate>
+                            </context:SideContextMenuView.ContextTemplate>  
+                        </context:SideContextMenuView>
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
-
         <controls:Circle
             Grid.Row="1"
             VerticalOptions="End"

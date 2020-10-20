@@ -8,17 +8,18 @@ namespace ArtScanner.Controls
 {
     public partial class ItemGalleryComponent : Grid
     {
+        public enum CardState
+        {
+            Expanded,
+            Collapsed
+        }
 
-        //double yHalfPosition;
-        //double yFullPosition;
-        //double yZeroPosition;
-        //int currentPsotion;
-        //double currentPostionY;
-        //bool up;
-        //bool down;
-        //bool isTurnY;
-        //double valueY;
-        //double y;
+        public class CardEvent
+        {
+        }
+
+        private CardState _cardState = CardState.Collapsed;
+
 
         private int position = 0;
 
@@ -35,199 +36,127 @@ namespace ArtScanner.Controls
         public ItemGalleryComponent()
         {
             InitializeComponent();
-            titleItem.IsVisible = false;
+            //titleItem.IsVisible = false;
         }
 
         void TapGestureRecognizer_Tapped(System.Object sender, System.EventArgs e)
         {
-            if (position == 0)
-            {
-                titleItem.IsVisible = true;
+            //if (position == 0)
+            //{
+            //    titleItem.IsVisible = true;
 
-                itemInfoCircleButton.TranslateTo(this.X, this.Y - 150);
-                artItemImage.TranslateTo(this.X, this.Y - 150);
-                titleItem.TranslateTo(this.X, this.Y - 100);
+            //    artItemImage.TranslateTo(this.X, this.Y - 120);
+            //    titleItem.TranslateTo(this.X, this.Y - 35);
 
-                itemInfoCircleButton.RotateTo(-90);
+            //    position = 1;
+            //}
+            //else
+            //{
+            //    artItemImage.TranslateTo(this.X, this.Y);
+            //    titleItem.TranslateTo(this.X, this.Y);
 
-                position = 1;
-            }
-            else
-            {
-                itemInfoCircleButton.TranslateTo(this.X, this.Y);
-                artItemImage.TranslateTo(this.X, this.Y);
-                titleItem.TranslateTo(this.X, this.Y);
+            //    titleItem.IsVisible = false;
 
-                titleItem.IsVisible = false;
 
-                itemInfoCircleButton.RotateTo(90);
-
-                position = 0;
-            }
+            //    position = 0;
+            //}
+            GoToState(CardState.Expanded);
 
         }
 
-        //void PanGestureRecognizer_PanUpdated(System.Object sender, Xamarin.Forms.PanUpdatedEventArgs e)
-        //{
-        //    // Handle the pan
-        //    switch (e.StatusType)
-        //    {
-        //        case GestureStatus.Running:
 
-        //            if (e.TotalY >= 5 || e.TotalY <= -5 && !isTurnY)
-        //            {
-        //                isTurnY = true;
-        //            }
-        //            if (isTurnY)
-        //            {
-        //                if (e.TotalY <= valueY)
-        //                {
-        //                    up = true;
+        public void GoToState(CardState cardState)
+        {
+            // chec we are actually changing state
+            if (_cardState == cardState)
+                return;
 
-        //                }
-        //                if (e.TotalY >= valueY)
-        //                {
-        //                    down = true;
+            MessagingCenter.Send<CardEvent>(new CardEvent(), cardState.ToString());
+            AnimateTransition(cardState);
+            _cardState = cardState;
+            //HeroDetails.InputTransparent = _cardState == CardState.Collapsed;
 
-        //                }
-        //            }
-        //            if (up)
-        //            {
-        //                if (Device.RuntimePlatform == Device.Android)
-        //                {
-        //                    if (yFullPosition < (currentPostionY + (-1 * e.TotalY)))
-        //                    {
-        //                        bottomSheet.TranslateTo(bottomSheet.X, -yFullPosition);
-        //                    }
-        //                    else
-        //                    {
-        //                        bottomSheet.TranslateTo(bottomSheet.X, -1 * (currentPostionY + (-1 * e.TotalY)));
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    if (yFullPosition < (currentPostionY + (-1 * e.TotalY)))
-        //                    {
-        //                        bottomSheet.TranslateTo(bottomSheet.X, -yFullPosition, 20);
-        //                    }
-        //                    else
-        //                    {
-        //                        bottomSheet.TranslateTo(bottomSheet.X, -1 * (currentPostionY + (-1 * e.TotalY)), 20);
-        //                    }
-        //                }
-        //            }
-        //            else if (down)
-        //            {
-        //                if (Device.RuntimePlatform == Device.Android)
-        //                {
-        //                    if (yZeroPosition > currentPostionY - e.TotalY)
-        //                    {
-        //                        bottomSheet.TranslateTo(bottomSheet.X, -yZeroPosition);
-        //                    }
-        //                    else
-        //                    {
-        //                        bottomSheet.TranslateTo(bottomSheet.X, -(currentPostionY - (e.TotalY)));
-        //                    }
-        //                }
-        //                else
-        //                {
-        //                    if (yZeroPosition > currentPostionY - e.TotalY)
-        //                    {
-        //                        bottomSheet.TranslateTo(bottomSheet.X, -yZeroPosition, 20);
-        //                    }
-        //                    else
-        //                    {
-        //                        bottomSheet.TranslateTo(bottomSheet.X, -(currentPostionY - (e.TotalY)), 20);
-        //                    }
-        //                }
-        //            }
-        //            break;
-        //        case GestureStatus.Completed:
-        //            // Store the translation applied during the pan
-        //            valueY = e.TotalY;
-        //            y = bottomSheet.TranslationY;
+        }
 
-        //            //at the end of the event - snap to the closest location
-        //            //var finalTranslation = Math.Max(Math.Min(0, -1000), -Math.Abs(getClosestLockState(e.TotalY + y)));
+        private void AnimateTransition(CardState cardState)
+        {
+            var parentAnimation = new Animation();
 
-        //            //depending on Swipe Up or Down - change the snapping animation
-        //            if (up)
-        //            {
-        //                //swipe up happened
-        //                if (currentPsotion == 1)
-        //                {
-        //                    bottomSheet.TranslateTo(bottomSheet.X, -yFullPosition);
-        //                    currentPsotion = 2;
-        //                    currentPostionY = yFullPosition;
-        //                    bottomsheetListView.HeightRequest = yFullPosition;
-        //                    bottomsheetListView.HeightRequest = yFullPosition;
-        //                    //bottomSheet.TranslateTo(bottomSheet.X, finalTranslation, 250, Easing.SpringIn);
-        //                }
-        //                else if (currentPsotion == 0)
-        //                {
-        //                    double currentY = (-1) * y;
-        //                    double differentBetweenHalfAndCurrent = Math.Abs(currentY - yHalfPosition);
-        //                    double differentBetweenFullAndCurrent = Math.Abs(currentY - yFullPosition);
-        //                    //check which is close snap point and move to the closest snap point
-        //                    if (differentBetweenHalfAndCurrent < differentBetweenFullAndCurrent)
-        //                    {
-        //                        //yHalfPosition is the closest one
-        //                        bottomSheet.TranslateTo(bottomSheet.X, -yHalfPosition);
-        //                        currentPsotion = 1;
-        //                        currentPostionY = yHalfPosition;
-        //                        bottomsheetListView.HeightRequest = yHalfPosition;
-        //                    }
-        //                    else
-        //                    {
-        //                        bottomSheet.TranslateTo(bottomSheet.X, -yFullPosition);
-        //                        currentPsotion = 2;
-        //                        currentPostionY = yFullPosition;
-        //                        bottomsheetListView.HeightRequest = yFullPosition;
-        //                    }
+            if (cardState == CardState.Expanded)
+            {
+                parentAnimation.Add(0.00, 0.25, CreateLearnMoreAnimation(cardState));
+                parentAnimation.Add(0.00, 0.50, CreateImageAnimation(cardState));
 
-        //                }
+                // animate in the details scroller
+                parentAnimation.Add(0.60, 0.85, new Animation((v) => titleItem.TranslationY = v,
+                    200, 0, Easing.SpringOut));
+                parentAnimation.Add(0.60, 0.85, new Animation((v) => titleItem.Opacity = v,
+                    0, 1, Easing.Linear));
 
-        //            }
-        //            if (down)
-        //            {
-        //                //swipe down happened
-        //                if (currentPsotion == 1)
-        //                {
-        //                    bottomSheet.TranslateTo(bottomSheet.X, -yZeroPosition);
-        //                    currentPsotion = 0;
-        //                    currentPostionY = yZeroPosition;
-        //                }
-        //                else if (currentPsotion == 2)
-        //                {
-        //                    double currentY = (-1) * y;
-        //                    double differentBetweenHalfAndCurrent = Math.Abs(currentY - yHalfPosition);
-        //                    double differentBetweenZeroAndCurrent = Math.Abs(currentY - yZeroPosition);
-        //                    if (differentBetweenHalfAndCurrent < differentBetweenZeroAndCurrent)
-        //                    {
-        //                        bottomSheet.TranslateTo(bottomSheet.X, -yHalfPosition);
-        //                        currentPsotion = 1;
-        //                        currentPostionY = yHalfPosition;
-        //                        bottomsheetListView.HeightRequest = yHalfPosition;
-        //                    }
-        //                    else
-        //                    {
-        //                        bottomSheet.TranslateTo(bottomSheet.X, -yZeroPosition);
-        //                        currentPsotion = 0;
-        //                        currentPostionY = yZeroPosition;
-        //                    }
+                // animate in the top bar
+                parentAnimation.Add(0.75, 0.85, new Animation((v) => titleItem.TranslationY = v,
+                    -20, 0, Easing.Linear));
+                parentAnimation.Add(0.75, 0.85, new Animation((v) => titleItem.Opacity = v,
+                    0, 1, Easing.Linear));
 
+            }
+            else
+            {
+                parentAnimation.Add(0.25, 0.45, CreateImageAnimation(cardState));
+                parentAnimation.Add(0.35, 0.45, CreateLearnMoreAnimation(cardState));
 
-        //                }
-        //                //bottomSheet.TranslateTo(bottomSheet.X, finalTranslation, 250, Easing.SpringOut);
-        //            }
+                parentAnimation.Add(0.00, 0.35, new Animation((v) => titleItem.TranslationY = v,
+                        0, 200, Easing.SpringIn));
+                parentAnimation.Add(0.00, 0.35, new Animation((v) => titleItem.Opacity = v,
+                    1, 0, Easing.Linear));
 
-        //            y = bottomSheet.TranslationY;
-        //            up = false;
-        //            down = false;
-        //            break;
+                // animate out the top bar
+                parentAnimation.Add(0.00, 0.10, new Animation((v) => titleItem.TranslationY = v,
+                    0, -20, Easing.Linear));
+                parentAnimation.Add(0.0, 0.10, new Animation((v) => titleItem.Opacity = v,
+                    1, 0, Easing.Linear));
+            }
 
-        //    }
-    
-        //}
+            parentAnimation.Commit(this, "CardExpand", 16, 2000);
+        }
+
+        private Animation CreateLearnMoreAnimation(CardState cardState)
+        {
+            // work out where the top of the card should be
+            var learnMoreAnimationStart = cardState == CardState.Expanded ? 0 : 100;
+            var learnMoreAnimationEnd = cardState == CardState.Expanded ? 100 : 0;
+
+            var learnMoreAnim = new Animation(
+                v =>
+                {
+                    //LearnMoreLabel.TranslationX = v;
+                    //LearnMoreLabel.Opacity = 1 - (v / 100);
+                },
+                learnMoreAnimationStart,
+                learnMoreAnimationEnd,
+                Easing.SinInOut
+                );
+            return learnMoreAnim;
+
+        }
+
+        private Animation CreateImageAnimation(CardState cardState)
+        {
+            // work out where the top of the card should be
+            var imageAnimationStart = cardState == CardState.Expanded ? 50 : 0;
+            var imageAnimationEnd = cardState == CardState.Expanded ? 0 : 50;
+
+            var imageAnim = new Animation(
+                v =>
+                {
+                    //HeroImage.TranslationY = v;
+                },
+                imageAnimationStart,
+                imageAnimationEnd,
+                Easing.SpringOut
+                );
+            return imageAnim;
+
+        }
     }
 }

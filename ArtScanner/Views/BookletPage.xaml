@@ -5,42 +5,124 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:ArtScanner.Controls"
     xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
-    xmlns:prism="http://prismlibrary.com"
+    xmlns:converters="clr-namespace:ArtScanner.Converters"
+    xmlns:context="clr-namespace:ContextMenu.Views;assembly=ContextMenu"
+    xmlns:forms="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
+    x:Name="root"
     x:Class="ArtScanner.Views.BookletPage">
+     <ContentPage.Resources>
+        <ResourceDictionary>
+          <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImage" />
+          <converters:MenuFitWidthConverter x:Key="MenuFitWidthConverter" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <Grid>
-        <ListView
-            Margin="0,15"
+       <Grid.RowDefinitions>
+           <RowDefinition Height="180"/>
+           <RowDefinition Height="*"/>
+       </Grid.RowDefinitions>
+        <Grid
+            Margin="0"
+            Padding="0"
             VerticalOptions="FillAndExpand"
             HorizontalOptions="FillAndExpand"
-            HasUnevenRows="True"
-            SeparatorColor="Transparent"
-            ItemsSource="{Binding BookletItems}">
-        <ListView.ItemTemplate>
-          <DataTemplate>
-            <ViewCell>
-              <StackLayout
-                  Margin="0,3"  
-                  HeightRequest="90"
-                  BackgroundColor="{Binding BookletColor}">
-                  <Label
-                      Padding="30"
-                      TextColor="White"
-                      FontAttributes="Bold"
-                      FontSize="Large"
-                      VerticalOptions="Center"
-                      HorizontalOptions="FillAndExpand"
-                      Text="{Binding Title}"/>
-                </StackLayout>
-            </ViewCell>
-          </DataTemplate>
-        </ListView.ItemTemplate>
-        <ListView.Behaviors>
-            <prism:EventToCommandBehavior EventName="ItemTapped"
-                                          Command="{Binding ItemTappedCommad}" />
-        </ListView.Behaviors>
-      </ListView>
+            Grid.Row="0">
+             <!--<Image
+                VerticalOptions="FillAndExpand"
+                HorizontalOptions="FillAndExpand"
+                Aspect="AspectFill"
+                Source="{Binding NavigatedItem.ImageByteArray, 
+                            Converter={StaticResource ByteArrayToImage}}"/>-->
+            <Label
+                Padding="30"
+                Margin="0,55,0,0"
+                TextColor="Black"
+                FontAttributes="Bold"
+                FontSize="Large"
+                VerticalOptions="Center"
+                HorizontalOptions="FillAndExpand"
+                Text="Scann"/>
+        </Grid>
+        <ListView x:Name="CollectionView"
+                HasUnevenRows="True"
+                 Grid.Row="1"
+                SelectedItem="{Binding SelectedBookletItem, Mode=TwoWay}"
+                ItemsSource="{Binding BookletItems}"
+                SelectionMode="Single"
+                BackgroundColor="Transparent">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <context:SideContextMenuView
+                            ForceCloseCommand="{Binding ForceCloseCommand}">
+                            <context:SideContextMenuView.View>
+                                <Frame
+                                    HorizontalOptions="FillAndExpand"
+                                    Padding="0"
+                                    HasShadow="False"
+                                    WidthRequest="{Binding Source={x:Reference CollectionView}, Path=Width, Converter={StaticResource MenuFitWidthConverter}, ConverterParameter='0'}">
+                                
+                                     <Grid
+                                          Padding="0"
+                                          Margin="0"
+                                          HeightRequest="90">
 
-           <controls:Circle
+                                          <Image
+                                              VerticalOptions="FillAndExpand"
+                                              HorizontalOptions="FillAndExpand"
+                                              Aspect="AspectFill"
+                                              Source="{Binding ImageByteArray, 
+                                                    Converter={StaticResource ByteArrayToImage}}"/>
+                                          <Label
+                                              Padding="30"
+                                              TextColor="White"
+                                              FontAttributes="Bold"
+                                              FontSize="Large"
+                                              VerticalOptions="Center"
+                                              HorizontalOptions="FillAndExpand"
+                                              Text="{Binding Title}"/>
+                                    </Grid>
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer
+                                            Command="{Binding Path=BindingContext.ItemTappedCommad,Source={x:Reference root}}" CommandParameter="{Binding .}"/>
+                                    </Frame.GestureRecognizers>
+                                </Frame>
+
+                            </context:SideContextMenuView.View>
+                            <context:SideContextMenuView.ContextTemplate>
+                                <DataTemplate>
+                                    <Frame
+                                        Padding="30,0"
+                                            IsClippedToBounds="true"
+                                            HasShadow="False"
+                                            BackgroundColor="Red">
+                                        <StackLayout
+                                            VerticalOptions="Center">
+                                            <controls:TintedCachedImage
+                                                TintColor="White"
+                                                Source="{x:Static resources:Images.Trash}"
+                                                VerticalOptions="Center"
+                                                HorizontalOptions="EndAndExpand"
+                                                WidthRequest="35"
+                                                HeightRequest="35">
+                                                <forms:SvgCachedImage.GestureRecognizers>
+                                                    <TapGestureRecognizer
+                                                        Command="{Binding Source={x:Reference CollectionView}, Path=BindingContext.DeleteCommand}"
+                                                        CommandParameter="{Binding}"/>
+                                                </forms:SvgCachedImage.GestureRecognizers>
+                                            </controls:TintedCachedImage>
+                                    </StackLayout>
+                                    </Frame>
+                                </DataTemplate>
+                            </context:SideContextMenuView.ContextTemplate>  
+                        </context:SideContextMenuView>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            
+        </ListView>
+        <controls:Circle
+            Grid.Row="1"
             VerticalOptions="End"
             Padding="0"
             HeightRequest="45"

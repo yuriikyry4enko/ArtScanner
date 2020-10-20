@@ -31,6 +31,7 @@
     <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
     <PackageReference Include="Rg.Plugins.Popup" Version="2.0.0.4" />
     <PackageReference Include="Prism.Plugin.Popups" Version="7.2.0.1046" />
+    <PackageReference Include="ContextViewCell" Version="2.0.1" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\" />
@@ -64,6 +65,8 @@
     <None Remove="Resources\museum.svg" />
     <None Remove="Resources\ideogram.svg" />
     <None Remove="Resources\flyer.svg" />
+    <None Remove="Resources\trash.svg" />
+    <None Remove="Resources\Screenshot 2020-10-12 at 17.49.26.png" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\play.svg" />
@@ -79,6 +82,7 @@
     <EmbeddedResource Include="Resources\museum.svg" />
     <EmbeddedResource Include="Resources\ideogram.svg" />
     <EmbeddedResource Include="Resources\flyer.svg" />
+    <EmbeddedResource Include="Resources\trash.svg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resx\AppResources.resx">

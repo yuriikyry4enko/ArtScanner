@@ -9,7 +9,8 @@ namespace ArtScanner.Services
     {
         Task<byte[]> GetImageById(string langTag, string id);
         Task<TextItemInfoModel> GetTextById(string langTag, string id);
-        Task<GeneralItemInfoModel> GetGeneralItemInfo(string id);
+        Task<GeneralItemInfoModel> GetGeneralItemInfo(long id);
+        Task<QRcodeDataResultModel> GetIdByQRCode(string qrcodeData);
 
     }
 }

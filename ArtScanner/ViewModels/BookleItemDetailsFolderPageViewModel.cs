@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Input;
+using Acr.UserDialogs;
 using ArtScanner.Models;
+using ArtScanner.Models.Entities;
+using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
+using ArtScanner.Utils.Helpers;
+using ArtScanner.Views;
+using Plugin.SharedTransitions;
 using Prism.Navigation;
 using Xamarin.Forms;
 
@@ -11,50 +18,109 @@ namespace ArtScanner.ViewModels
 {
     class BookleItemDetailsFolderPageViewModel : BaseViewModel
     {
-        private ObservableCollection<BookletItem> _bookletItems = new ObservableCollection<BookletItem>();
-        public ObservableCollection<BookletItem> BookletItems
+        private readonly IUserDialogs _userDialogs;
+        private readonly IItemDBService _itemDBService;
+        private readonly IAppFileSystemService _appFileSystemService;
+
+
+        private ObservableCollection<ItemEntity> _bookletItems = new ObservableCollection<ItemEntity>();
+        public ObservableCollection<ItemEntity> BookletItems
         {
             get => _bookletItems;
             set => SetProperty(ref _bookletItems, value);
         }
 
-        public BookleItemDetailsFolderPageViewModel(INavigationService navigationService) : base(navigationService)
+        private CategoryItemEntity _navigatedItem;
+        public CategoryItemEntity NavigatedItem
         {
+            get => _navigatedItem;
+            set => SetProperty(ref _navigatedItem, value);
         }
 
-        public override void OnNavigatedTo(INavigationParameters parameters)
+
+        private ItemEntity _selectedItem;
+        public ItemEntity SelectedItem
+        {
+            get => _selectedItem;
+            set => SetProperty(ref _selectedItem, value);
+        }
+
+        public BookleItemDetailsFolderPageViewModel
+            (IUserDialogs userDialogs,
+            INavigationService navigationService,
+            IAppFileSystemService appFileSystemService,
+            IItemDBService itemDBService) : base(navigationService)
+        {
+            this._userDialogs = userDialogs;
+            this._itemDBService = itemDBService;
+            this._appFileSystemService = appFileSystemService;
+        }
+
+        public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
-            InitItemsList();
+
+            if (parameters.GetNavigationMode() != NavigationMode.Back)
+            {
+                NavigatedItem = GetParameters<CategoryItemEntity>(parameters);
+
+                await InitItemsList();
+            }
         }
 
-        public ICommand ItemTappedCommad => new Command(async () =>
+        public ICommand ItemTappedCommad => new Command<ItemEntity>(async (item) =>
         {
-            await navigationService.NavigateAsync(PageNames.BookleItemDetailsFolderPage);
+            await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(item));
         });
 
-        private void InitItemsList()
+        public ICommand DeleteCommand => new Command(async (item) =>
+        {
+            var result = await _userDialogs.ConfirmAsync("Remove item?", "Confirmation", "Yes", "No");
+
+            if (!result) return;
+
+            var model = item as ItemEntity;
+
+            await _itemDBService.DeleateItem(model);
+
+            BookletItems.Remove(model);
+
+            if (BookletItems.Count == 0)
+            {
+                await _itemDBService.DeleateCategoryItem(NavigatedItem);
+                await _itemDBService.CheckAndDeleteFolder(NavigatedItem.ParentId, NavigatedItem.LocalId);
+
+                await navigationService.GoBackToRootAsync();
+                await navigationService.NavigateAsync($"{nameof(StartPage)}");
+            }
+        });
+
+        private async Task InitItemsList()
         {
             try
             {
                 BookletItems.Clear();
-                BookletItems.Add(new BookletItem
-                {
-                    Title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-                    BookletColor = Color.Violet,
-                });
 
-                BookletItems.Add(new BookletItem
+                var result = await _itemDBService.GetItemsByParentIdAll(NavigatedItem.Id);
+                foreach(var item in result)
                 {
-                    Title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-                    BookletColor = Color.DarkOliveGreen,
-                });
-
-                BookletItems.Add(new BookletItem
-                {
-                    Title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua",
-                    BookletColor = Color.Gray,
-                });
+                    BookletItems.Add(new ItemEntity
+                    {
+                        Liked = item.Liked,
+                        LangTag = item.LangTag,
+                        Author = item.Author,
+                        LocalId = item.LocalId,
+                        MusicUrl = item.MusicUrl,
+                        ImageFileName = item.ImageFileName,
+                        ImageUrl = item.ImageUrl,
+                        ParentId = item.ParentId,
+                        MusicFileName = item.MusicFileName,
+                        Description = item.Description,
+                        Id = item.Id,
+                        Title = item.Title,
+                        ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName)),
+                    });
+                }
             }
             catch (Exception ex)
             {
