@@ -60,6 +60,10 @@ namespace ArtScanner.ViewModels
             await PopupNavigation.Instance.PopAsync();
         });
 
+        public ICommand NavigateToHomePageCommand => new Command(async () =>
+        {
+            await navigationService.NavigateAsync(PageNames.HomePage);
+        });
 
         public ICommand NavigateToBookletsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.BookletPage); });
 

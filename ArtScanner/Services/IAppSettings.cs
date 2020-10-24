@@ -5,5 +5,6 @@ namespace ArtScanner.Services
     {
         bool IsLanguageSet { get; set; }
         string LanguagePreferences { get; set; }
+        bool NeedToUpdateHomePage { get; set; }
     }
 }

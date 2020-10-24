@@ -178,7 +178,7 @@ namespace ArtScanner.ViewModels
                 ItemModel.Liked = !ItemModel.Liked;
                 RaisePropertyChanged(nameof(LikeIcon));
 
-                _userDialogs.Toast(AppResources.GalleryUpdated);
+                IsBusy = true;
 
                 if (!ItemModel.Liked && ItemModel.LocalId != 0)
                 {
@@ -195,6 +195,10 @@ namespace ArtScanner.ViewModels
 
                     await InitParentEntities();
                 }
+
+                IsBusy = false;
+
+                _userDialogs.Toast(AppResources.GalleryUpdated);
             }
             catch(Exception ex)
             {
@@ -275,7 +279,7 @@ namespace ArtScanner.ViewModels
                         }
 
 
-                        var folderItem = await _itemDBService.FindCategoryById(category.ParentId);
+                        var folderItem = await _itemDBService.FindFolderById(category.ParentId);
                         if (folderItem == null)
                         {
                             var folder = await _restService.GetGeneralItemInfo(category.ParentId);

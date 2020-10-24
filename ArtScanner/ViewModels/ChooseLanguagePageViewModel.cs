@@ -11,6 +11,8 @@ using ArtScanner.Resx;
 using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
 using ArtScanner.Utils.Helpers;
+using ArtScanner.Views;
+using Plugin.SharedTransitions;
 using Prism.Navigation;
 using Xamarin.Forms;
 
@@ -198,7 +200,7 @@ namespace ArtScanner.ViewModels
 
                 appSettings.IsLanguageSet = true;
 
-                await navigationService.NavigateAsync(PageNames.StartPage);
+                await navigationService.NavigateAsync(PageNames.HomePage);
             }
             else if (LanguagePreferencesList.Count != 0)
             {

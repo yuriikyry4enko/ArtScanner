@@ -11,12 +11,11 @@
     xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner">
     <Grid
         Padding="0">
-      
         <CarouselView
+            x:Name="carouselGalleyItems"
             Margin="0"
             VerticalOptions="FillAndExpand"
             ItemsSource="{Binding Items}"
-            
             HorizontalScrollBarVisibility="Never">
             <CarouselView.ItemsLayout>
                 <LinearItemsLayout
@@ -27,11 +26,11 @@
             <CarouselView.ItemTemplate>
                     <DataTemplate>
                         <controls:ItemGalleryComponent>
-                            <controls:ItemGalleryComponent.GestureRecognizers>
+                            <!--<controls:ItemGalleryComponent.GestureRecognizers>
                                  <TapGestureRecognizer
                                      Command="{Binding BindingContext.NavigateToItemDetail, Source={x:Reference itemsGalleryPage}}"
                                      CommandParameter="{Binding .}" />
-                            </controls:ItemGalleryComponent.GestureRecognizers>
+                            </controls:ItemGalleryComponent.GestureRecognizers>-->
                         </controls:ItemGalleryComponent>
                     </DataTemplate>
             </CarouselView.ItemTemplate>

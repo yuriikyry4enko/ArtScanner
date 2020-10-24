@@ -20,5 +20,13 @@ namespace ArtScanner.Services
             get => Preferences.Get(LanguagePreferencesKey, string.Empty);
             set => Preferences.Set(LanguagePreferencesKey, value);
         }
+
+        private const string NeedToUpdateHomePageKey = "NeedToUpdateHomePageKey";
+
+        public bool NeedToUpdateHomePage
+        {
+            get => Preferences.Get(NeedToUpdateHomePageKey, true);
+            set => Preferences.Set(NeedToUpdateHomePageKey, value);
+        }
     }
 }

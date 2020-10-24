@@ -67,6 +67,7 @@
     <None Remove="Resources\flyer.svg" />
     <None Remove="Resources\trash.svg" />
     <None Remove="Resources\Screenshot 2020-10-12 at 17.49.26.png" />
+    <None Remove="Resources\menu.svg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\play.svg" />
@@ -83,12 +84,16 @@
     <EmbeddedResource Include="Resources\ideogram.svg" />
     <EmbeddedResource Include="Resources\flyer.svg" />
     <EmbeddedResource Include="Resources\trash.svg" />
+    <EmbeddedResource Include="Resources\menu.svg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resx\AppResources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>AppResources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Resources\ItemGalleryComponent.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resx\AppResources.Designer.cs">

@@ -55,7 +55,7 @@ namespace ArtScanner
                 var language = CultureInfo.GetCultures(CultureTypes.NeutralCultures).ToList().First(element => element.EnglishName.Contains(settings.LanguagePreferences)); ;
                 AppResources.Culture = language;
 
-                NavigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(StartPage)}");
+                NavigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(HomePage)}");
             }
             else
             {
@@ -85,6 +85,8 @@ namespace ArtScanner
 
             containerRegistry.RegisterForNavigation<ItemGalleryDetailsPage, ItemGalleryDetailsPageViewModel>();
             containerRegistry.RegisterForNavigation<ChooseLanguagePage, ChooseLanguagePageViewModel>();
+
+            containerRegistry.RegisterForNavigation<HomePage, HomePageViewModel>();
             containerRegistry.RegisterForNavigation<StartPage, StartPageViewModel>();
             containerRegistry.RegisterForNavigation<ScannerPage, ScannerPageViewModel>();
             containerRegistry.RegisterForNavigation<BookletPage, BookletPageViewModel>();

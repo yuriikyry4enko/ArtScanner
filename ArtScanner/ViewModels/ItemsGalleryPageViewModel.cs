@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Windows.Input;
+using ArtScanner.Models;
 using ArtScanner.Models.Entities;
 using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
@@ -22,8 +23,8 @@ namespace ArtScanner.ViewModels
 
         #region Properties
 
-        private ObservableCollection<ItemEntity> _items = new ObservableCollection<ItemEntity>();
-        public ObservableCollection<ItemEntity> Items
+        private ObservableCollection<ItemEntityViewModel> _items = new ObservableCollection<ItemEntityViewModel>();
+        public ObservableCollection<ItemEntityViewModel> Items
         {
             get => _items;
             set => SetProperty(ref _items, value);
@@ -61,11 +62,26 @@ namespace ArtScanner.ViewModels
                 var items = await _itemDBService.GetAll();
                 if (items.Count > 0)
                 {
-                    Items = new ObservableCollection<ItemEntity>(items);
-
-                    foreach (var item in Items)
+                    foreach (var item in items)
                     {
-                        item.ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName));
+                        Items.Add(new ItemEntityViewModel()
+                        {
+                            ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName)),
+                            Author = item.Author,
+                            MusicByteArray = item.MusicByteArray,
+                            Id = item.Id,
+                            Description = item.Description,
+                            ImageFileName = item.ImageFileName,
+                            ImageUrl = item.ImageUrl,
+                            LangTag = item.LangTag,
+                            Liked = item.Liked,
+                            LocalId = item.LocalId,
+                            MusicFileName = item.MusicFileName,
+                            MusicUrl = item.MusicUrl,
+                            ParentId = item.ParentId,
+                            Title = item.Title,
+                            WikiUrl = item.WikiUrl,
+                        });
                     }
 
                     RaisePropertyChanged(nameof(Items));
@@ -81,11 +97,16 @@ namespace ArtScanner.ViewModels
 
         #region Commands
 
-        public ICommand NavigateToItemDetail => new DelegateCommand<ItemEntity>(async(itemModel) =>
+        public ICommand NavigateToItemDetail => new DelegateCommand<ItemEntityViewModel>(async(itemModel) =>
         {
             SelectedId = itemModel.LocalId.ToString();
 
             await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(itemModel));
+        });
+
+        public ICommand CarouselGalletyItemChangedCommand => new DelegateCommand<ItemEntityViewModel>(async (itemModel) =>
+        {
+           
         });
 
         #endregion

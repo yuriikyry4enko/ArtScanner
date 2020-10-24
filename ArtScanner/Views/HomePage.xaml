@@ -3,14 +3,14 @@
     xmlns:views="clr-namespace:ArtScanner.Views"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-
+    xmlns:resourcesResx="clr-namespace:ArtScanner.Resx"
     xmlns:controls="clr-namespace:ArtScanner.Controls"
     xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
     xmlns:converters="clr-namespace:ArtScanner.Converters"
     xmlns:context="clr-namespace:ContextMenu.Views;assembly=ContextMenu"
     xmlns:forms="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
     x:Name="root"
-    x:Class="ArtScanner.Views.BookletPage">
+    x:Class="ArtScanner.Views.HomePage">
     <ContentPage.Resources>
         <ResourceDictionary>
           <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImage" />
@@ -19,7 +19,7 @@
     </ContentPage.Resources>
     <Grid>
        <Grid.RowDefinitions>
-           <RowDefinition Height="180"/>
+           <RowDefinition Height="185"/>
            <RowDefinition Height="*"/>
        </Grid.RowDefinitions>
         <Grid
@@ -28,25 +28,52 @@
             VerticalOptions="FillAndExpand"
             HorizontalOptions="FillAndExpand"
             Grid.Row="0">
-             <!--<Image
-                VerticalOptions="FillAndExpand"
-                HorizontalOptions="FillAndExpand"
-                Aspect="AspectFill"
-                Source="{Binding NavigatedItem.ImageByteArray, 
-                            Converter={StaticResource ByteArrayToImage}}"/>-->
-            <Label
-                Padding="30"
-                Margin="0,55,0,0"
-                TextColor="Black"
-                FontAttributes="Bold"
-                FontSize="Large"
-                VerticalOptions="Center"
-                HorizontalOptions="FillAndExpand"
-                Text="Scann"/>
+
+            <StackLayout
+                IsVisible="{Binding IsFoldersListEmpty, Converter={converters:InverseBoolConverter}}"
+                Padding="0"
+                Margin="0"
+                VerticalOptions="Fill"
+                HorizontalOptions="Fill">
+                <Label
+                    Margin="30,20,0,25"
+                    VerticalOptions="Start"
+                    HorizontalOptions="Start"
+                    FontSize="26"
+                    FontAttributes="Bold"
+                    Text="SmartBooklet"
+                    />
+                <Label
+                    IsVisible="{Binding IsMessageAlertVisible}"
+                    Margin="0,0,0,10"
+                    VerticalOptions="Start"
+                    HorizontalOptions="Center"
+                    FontSize="15"
+                    TextColor="Orange"
+                    FontAttributes="Bold"
+                    Text="{x:Static resourcesResx:AppResources.PressAgain}"/>
+
+                <controls:Circle
+                    WidthRequest="80"
+                    HeightRequest="80"
+                    Color="Black">
+                    <controls:TintedCachedImage
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Source="{x:Static resources:Images.Scan}"
+                        WidthRequest="35"   
+                        TintColor="White"
+                        HeightRequest="35"/>
+                    <controls:Circle.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ScannCommand}"/>
+                    </controls:Circle.GestureRecognizers>
+                </controls:Circle>
+            </StackLayout>
         </Grid>
         <ListView x:Name="CollectionView"
                 HasUnevenRows="True"
-                 Grid.Row="1"
+                Grid.Row="1"
+                IsVisible="{Binding IsFoldersListEmpty, Converter={converters:InverseBoolConverter}}"
                 SelectedItem="{Binding SelectedBookletItem, Mode=TwoWay}"
                 ItemsSource="{Binding BookletItems}"
                 SelectionMode="Single"
@@ -120,27 +147,59 @@
                     </ViewCell>
                 </DataTemplate>
             </ListView.ItemTemplate>
-            
         </ListView>
         <controls:Circle
-            Grid.Row="1"
-            VerticalOptions="End"
-            Padding="0"
-            HeightRequest="45"
-            Margin="25,0,0,25"
-            WidthRequest="45"
-            HorizontalOptions="Start"
+            VerticalOptions="Start"
+            HorizontalOptions="End"
+            WidthRequest="60"
+            HeightRequest="60"
+            Margin="30,20,30,20"
             Color="White">
             <controls:TintedCachedImage
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
-                Source="{x:Static resources:Images.BackArrow}"
-                WidthRequest="20"   
+                Source="{x:Static resources:Images.Menu}"
+                WidthRequest="30"   
                 TintColor="Black"
-                HeightRequest="20"/>
+                HeightRequest="30"/>
             <controls:Circle.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding BackCommand}"/>
+                <TapGestureRecognizer Command="{Binding OpenBurgerMenuCommand}"/>
             </controls:Circle.GestureRecognizers>
         </controls:Circle>
+
+         <StackLayout
+            IsVisible="{Binding IsFoldersListEmpty}"
+            Grid.Row="0"
+            Grid.RowSpan="2"
+            Padding="0"
+            Margin="0"
+            VerticalOptions="Center"
+            HorizontalOptions="Center">
+            <Label
+                IsVisible="{Binding IsMessageAlertVisible}"
+                Margin="0,0,0,10"
+                VerticalOptions="Start"
+                HorizontalOptions="Center"
+                FontSize="15"
+                TextColor="Orange"
+                FontAttributes="Bold"
+                Text="{x:Static resourcesResx:AppResources.PressAgain}"/>
+
+            <controls:Circle
+                WidthRequest="120"       
+                HeightRequest="120"
+                Color="Black">
+                <controls:TintedCachedImage
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Source="{x:Static resources:Images.Scan}"
+                    WidthRequest="55"   
+                    TintColor="White"
+                    HeightRequest="55"/>
+                <controls:Circle.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ScannCommand}"/>
+                </controls:Circle.GestureRecognizers>
+            </controls:Circle>
+        </StackLayout>
     </Grid>
 </views:BasePage>

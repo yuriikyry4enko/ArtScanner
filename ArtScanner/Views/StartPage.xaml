@@ -11,11 +11,6 @@
         Padding="0"
         Margin="0">
         
-        <Image
-            VerticalOptions="FillAndExpand"
-            HorizontalOptions="FillAndExpand"
-            Aspect="AspectFill"
-            Source="bookshelf.png"/>
         <StackLayout
             Padding="0"
             Margin="0"
@@ -85,6 +80,26 @@
                 <TapGestureRecognizer Command="{Binding NavigateToGalleyCommand}"/>
             </controls:Circle.GestureRecognizers>
         </controls:Circle>
+
+         <controls:Circle
+            VerticalOptions="End"
+            HorizontalOptions="Center"
+            WidthRequest="60"
+            HeightRequest="60"
+            Margin="30"
+            Color="White">
+            <controls:TintedCachedImage
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Source="{x:Static resources:Images.Flyer}"
+                WidthRequest="30"   
+                TintColor="Black"
+                HeightRequest="30"/>
+            <controls:Circle.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding NavigateToHomePageCommand}"/>
+            </controls:Circle.GestureRecognizers>
+        </controls:Circle>
+
 
         <controls:Circle
             VerticalOptions="End"

@@ -22,6 +22,7 @@ namespace ArtScanner.ViewModels
         private readonly IUserDialogs _userDialogs;
         private readonly IItemDBService _itemDBService;
         private readonly IAppFileSystemService _appFileSystemService;
+        private readonly IAppSettings appSettings;
 
         private ObservableCollection<CategoryItemEntity> _bookletItems = new ObservableCollection<CategoryItemEntity>();
         public ObservableCollection<CategoryItemEntity> BookletItems
@@ -48,11 +49,13 @@ namespace ArtScanner.ViewModels
             IUserDialogs userDialogs,
             INavigationService navigationService,
             IAppFileSystemService appFileSystemService,
+            IAppSettings appSettings,
             IItemDBService itemDBService) : base(navigationService)
         {
             this._userDialogs = userDialogs;
             this._itemDBService = itemDBService;
             this._appFileSystemService = appFileSystemService;
+            this.appSettings = appSettings;
         }
 
         public ICommand ItemTappedCommad => new Command<CategoryItemEntity>(async (item) =>
@@ -74,13 +77,15 @@ namespace ArtScanner.ViewModels
 
             BookletItems.Remove(model);
 
+            appSettings.NeedToUpdateHomePage = true;
+
             if (BookletItems.Count == 0)
             {
 
                 await _itemDBService.DeleateFolderItem(NavigatedFolderItem);
 
                 await navigationService.GoBackToRootAsync();
-                await navigationService.NavigateAsync($"{nameof(StartPage)}");
+                await navigationService.NavigateAsync($"{nameof(HomePage)}");
             }
         });
 

@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms.Xaml;
+﻿using ArtScanner.Models;
+using Xamarin.Forms.Xaml;
 
 namespace ArtScanner.Views
 {
@@ -8,6 +9,7 @@ namespace ArtScanner.Views
         public ItemsGalleryPage()
         {
             InitializeComponent();
+            //carouselGalleyItems.CurrentItemChanged += CarouselGalleyItems_CurrentItemChanged;
         }
     }
 }

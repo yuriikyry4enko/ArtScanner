@@ -161,11 +161,11 @@ namespace ArtScanner.Services
         {
             try
             {
-                var categoriesByFolderId = (await Connection.Table<CategoryItemEntity>().ToListAsync()).Where(x => x.ParentId == x.Id);
+                var categoriesByFolderId = (await Connection.Table<CategoryItemEntity>().ToListAsync()).Where(x => x.ParentId == item.Id);
 
                 foreach (var itemCategory in categoriesByFolderId)
                 {
-                    await Connection.DeleteAsync(itemCategory);
+                    await DeleateCategoryItem(itemCategory);
                 }
 
                 await Connection.DeleteAsync(item);

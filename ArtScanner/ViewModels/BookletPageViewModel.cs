@@ -19,6 +19,7 @@ namespace ArtScanner.ViewModels
         private readonly IUserDialogs _userDialogs;
         private readonly IItemDBService _itemDBService;
         private readonly IAppFileSystemService _appFileSystemService;
+        private readonly IAppSettings appSettings;
 
         private ObservableCollection<FolderItemEntity> _bookletItems = new ObservableCollection<FolderItemEntity>();
         public ObservableCollection<FolderItemEntity> BookletItems
@@ -40,11 +41,13 @@ namespace ArtScanner.ViewModels
             INavigationService navigationService,
             IUserDialogs userDialogs, 
             IAppFileSystemService appFileSystemService,
+            IAppSettings appSettings,
             IItemDBService itemDBService) : base(navigationService)
         {
             this._itemDBService = itemDBService;
             this._appFileSystemService = appFileSystemService;
             this._userDialogs = userDialogs;
+            this.appSettings = appSettings;
         }
 
         #endregion
@@ -67,7 +70,9 @@ namespace ArtScanner.ViewModels
 
             BookletItems.Remove(model);
 
-            if(BookletItems.Count == 0)
+            appSettings.NeedToUpdateHomePage = true;
+
+            if (BookletItems.Count == 0)
             {
                 await navigationService.GoBackAsync();
             }

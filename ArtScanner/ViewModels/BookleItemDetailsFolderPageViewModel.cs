@@ -21,6 +21,7 @@ namespace ArtScanner.ViewModels
         private readonly IUserDialogs _userDialogs;
         private readonly IItemDBService _itemDBService;
         private readonly IAppFileSystemService _appFileSystemService;
+        private readonly IAppSettings appSettings;
 
 
         private ObservableCollection<ItemEntity> _bookletItems = new ObservableCollection<ItemEntity>();
@@ -49,11 +50,13 @@ namespace ArtScanner.ViewModels
             (IUserDialogs userDialogs,
             INavigationService navigationService,
             IAppFileSystemService appFileSystemService,
+            IAppSettings appSettings,
             IItemDBService itemDBService) : base(navigationService)
         {
             this._userDialogs = userDialogs;
             this._itemDBService = itemDBService;
             this._appFileSystemService = appFileSystemService;
+            this.appSettings = appSettings;
         }
 
         public override async void OnNavigatedTo(INavigationParameters parameters)
@@ -90,8 +93,10 @@ namespace ArtScanner.ViewModels
                 await _itemDBService.DeleateCategoryItem(NavigatedItem);
                 await _itemDBService.CheckAndDeleteFolder(NavigatedItem.ParentId, NavigatedItem.LocalId);
 
+                appSettings.NeedToUpdateHomePage = true;
+
                 await navigationService.GoBackToRootAsync();
-                await navigationService.NavigateAsync($"{nameof(StartPage)}");
+                await navigationService.NavigateAsync($"{nameof(HomePage)}");
             }
         });
 
