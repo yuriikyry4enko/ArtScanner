@@ -10,7 +10,6 @@ using ArtScanner.Views;
 using Plugin.SharedTransitions;
 using Prism;
 using Prism.Ioc;
-using Prism.Navigation;
 using Prism.Plugin.Popups;
 using Prism.Unity;
 using Rg.Plugins.Popup.Services;
@@ -95,6 +94,7 @@ namespace ArtScanner
             containerRegistry.RegisterForNavigation<ItemsGalleryPage, ItemsGalleryPageViewModel>();
             containerRegistry.RegisterForNavigation<ItemGalleryDetailsPage, ItemGalleryDetailsPageViewModel>();
 
+            containerRegistry.RegisterForNavigation<SettingsPage, SettingsPageViewModel>();
 
             containerRegistry.RegisterForNavigation<ApologizeLanguagePopupPage, ApologizeLanguagePopupPageViewModel>();
             containerRegistry.RegisterForNavigation<LoadingPopupPage, LoadingPopupPageViewModel>();

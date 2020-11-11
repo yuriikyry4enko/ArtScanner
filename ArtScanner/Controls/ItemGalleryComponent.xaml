@@ -22,11 +22,30 @@
         <RowDefinition Height="0.5*"/>
     </Grid.RowDefinitions>
 
+    <yummy:PancakeView
+        Grid.Row="0"
+        Grid.RowSpan="2"
+        x:Name="artItemImage">
+        <ffimageloading:CachedImage
+            Source="{Binding ImageByteArray, Converter={StaticResource ByteArrayToImage}}"
+            Aspect="AspectFill">
+        </ffimageloading:CachedImage>
+
+        <yummy:PancakeView.GestureRecognizers>
+            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+        </yummy:PancakeView.GestureRecognizers>
+
+    </yummy:PancakeView>
+
+   
+
     <ScrollView
+        BackgroundColor="White"
         Opacity="0"
         x:Name="scrollData"
         Grid.Row="1"
         Margin="0,45,0,0"
+        Padding="0,0,0,75"
         VerticalOptions="EndAndExpand">
         <StackLayout
             Spacing="5">
@@ -46,31 +65,18 @@
                 TextColor="Black"
                 Text="{Binding Author}"/>
             <Label
-                Grid.Row="3"
-                Margin="25,15,25,10"
+                Margin="25,0,25,10"
                 VerticalOptions="Start"
                 HorizontalOptions="Start"
                 TextColor="Black"
                 FontSize="18"
                 Text="{Binding Description}"/>
+            <StackLayout.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
+                <!--<SwipeGestureRecognizer Direction="Left,Right" Swiped="OnSwiped"/>-->
+            </StackLayout.GestureRecognizers>
         </StackLayout>
     </ScrollView>
-
-    <yummy:PancakeView
-        Grid.Row="0"
-        Grid.RowSpan="2"
-        x:Name="artItemImage">
-        <ffimageloading:CachedImage
-            sharedTransitions:Transition.Name="artTransition"
-            sharedTransitions:Transition.Group="{Binding Id}"
-             Source="{Binding ImageByteArray, 
-                            Converter={StaticResource ByteArrayToImage}}"
-            Aspect="AspectFill"/>
-        <yummy:PancakeView.GestureRecognizers>
-            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
-        </yummy:PancakeView.GestureRecognizers>
-    </yummy:PancakeView>
-
 
     <Frame
         Grid.Row="0"
@@ -80,32 +86,12 @@
         Background="White"
         HeightRequest="75"
         VerticalOptions="Center"
-        Margin="25,0,25,-30"
+        Margin="25,0,25,0"
         HorizontalOptions="FillAndExpand">
         <StackLayout
             VerticalOptions="Center"
             HorizontalOptions="Center"
             Orientation="Horizontal">
-
-            <controls:Circle
-                Color="Gray"
-                VerticalOptions="Start"
-                Padding="0"
-                HeightRequest="60"
-                WidthRequest="60"
-                HorizontalOptions="Start">
-                <controls:TintedCachedImage
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center"
-                    Source="{Binding LikeIcon}"
-                    WidthRequest="32"   
-                    TintColor="White"
-                    HeightRequest="32"/>
-                <controls:Circle.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding LikeCommand}"/>
-                </controls:Circle.GestureRecognizers>
-            </controls:Circle>
-
 
             <controls:Circle
                 Color="Gray"
@@ -161,14 +147,18 @@
                     <TapGestureRecognizer Command="{Binding TwittCommand}"/>
                 </controls:Circle.GestureRecognizers>
             </controls:Circle>
-
+            <StackLayout.GestureRecognizers>
+                <!--<SwipeGestureRecognizer Direction="Left,Right" Swiped="OnSwiped"/>-->
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
+            </StackLayout.GestureRecognizers>
         </StackLayout>
     </Frame>
-    
+
     <StackLayout
         Grid.Row="0"
         Grid.RowSpan="2"
         Opacity="0"
+        Padding="0,0,0,75"
         Margin="0,15,0,0"
         BackgroundColor="White"
         VerticalOptions="End"
@@ -188,26 +178,7 @@
             HorizontalOptions="StartAndExpand"
             Margin="15,15,0,15"
             Orientation="Horizontal">
-            <controls:Circle
-                Color="Gray"
-                VerticalOptions="Start"
-                Padding="0"
-                HeightRequest="60"
-                WidthRequest="60"
-                HorizontalOptions="Start">
-                <controls:TintedCachedImage
-                    VerticalOptions="Center"
-                    HorizontalOptions="Center"
-                    Source="{Binding LikeIcon}"
-                    WidthRequest="32"   
-                    TintColor="White"
-                    HeightRequest="32"/>
-                <controls:Circle.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding LikeCommand}"/>
-                </controls:Circle.GestureRecognizers>
-            </controls:Circle>
-
-
+           
             <controls:Circle
                 Color="Gray"
                 VerticalOptions="Start"
@@ -229,14 +200,13 @@
             <controls:Circle
                 HeightRequest="60"
                 WidthRequest="60"
-                IsEnabled="{Binding IsPlayButtonEnable}"
                 Color="Gray"
                 HorizontalOptions="Center">
                 <controls:TintedCachedImage
                     VerticalOptions="Center"
                     HorizontalOptions="Center"
-                    Source="{Binding PlayIcon}"
-                    WidthRequest="35"   
+                    WidthRequest="35"
+                    Source="{x:Static resources:Images.Share}"
                     TintColor="White"
                     HeightRequest="32"/>
                 <controls:Circle.GestureRecognizers>
@@ -265,9 +235,9 @@
 
         </StackLayout>
         <StackLayout.GestureRecognizers>
-            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
+            <!--<SwipeGestureRecognizer Direction="Left,Right" Swiped="OnSwiped"/>-->
+            <!--<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>-->
         </StackLayout.GestureRecognizers>
     </StackLayout>
-    
    
 </Grid>

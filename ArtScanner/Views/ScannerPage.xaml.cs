@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using ArtScanner.ViewModels;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
+﻿using Xamarin.Forms.Xaml;
 
 namespace ArtScanner.Views
 {

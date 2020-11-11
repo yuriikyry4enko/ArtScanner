@@ -10,7 +10,7 @@ namespace ArtScanner.Models
         public string DefaultTitle { get; set; }
 
         [JsonProperty("languages")]
-        public List<string> Languages { get; set; }
+        public IEnumerable<string> Languages { get; set; }
 
         [JsonProperty("parentId")]
         public long ParentId { get; set; }

@@ -8,30 +8,28 @@
     xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
     x:Name="itemsGalleryPage"
     sharedTransitions:SharedTransitionNavigationPage.TransitionSelectedGroup="{Binding SelectedId}"
-    xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner">
+    xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
+    xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
+    xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
+    xmlns:converters="clr-namespace:ArtScanner.Converters">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+          <converters:ByteArrayToImageSourceConverter x:Key="ByteArrayToImage" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <Grid
         Padding="0">
         <CarouselView
+            CurrentItem="{Binding CurrentCarouselItem}"
             x:Name="carouselGalleyItems"
             Margin="0"
+            
+            IsSwipeEnabled="True"
             VerticalOptions="FillAndExpand"
-            ItemsSource="{Binding Items}"
-            HorizontalScrollBarVisibility="Never">
-            <CarouselView.ItemsLayout>
-                <LinearItemsLayout
-                    Orientation="Horizontal"
-                    SnapPointsAlignment="Center"
-                    SnapPointsType="MandatorySingle"/>
-            </CarouselView.ItemsLayout>
+            ItemsSource="{Binding Items}">
             <CarouselView.ItemTemplate>
                     <DataTemplate>
-                        <controls:ItemGalleryComponent>
-                            <!--<controls:ItemGalleryComponent.GestureRecognizers>
-                                 <TapGestureRecognizer
-                                     Command="{Binding BindingContext.NavigateToItemDetail, Source={x:Reference itemsGalleryPage}}"
-                                     CommandParameter="{Binding .}" />
-                            </controls:ItemGalleryComponent.GestureRecognizers>-->
-                        </controls:ItemGalleryComponent>
+                            <controls:ItemGalleryComponent/>
                     </DataTemplate>
             </CarouselView.ItemTemplate>
         </CarouselView>
@@ -55,7 +53,41 @@
             </controls:Circle.GestureRecognizers>
         </controls:Circle>
 
-         
+        <yummy:PancakeView
+            HeightRequest="75"
+            VerticalOptions="End"
+            CornerRadius="0"
+            BackgroundColor="#90000000">
+            <StackLayout
+                BindableLayout.ItemsSource="{Binding Items}"
+                Orientation="Horizontal"
+                Padding="10, 0"
+                HorizontalOptions="Center"
+                VerticalOptions="CenterAndExpand"
+                Spacing="10">
+                 <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Frame
+                            Padding="1"
+                            Margin="0"
+                            HasShadow="False"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            HeightRequest="35"
+                            WidthRequest="35">
+                             <ffimageloading:CachedImage
+                                 Source="{Binding ImageByteArray, 
+                                                Converter={StaticResource ByteArrayToImage}}"
+                                Aspect="AspectFill"/>
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer
+                                            Command="{Binding Path=BindingContext.TapItemCarouselSmallImagesCommand,Source={x:Reference itemsGalleryPage}}" CommandParameter="{Binding .}"/>
+                            </Frame.GestureRecognizers>
+                        </Frame>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+         </yummy:PancakeView>
 
     </Grid>
 </views:BasePage>

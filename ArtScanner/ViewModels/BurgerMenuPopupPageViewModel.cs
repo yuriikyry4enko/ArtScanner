@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
-using ArtScanner.Models;
 using ArtScanner.Utils.Constants;
 using ArtScanner.Views;
 using Plugin.SharedTransitions;
@@ -11,6 +10,14 @@ using MenuItem = ArtScanner.Models.MenuItem;
 
 namespace ArtScanner.ViewModels
 {
+    public enum BurgerMenuPages
+    {
+        Home,
+        Settings,
+        ChooseLang,
+
+    }
+
     class BurgerMenuPopupPageViewModel : BaseViewModel
     {
         private ObservableCollection<MenuItem> _menuItems = new ObservableCollection<MenuItem>();
@@ -29,42 +36,55 @@ namespace ArtScanner.ViewModels
             _menuItems.Add(new MenuItem()
             {
                 Title = "Home",
+                Page = BurgerMenuPages.Home,
             });
-
 
             _menuItems.Add(new MenuItem()
             {
                 Title = "Settings",
+                Page = BurgerMenuPages.Settings,
             });
 
             _menuItems.Add(new MenuItem()
             {
                 Title = "Choose Language",
-            });
-
-            _menuItems.Add(new MenuItem()
-            {
-                Title = "Galley",
+                Page = BurgerMenuPages.ChooseLang,
             });
         }
 
         public ICommand NavigationCommand => new Command<MenuItem>(async (item) =>
         {
-            if (item.Title == "Settings")
+            if (item.Page == BurgerMenuPages.Settings)
             {
                 //await navigationService.NavigateAsync(PageNames.);
             }
-            else if(item.Title == "Choose Language")
+            else if(item.Page == BurgerMenuPages.ChooseLang)
             {
-                await navigationService.NavigateAsync(PageNames.ChooseLanguagePage);
+                var actionPage = App.Current.MainPage;
+                if (actionPage.Navigation != null)
+                    actionPage = actionPage.Navigation.NavigationStack.Last();
+
+                if (actionPage.GetType() != typeof(ChooseLanguagePage))
+                {
+                    await navigationService.NavigateAsync(PageNames.ChooseLanguagePage);
+                }
             }
-            else if(item.Title == "Home")
+            else if(item.Page == BurgerMenuPages.Home)
             {
-                await navigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(HomePage)}");
-            }
-            else if(item.Title == "Galley")
-            {
-                await navigationService.NavigateAsync(PageNames.ItemsGalleryPage);
+                HomePageViewModel.NeedsToUpdate = true;
+
+                var actionPage = App.Current.MainPage;
+                if (actionPage.Navigation != null)
+                    actionPage = actionPage.Navigation.NavigationStack.Last();
+
+                if (actionPage.GetType() != typeof(HomePage))
+                {
+                    await navigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(HomePage)}");
+                }
+                else
+                {
+                    await navigationService.GoBackAsync();
+                }
             }
 
         });

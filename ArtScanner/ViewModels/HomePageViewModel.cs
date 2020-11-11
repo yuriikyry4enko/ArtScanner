@@ -23,8 +23,8 @@ namespace ArtScanner.ViewModels
         private readonly IItemDBService _itemDBService;
         private readonly IAppFileSystemService _appFileSystemService;
         private readonly IAppDatabase _appDatabase;
-        private readonly IAppSettings appSettings;
 
+        public static bool NeedsToUpdate = true;
 
         private ObservableCollection<FolderItemEntity> _bookletItems = new ObservableCollection<FolderItemEntity>();
         public ObservableCollection<FolderItemEntity> BookletItems
@@ -39,7 +39,6 @@ namespace ArtScanner.ViewModels
             get => _selectedBookletItem;
             set => SetProperty(ref _selectedBookletItem, value);
         }
-
 
         private bool _isMessageAlertVisible = false;
         public bool IsMessageAlertVisible
@@ -151,26 +150,19 @@ namespace ArtScanner.ViewModels
             IUserDialogs userDialogs,
             IAppFileSystemService appFileSystemService,
             IAppDatabase appDatabase,
-            IAppSettings appSettings,
             IItemDBService itemDBService) : base(navigationService)
         {
             this._itemDBService = itemDBService;
             this._appFileSystemService = appFileSystemService;
             this._userDialogs = userDialogs;
             this._appDatabase = appDatabase;
-            this.appSettings = appSettings;
         }
 
         public override async void OnNavigatedTo(INavigationParameters parameters)
         {
             base.OnNavigatedTo(parameters);
 
-            //if (appSettings.NeedToUpdateHomePage)
-            //{
-                await InitItemsList();
-            //    appSettings.NeedToUpdateHomePage = false;
-            //}
-
+            await InitItemsList();
         }
 
         public override void Initialize(INavigationParameters parameters)
@@ -179,7 +171,6 @@ namespace ArtScanner.ViewModels
 
             this._appFileSystemService.InitializeFoldersForUser("sources");
             this._appDatabase.Initialize(_appFileSystemService.CurrentUserFolderPath);
-
         }
 
         #endregion
@@ -211,8 +202,6 @@ namespace ArtScanner.ViewModels
                         ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName))
                     });
                 }
-
-            
             }
             catch (Exception ex)
             {

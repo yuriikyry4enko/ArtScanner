@@ -16,7 +16,7 @@ namespace ArtScanner.Services
 
         }
 
-        public async Task<GeneralItemInfoModel> GetGeneralItemInfo(long itemId)
+        public async Task<GeneralItemInfoModel> GetGeneralItemInfo(string itemId)
         {
             Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetGeneralById, itemId));
             try
@@ -35,7 +35,7 @@ namespace ArtScanner.Services
             return null;
         }
 
-        public async Task<byte[]> GetImageById(string langTag, string id)
+        public async Task<byte[]> GetImageById(string id)
         {
             Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetJPGById, id));
             try

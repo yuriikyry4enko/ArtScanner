@@ -1,12 +1,19 @@
 ﻿using System;
-using ArtScanner.ViewModels;
+using System.Diagnostics;
+using System.Windows.Input;
+using ArtScanner.Utils.AuthConfigs;
+using ArtScanner.Utils.Constants;
+using MediaManager;
 using Prism.Navigation;
 using SQLite;
+using Xamarin.Essentials;
+using Xamarin.Forms;
 
 namespace ArtScanner.Models
 {
     public class ItemEntityViewModel : BaseModel
     {
+        public INavigationService _navigationService { get; set; }
 
         // Server Id
         public string Id { get; set; }
@@ -25,6 +32,11 @@ namespace ArtScanner.Models
 
         public bool Liked { get; set; }
 
+        [Ignore]
+        public bool IsPlayButtonEnable { get; set; }
+
+        [Ignore]
+        public bool IsPlaying { get; set; }
 
         [Ignore]
         public byte[] ImageByteArray { get; set; }
@@ -35,5 +47,54 @@ namespace ArtScanner.Models
         public string MusicFileName { get; set; }
 
         public string ImageFileName { get; set; }
+
+        public ICommand TwittCommand => new Command(async () =>
+        {
+            if (OAuthConfig.User == null)
+            {
+                OAuthConfig.navigationService = _navigationService;
+                await _navigationService.NavigateAsync(PageNames.ProviderLoginPage);
+            }
+        });
+
+        public ICommand ShareCommand => new Command(async () =>
+        {
+            await Share.RequestAsync(new ShareTextRequest
+            {
+                Uri = WikiUrl,
+                Title = Title
+            });
+        });
+
+
+        public ICommand PlayCommand => new Command(async () =>
+        {
+            try
+            {
+                IsPlayButtonEnable = false;
+
+                await CrossMediaManager.Current.Play();
+
+                if (IsPlaying)
+                {
+                    await CrossMediaManager.Current.Pause();
+                    IsPlaying = false;
+                }
+                else
+                {
+                    await CrossMediaManager.Current.Play();
+                    IsPlaying = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            finally
+            {
+                IsPlayButtonEnable = true;
+            }
+        });
+
     }
 }

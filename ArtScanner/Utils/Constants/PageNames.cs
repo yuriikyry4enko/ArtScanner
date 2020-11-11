@@ -14,9 +14,9 @@ namespace ArtScanner.Utils.Constants
         public static string ApologizeLanguagePopupPage = nameof(Popups.ApologizeLanguagePopupPage);
         public static string LoadingPopupPage = nameof(Popups.LoadingPopupPage);
         public static string BurgerMenuPopupPage = nameof(Popups.BurgerMenuPopupPage);
-
         public static string BookletPage = nameof(Views.BookletPage);
         public static string BookletItemDetailsPage = nameof(Views.BookletItemDetailsPage);
         public static string BookleItemDetailsFolderPage = nameof(Views.BookleItemDetailsFolderPage);
+        public static string SettingsPage = nameof(Views.SettingsPage);
     }
 }

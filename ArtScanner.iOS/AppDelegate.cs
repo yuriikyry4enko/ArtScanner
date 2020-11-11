@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using ContextMenu.iOS;
 using Foundation;
 using Lottie.Forms.iOS.Renderers;
 using Prism;
@@ -35,6 +35,8 @@ namespace ArtScanner.iOS
             //App.screenWidth = (int)UIScreen.MainScreen.Bounds.Width;
             //App.screenHeight = (int)UIScreen.MainScreen.Bounds.Height;
             //#endregion
+
+            ContextMenuViewRenderer.Preserve();
 
             LoadApplication(new App(new iOSInitializer()));
 

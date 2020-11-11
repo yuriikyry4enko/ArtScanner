@@ -78,32 +78,32 @@ namespace ArtScanner.ViewModels
                             },
                         }));
 
-                        var qrcodeData = await _restService.GetIdByQRCode(foundedItem.Id);
+                        //var qrcodeData = await _restService.GetIdByQRCode(foundedItem.Id);
 
-                        if (qrcodeData == null)
-                        {
-                            await _userDialogs.AlertAsync(AppResources.СouldNotFindQRCODE + "id: " + foundedItem.Id, "Oops", "Ok");
-                            return;
-                        }
+                        //if (qrcodeData == null)
+                        //{
+                        //    await _userDialogs.AlertAsync(AppResources.СouldNotFindQRCODE + "id: " + foundedItem.Id, "Oops", "Ok");
+                        //    return;
+                        //}
 
-                        GeneralItemInfoModel result = await _restService.GetGeneralItemInfo(qrcodeData.ItemId);
+                        GeneralItemInfoModel result = await _restService.GetGeneralItemInfo(foundedItem.Id);
 
                         if(result == null)
                         {
                             await _userDialogs.AlertAsync(AppResources.СouldNotFindQRCODE + "id: " + foundedItem.Id, "Oops", "Ok");
-
                             await navigationService.GoBackAsync();
+
                             return;
                         }
 
                         var langPrefs = await _baseDBService.GetAllAsync<LangPreferencesItemEntity>();
-                        var intersectList = result.Languages.Where(x => langPrefs.Any(y => x == y.LangTag)).ToList();
+                        var intersectFirstItem = result.Languages.FirstOrDefault(x => langPrefs.Any(y => x == y.LangTag));
 
                         if (!isCanceled)
                         {
-                            if (intersectList.Count() > 0)
+                            if (intersectFirstItem != null)
                             {
-                                foundedItem.LangTag = intersectList.FirstOrDefault();
+                                foundedItem.LangTag = intersectFirstItem;
                                 foundedItem.ParentId = result.ParentId;
                                 await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(foundedItem));
                             }

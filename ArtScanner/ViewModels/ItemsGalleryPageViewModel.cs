@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows.Input;
 using ArtScanner.Models;
 using ArtScanner.Models.Entities;
@@ -9,6 +10,7 @@ using ArtScanner.Utils.Constants;
 using ArtScanner.Utils.Helpers;
 using Prism.Commands;
 using Prism.Navigation;
+using Xamarin.Forms;
 
 namespace ArtScanner.ViewModels
 {
@@ -37,6 +39,23 @@ namespace ArtScanner.ViewModels
             set => SetProperty(ref _selectedId, value);
         }
 
+        private ItemEntityViewModel _currentCarouselItem = new ItemEntityViewModel();
+        public ItemEntityViewModel CurrentCarouselItem
+        {
+            get => _currentCarouselItem;
+            set => SetProperty(ref _currentCarouselItem, value);
+        }
+
+        private ItemEntity _navigatedItemModel = new ItemEntity();
+        public ItemEntity NavigatedItemModel
+        {
+            get { return _navigatedItemModel; }
+            set
+            {
+                SetProperty(ref _navigatedItemModel, value);
+            }
+        }
+
         #endregion 
 
         #region Ctor
@@ -51,45 +70,52 @@ namespace ArtScanner.ViewModels
             this._appFileSystemService = appFileSystemService;
         }
 
-        public override async void OnAppearing()
+        public override async void OnNavigatedTo(INavigationParameters parameters)
         {
-            base.OnAppearing();
+            base.OnNavigatedTo(parameters);
 
-            try
+            if (parameters.GetNavigationMode() != NavigationMode.Back)
             {
-                Items.Clear();
-
-                var items = await _itemDBService.GetAll();
-                if (items.Count > 0)
+                try
                 {
-                    foreach (var item in items)
-                    {
-                        Items.Add(new ItemEntityViewModel()
-                        {
-                            ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName)),
-                            Author = item.Author,
-                            MusicByteArray = item.MusicByteArray,
-                            Id = item.Id,
-                            Description = item.Description,
-                            ImageFileName = item.ImageFileName,
-                            ImageUrl = item.ImageUrl,
-                            LangTag = item.LangTag,
-                            Liked = item.Liked,
-                            LocalId = item.LocalId,
-                            MusicFileName = item.MusicFileName,
-                            MusicUrl = item.MusicUrl,
-                            ParentId = item.ParentId,
-                            Title = item.Title,
-                            WikiUrl = item.WikiUrl,
-                        });
-                    }
+                    NavigatedItemModel = GetParameters<ItemEntity>(parameters);
 
-                    RaisePropertyChanged(nameof(Items));
+                    Items.Clear();
+
+                    var items = (await _itemDBService.GetAll())?.Where(x => x.ParentId == NavigatedItemModel.ParentId);
+
+                    if (items.Count() > 0)
+                    {
+                        foreach (var item in items)
+                        {
+                            Items.Add(new ItemEntityViewModel()
+                            {
+                                ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName)),
+                                Author = item.Author,
+                                MusicByteArray = item.MusicByteArray,
+                                Id = item.Id,
+                                Description = item.Description,
+                                ImageFileName = item.ImageFileName,
+                                ImageUrl = item.ImageUrl,
+                                LangTag = item.LangTag,
+                                Liked = item.Liked,
+                                LocalId = item.LocalId,
+                                MusicFileName = item.MusicFileName,
+                                MusicUrl = item.MusicUrl,
+                                ParentId = item.ParentId,
+                                Title = item.Title,
+                                WikiUrl = item.WikiUrl,
+                            });
+                        }
+
+                        CurrentCarouselItem = Items.FirstOrDefault(x => x.LocalId == NavigatedItemModel.LocalId);
+                        RaisePropertyChanged(nameof(Items));
+                    }
                 }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             }
         }
 
@@ -104,9 +130,9 @@ namespace ArtScanner.ViewModels
             await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(itemModel));
         });
 
-        public ICommand CarouselGalletyItemChangedCommand => new DelegateCommand<ItemEntityViewModel>(async (itemModel) =>
+        public ICommand TapItemCarouselSmallImagesCommand => new Command<ItemEntityViewModel>((itemModel) =>
         {
-           
+            CurrentCarouselItem = itemModel;
         });
 
         #endregion

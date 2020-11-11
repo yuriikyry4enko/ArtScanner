@@ -25,7 +25,7 @@ namespace ArtScanner.Services
 
         public bool NeedToUpdateHomePage
         {
-            get => Preferences.Get(NeedToUpdateHomePageKey, true);
+            get => Preferences.Get(NeedToUpdateHomePageKey, false);
             set => Preferences.Set(NeedToUpdateHomePageKey, value);
         }
     }

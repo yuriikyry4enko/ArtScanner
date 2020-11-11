@@ -73,7 +73,7 @@ namespace ArtScanner.ViewModels
 
         public ICommand ItemTappedCommad => new Command<ItemEntity>(async (item) =>
         {
-            await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(item));
+            await navigationService.NavigateAsync(PageNames.ItemsGalleryPage, CreateParameters(item));
         });
 
         public ICommand DeleteCommand => new Command(async (item) =>

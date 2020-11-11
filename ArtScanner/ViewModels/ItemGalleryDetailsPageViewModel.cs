@@ -115,15 +115,14 @@ namespace ArtScanner.ViewModels
                     IsPlayButtonEnable = false;
                     IsBusy = true;
 
-                    ItemModel.ImageByteArray = await _restService.GetImageById(ItemModel.LangTag, ItemModel.Id);
-
-                    CrossMediaManager.Current.AutoPlay = false;
-                    await CrossMediaManager.Current.Play(string.Format(Utils.Constants.ApiConstants.GetAudioStreamById, ItemModel.LangTag, ItemModel.Id));
-
                     if (ItemModel.LocalId == 0)
                     {
                         await CheckForItemExistedInLocalDB();
                     }
+
+                    CrossMediaManager.Current.AutoPlay = false;
+                    await CrossMediaManager.Current.Play(string.Format(ApiConstants.GetAudioStreamById, ItemModel.LangTag, ItemModel.Id));
+
 
                     IsBusy = false;
                     IsPlayButtonEnable = true;
@@ -150,6 +149,8 @@ namespace ArtScanner.ViewModels
                 else
                 {
                     await LoadAndInitItemModel();
+
+                    ItemModel.ImageByteArray = await _restService.GetImageById(ItemModel.Id);
                 }
 
                 RaisePropertyChanged(nameof(ItemModel));
@@ -187,7 +188,7 @@ namespace ArtScanner.ViewModels
                 }
                 else
                 {
-                    var imageByteArray = await _restService.GetImageById(ItemModel.LangTag, ItemModel.Id);
+                    var imageByteArray = await _restService.GetImageById(ItemModel.Id);
                     ItemModel.ImageByteArray = imageByteArray;
 
                     var resultId = await _itemDBService.InsertOrUpdateWithChildren(ItemModel);
@@ -265,9 +266,9 @@ namespace ArtScanner.ViewModels
                     var categoryItem = await _itemDBService.FindCategoryById(ItemModel.ParentId);
                     if(categoryItem == null)
                     {
-                        var category = await _restService.GetGeneralItemInfo(ItemModel.ParentId);
+                        var category = await _restService.GetGeneralItemInfo(ItemModel.ParentId.ToString());
 
-                        var imageCategoryByteArray = await _restService.GetImageById(ItemModel.LangTag, ItemModel.ParentId.ToString());
+                        var imageCategoryByteArray = await _restService.GetImageById(ItemModel.ParentId.ToString());
                         if (imageCategoryByteArray == null)
                         {
                             await _userDialogs.AlertAsync("I can't find pictures for category with such " + "id: " + ItemModel.ParentId, "Oops", "Ok");
@@ -282,9 +283,9 @@ namespace ArtScanner.ViewModels
                         var folderItem = await _itemDBService.FindFolderById(category.ParentId);
                         if (folderItem == null)
                         {
-                            var folder = await _restService.GetGeneralItemInfo(category.ParentId);
+                            var folder = await _restService.GetGeneralItemInfo(category.ParentId.ToString());
 
-                            var imageFolderByteArray = await _restService.GetImageById(ItemModel.LangTag, category.ParentId.ToString());
+                            var imageFolderByteArray = await _restService.GetImageById(category.ParentId.ToString());
                             if(imageFolderByteArray == null)
                             {
                                 await _userDialogs.AlertAsync("I can't find pictures for folder with such " + "id: " + ItemModel.ParentId, "Oops", "Ok");
@@ -319,10 +320,7 @@ namespace ArtScanner.ViewModels
                 ItemModel.Title = textModel.Title;
                 ItemModel.Description = textModel.Description;
 
-                //TODO:need to find better solution for reload text before img smoothly
                 RaisePropertyChanged(nameof(ItemModel));
-
-             
             }
             catch (Exception ex)
             {

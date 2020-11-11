@@ -11,5 +11,9 @@ namespace ArtScanner.Views
             InitializeComponent();
             //carouselGalleyItems.CurrentItemChanged += CarouselGalleyItems_CurrentItemChanged;
         }
+
+        void TapGestureRecognizer_Tapped(System.Object sender, System.EventArgs e)
+        {
+        }
     }
 }

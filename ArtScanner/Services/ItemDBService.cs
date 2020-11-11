@@ -4,18 +4,22 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using ArtScanner.Models.Entities;
+using ArtScanner.ViewModels;
 
 namespace ArtScanner.Services
 {
     class ItemDBService : BaseDBService, IItemDBService
     {
         private IAppFileSystemService _appFileSystemService;
+        private IAppSettings _appSettings;
 
         public ItemDBService(
+           IAppSettings appSettings,
            IAppFileSystemService appFileSystemService,
            IAppDatabase appDatabase) : base(appDatabase)
         {
             this._appFileSystemService = appFileSystemService;
+            this._appSettings = appSettings;
         }
 
         public async Task<ItemEntity> GetByServerId(string id)
@@ -95,6 +99,8 @@ namespace ArtScanner.Services
 
         public async Task<Tuple<long, bool>> InsertOrUpdateFolderWithChildren(FolderItemEntity item, bool update = false)
         {
+            HomePageViewModel.NeedsToUpdate = true;
+
             var foundedItemInLocalDB = await FindItem<FolderItemEntity>(x => x.Id == item.Id);
 
             if (item.LocalId == 0 && foundedItemInLocalDB == null)
