@@ -65,7 +65,7 @@ namespace ArtScanner.ViewModels
             await navigationService.NavigateAsync(PageNames.HomePage);
         });
 
-        public ICommand NavigateToBookletsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.BookletPage); });
+        //public ICommand NavigateToBookletsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.BookletPage); });
 
         public ICommand SettingsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.ChooseLanguagePage); });
 

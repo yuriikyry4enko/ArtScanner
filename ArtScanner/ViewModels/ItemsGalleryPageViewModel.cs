@@ -82,7 +82,7 @@ namespace ArtScanner.ViewModels
 
                     Items.Clear();
 
-                    var items = (await _itemDBService.GetAll())?.Where(x => x.ParentId == NavigatedItemModel.ParentId);
+                    var items = await _itemDBService.GetItemsByParentIdAll(NavigatedItemModel.Id);
 
                     if (items.Count() > 0)
                     {
@@ -91,7 +91,6 @@ namespace ArtScanner.ViewModels
                             Items.Add(new ItemEntityViewModel()
                             {
                                 ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName)),
-                                Author = item.Author,
                                 MusicByteArray = item.MusicByteArray,
                                 Id = item.Id,
                                 Description = item.Description,
@@ -104,11 +103,11 @@ namespace ArtScanner.ViewModels
                                 MusicUrl = item.MusicUrl,
                                 ParentId = item.ParentId,
                                 Title = item.Title,
-                                WikiUrl = item.WikiUrl,
                             });
                         }
 
                         CurrentCarouselItem = Items.FirstOrDefault(x => x.LocalId == NavigatedItemModel.LocalId);
+
                         RaisePropertyChanged(nameof(Items));
                     }
                 }

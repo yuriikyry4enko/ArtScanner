@@ -78,6 +78,9 @@ namespace ArtScanner.Services
 
         public bool DoesImageExist(string name)
         {
+            if (name == null)
+                return false;
+
             var imagesFolderPath = GetImagesFolderPath();
 
             var imagePath = Path.Combine(imagesFolderPath, name);

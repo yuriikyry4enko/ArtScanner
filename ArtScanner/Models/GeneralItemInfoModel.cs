@@ -13,6 +13,9 @@ namespace ArtScanner.Models
         public IEnumerable<string> Languages { get; set; }
 
         [JsonProperty("parentId")]
-        public long ParentId { get; set; }
+        public long? ParentId { get; set; }
+
+        [JsonProperty("isFolder")]
+        public bool IsFolder { get; set; }
     }
 }

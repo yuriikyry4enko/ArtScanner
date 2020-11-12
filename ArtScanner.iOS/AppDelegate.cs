@@ -23,6 +23,36 @@ namespace ArtScanner.iOS
         //
         // You have 17 seconds to return from this method, or iOS will terminate your application.
         //
+        //public override UIWindow Window { get; set; }
+
+        //public override bool FinishedLaunching(UIApplication uiApplication, NSDictionary launchOptions)
+        //{
+        //    if (Window == null)
+        //    {
+        //        Window = new UIWindow(frame: UIScreen.MainScreen.Bounds);
+        //        var initialViewController = new SplashViewController();
+        //        Window.RootViewController = initialViewController;
+        //        Window.MakeKeyAndVisible();
+
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
+        //        global::ZXing.Net.Mobile.Forms.iOS.Platform.Init();
+        //        AnimationViewRenderer.Init();
+        //        Rg.Plugins.Popup.Popup.Init();
+        //        global::Xamarin.Forms.Forms.Init();
+
+
+        //        ContextMenuViewRenderer.Preserve();
+
+        //        LoadApplication(new App(new iOSInitializer()));
+
+        //        return base.FinishedLaunching(uiApplication, launchOptions);
+        //    }
+        //}
+
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
             FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
@@ -31,10 +61,6 @@ namespace ArtScanner.iOS
             Rg.Plugins.Popup.Popup.Init();
             global::Xamarin.Forms.Forms.Init();
 
-            //#region screen height & width
-            //App.screenWidth = (int)UIScreen.MainScreen.Bounds.Width;
-            //App.screenHeight = (int)UIScreen.MainScreen.Bounds.Height;
-            //#endregion
 
             ContextMenuViewRenderer.Preserve();
 

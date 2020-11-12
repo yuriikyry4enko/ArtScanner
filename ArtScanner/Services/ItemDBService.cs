@@ -22,7 +22,7 @@ namespace ArtScanner.Services
             this._appSettings = appSettings;
         }
 
-        public async Task<ItemEntity> GetByServerId(string id)
+        public async Task<ItemEntity> GetByServerId(long id)
         {
             var item = await FindItem<ItemEntity>(x => x.Id == id);
 
@@ -56,6 +56,47 @@ namespace ArtScanner.Services
             return itemEntity;
         }
 
+        public async Task<long> DeleateItemWithChildren(ItemEntity item)
+        {
+            var IsLastParentId = false;
+            long? lastParentId = item.Id;
+
+            while(!IsLastParentId)
+            {
+                var itemsChildrens = (await Connection.Table<ItemEntity>().ToListAsync()).Where(x => x.ParentId == lastParentId).ToList();
+
+                //var itemsChildrens = await (from itemChildren in Connection.Table<ItemEntity>()
+                //                            where itemChildren.ParentId == lastParentId
+                //                            select itemChildren).ToListAsync();
+
+                lastParentId = itemsChildrens.FirstOrDefault()?.Id;
+
+
+                foreach (var itmChild in itemsChildrens)
+                {
+                    if (_appFileSystemService.DoesImageExist(itmChild.ImageFileName))
+                    {
+                        _appFileSystemService.DeleteFile(_appFileSystemService.GetFilePath(itmChild.ImageFileName));
+                    }
+                    await Connection.DeleteAsync<ItemEntity>(itmChild.LocalId);
+                }
+
+
+                if (!lastParentId.HasValue || lastParentId == -1)
+                    IsLastParentId = true;
+            }
+
+            if (_appFileSystemService.DoesImageExist(item.ImageFileName))
+            {
+                _appFileSystemService.DeleteFile(_appFileSystemService.GetFilePath(item.ImageFileName));
+            }
+
+            var itemEntity = await Connection.DeleteAsync<ItemEntity>(item.LocalId);
+
+            return itemEntity;
+        }
+
+
         public async Task<long> InsertOrUpdateWithChildren(ItemEntity item)
         {
             if (item.LocalId == 0)
@@ -74,148 +115,174 @@ namespace ArtScanner.Services
             return item.LocalId;
         }
 
-        public async Task<Tuple<long, bool>> InsertOrUpdateCategoryWithChildren(CategoryItemEntity item, bool update = false)
-        {
+        //public async Task<Tuple<long, bool>> InsertOrUpdateCategoryWithChildren(CategoryItemEntity item, bool update = false)
+        //{
             
-            var categoryItemEntity = await FindItem<CategoryItemEntity>(x => x.Id == item.Id);
+        //    var categoryItemEntity = await FindItem<CategoryItemEntity>(x => x.Id == item.Id);
 
-            if (item.LocalId == 0 && categoryItemEntity == null)
-            {
-                item.ImageFileName = item.Title + item.Id + ".jpg";
+        //    if (item.LocalId == 0 && categoryItemEntity == null)
+        //    {
+        //        item.ImageFileName = item.Title + item.Id + ".jpg";
 
-                _appFileSystemService.SaveImage(item.ImageByteArray, item.ImageFileName);
+        //        _appFileSystemService.SaveImage(item.ImageByteArray, item.ImageFileName);
 
-                await Connection.InsertAsync(item);
-                return new Tuple<long, bool>(item.LocalId, true);
-            }
-            else if(update)
-            {
-                await Connection.UpdateAsync(item);
-                return new Tuple<long, bool>(item.LocalId, false);
-            }
+        //        await Connection.InsertAsync(item);
+        //        return new Tuple<long, bool>(item.LocalId, true);
+        //    }
+        //    else if(update)
+        //    {
+        //        await Connection.UpdateAsync(item);
+        //        return new Tuple<long, bool>(item.LocalId, false);
+        //    }
 
-            return null;
+        //    return null;
+        //}
+
+        //public async Task<Tuple<long, bool>> InsertOrUpdateFolderWithChildren(FolderItemEntity item, bool update = false)
+        //{
+        //    HomePageViewModel.NeedsToUpdate = true;
+
+        //    var foundedItemInLocalDB = await FindItem<FolderItemEntity>(x => x.Id == item.Id);
+
+        //    if (item.LocalId == 0 && foundedItemInLocalDB == null)
+        //    {
+        //        item.ImageFileName = item.Title + item.Id + ".jpg";
+
+        //        _appFileSystemService.SaveImage(item.ImageByteArray, item.ImageFileName);
+
+        //        await Connection.InsertAsync(item);
+        //        return new Tuple<long, bool>(item.LocalId, true);
+        //    }
+        //    else if (update)
+        //    {
+        //        await Connection.UpdateAsync(item);
+        //        return new Tuple<long, bool>(item.LocalId, false);
+        //    }
+
+        //    return null;
+        //}
+
+        public async Task<List<ItemEntity>> GetAllMainFolders()
+        {
+            var folderItemEntities = from item in Connection.Table<ItemEntity>()
+                                     where item.IsFolder && item.ParentId == -1
+                                     select item;
+
+            return await folderItemEntities.ToListAsync();
         }
 
-        public async Task<Tuple<long, bool>> InsertOrUpdateFolderWithChildren(FolderItemEntity item, bool update = false)
+        //public async Task<List<CategoryItemEntity>> GetAllCategories()
+        //{
+        //    var categoryItemEntities = await Connection.Table<CategoryItemEntity>().ToListAsync();
+
+        //    return categoryItemEntities;
+        //}
+
+        //public async Task<FolderItemEntity> FindFolderById(long id)
+        //{
+        //    var item = await FindItem<FolderItemEntity>(x => x.Id == id);
+
+        //    return item;
+        //}
+
+        //public async Task<CategoryItemEntity> FindCategoryById(long id)
+        //{
+        //    var item = await FindItem<CategoryItemEntity>(x => x.Id == id);
+
+        //    return item;
+        //}
+
+        public async Task<ItemEntity> FindItemEntityById(long id)
         {
-            HomePageViewModel.NeedsToUpdate = true;
-
-            var foundedItemInLocalDB = await FindItem<FolderItemEntity>(x => x.Id == item.Id);
-
-            if (item.LocalId == 0 && foundedItemInLocalDB == null)
-            {
-                item.ImageFileName = item.Title + item.Id + ".jpg";
-
-                _appFileSystemService.SaveImage(item.ImageByteArray, item.ImageFileName);
-
-                await Connection.InsertAsync(item);
-                return new Tuple<long, bool>(item.LocalId, true);
-            }
-            else if (update)
-            {
-                await Connection.UpdateAsync(item);
-                return new Tuple<long, bool>(item.LocalId, false);
-            }
-
-            return null;
-        }
-
-        public async Task<List<FolderItemEntity>> GetAllFolders()
-        {
-            var folderItemEntities = await Connection.Table<FolderItemEntity>().ToListAsync();
-
-            return folderItemEntities;
-        }
-
-        public async Task<List<CategoryItemEntity>> GetAllCategories()
-        {
-            var categoryItemEntities = await Connection.Table<CategoryItemEntity>().ToListAsync();
-
-            return categoryItemEntities;
-        }
-
-        public async Task<FolderItemEntity> FindFolderById(long id)
-        {
-            var item = await FindItem<FolderItemEntity>(x => x.Id == id);
-
-            return item;
-        }
-
-        public async Task<CategoryItemEntity> FindCategoryById(long id)
-        {
-            var item = await FindItem<CategoryItemEntity>(x => x.Id == id);
+            var item = await FindItem<ItemEntity>(x => x.Id == id);
 
             return item;
         }
 
         public async Task<List<ItemEntity>> GetItemsByParentIdAll(long parentId)
         {
-            var items = await GetAll();
+            var items = from item in Connection.Table<ItemEntity>()
+                                     where item.ParentId == parentId
+                                     select item;
 
-            return items.Where(x => x.ParentId == parentId).ToList();
+
+            return await items.ToListAsync();
         }
 
-        public async Task<List<CategoryItemEntity>> GetCategoriesByParentIdAll(long parentId)
+        public async Task<List<ItemEntity>> GetItemsByParentIdAllWithChildrens(long parentId)
         {
-            var items = await GetAllCategories();
+            var items = from item in Connection.Table<ItemEntity>()
+                        where item.ParentId == parentId
+                        select item;
 
-            return items.Where(x => x.ParentId == parentId).ToList();
+
+            return await items.ToListAsync();
         }
 
-        public async Task DeleateFolderItem(FolderItemEntity item)
-        {
-            try
-            {
-                var categoriesByFolderId = (await Connection.Table<CategoryItemEntity>().ToListAsync()).Where(x => x.ParentId == item.Id);
 
-                foreach (var itemCategory in categoriesByFolderId)
-                {
-                    await DeleateCategoryItem(itemCategory);
-                }
 
-                await Connection.DeleteAsync(item);
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-        }
 
-        public async Task DeleateCategoryItem(CategoryItemEntity item)
-        {
-            try
-            {
-                var itemsByCategoryId = (await Connection.Table<ItemEntity>().ToListAsync()).Where(x => x.ParentId == item.Id);
 
-                foreach (var itemEntity in itemsByCategoryId)
-                {
-                    await Connection.DeleteAsync(itemEntity);
-                }
+        //public async Task<List<CategoryItemEntity>> GetCategoriesByParentIdAll(long parentId)
+        //{
+        //    var items = await GetAllCategories();
 
-                await Connection.DeleteAsync(item);
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-        }
+        //    return items.Where(x => x.ParentId == parentId).ToList();
+        //}
 
-        public async Task CheckAndDeleteFolder(long parentFolderId, long localId)
-        {
-            try
-            {
-                var categoriesByFolderId = (await Connection.Table<CategoryItemEntity>().ToListAsync()).Where(x => x.ParentId == parentFolderId);
-                if(categoriesByFolderId.Count() == 0)
-                {
-                    var currentFolder = await FindItem<FolderItemEntity>(x => x.LocalId == localId);
-                    await Connection.DeleteAsync<FolderItemEntity>(currentFolder);
-                }
-            }
-            catch(Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
-        }
+        //public async Task DeleateFolderItem(FolderItemEntity item)
+        //{
+        //    try
+        //    {
+        //        var categoriesByFolderId = (await Connection.Table<CategoryItemEntity>().ToListAsync()).Where(x => x.ParentId == item.Id);
+
+        //        foreach (var itemCategory in categoriesByFolderId)
+        //        {
+        //            await DeleateCategoryItem(itemCategory);
+        //        }
+
+        //        await Connection.DeleteAsync(item);
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        Debug.WriteLine(ex);
+        //    }
+        //}
+
+        //public async Task DeleateCategoryItem(CategoryItemEntity item)
+        //{
+        //    try
+        //    {
+        //        var itemsByCategoryId = (await Connection.Table<ItemEntity>().ToListAsync()).Where(x => x.ParentId == item.Id);
+
+        //        foreach (var itemEntity in itemsByCategoryId)
+        //        {
+        //            await Connection.DeleteAsync(itemEntity);
+        //        }
+
+        //        await Connection.DeleteAsync(item);
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        Debug.WriteLine(ex);
+        //    }
+        //}
+
+        //public async Task CheckAndDeleteFolder(long parentFolderId, long localId)
+        //{
+        //    try
+        //    {
+        //        var categoriesByFolderId = (await Connection.Table<CategoryItemEntity>().ToListAsync()).Where(x => x.ParentId == parentFolderId);
+        //        if(categoriesByFolderId.Count() == 0)
+        //        {
+        //            var currentFolder = await FindItem<FolderItemEntity>(x => x.LocalId == localId);
+        //            await Connection.DeleteAsync<FolderItemEntity>(currentFolder);
+        //        }
+        //    }
+        //    catch(Exception ex)
+        //    {
+        //        Debug.WriteLine(ex);
+        //    }
+        //}
     }
 }

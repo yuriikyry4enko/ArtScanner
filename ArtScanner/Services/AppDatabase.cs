@@ -50,8 +50,6 @@ namespace ArtScanner.Services
 
                 Connection = sqLite.GetAsyncConnection(databasePath);
 
-                await Connection.CreateTableAsync<FolderItemEntity>();
-                await Connection.CreateTableAsync<CategoryItemEntity>();
                 await Connection.CreateTableAsync<ItemEntity>();
                 await Connection.CreateTableAsync<LangPreferencesItemEntity>();
             }

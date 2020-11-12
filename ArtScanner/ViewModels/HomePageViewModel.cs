@@ -26,15 +26,15 @@ namespace ArtScanner.ViewModels
 
         public static bool NeedsToUpdate = true;
 
-        private ObservableCollection<FolderItemEntity> _bookletItems = new ObservableCollection<FolderItemEntity>();
-        public ObservableCollection<FolderItemEntity> BookletItems
+        private ObservableCollection<ItemEntity> _bookletItems = new ObservableCollection<ItemEntity>();
+        public ObservableCollection<ItemEntity> BookletItems
         {
             get => _bookletItems;
             set => SetProperty(ref _bookletItems, value);
         }
 
-        private FolderItemEntity _selectedBookletItem;
-        public FolderItemEntity SelectedBookletItem
+        private ItemEntity _selectedBookletItem;
+        public ItemEntity SelectedBookletItem
         {
             get => _selectedBookletItem;
             set => SetProperty(ref _selectedBookletItem, value);
@@ -57,21 +57,21 @@ namespace ArtScanner.ViewModels
 
         #region Commands
 
-        public ICommand ItemTappedCommad => new Command<FolderItemEntity>(async (item) =>
+        public ICommand ItemTappedCommad => new Command<ItemEntity>(async (item) =>
         {
             await navigationService.NavigateAsync(PageNames.BookletItemDetailsPage, CreateParameters(item));
         });
 
         public ICommand DeleteCommand => new Command(async (item) =>
         {
-            var model = item as FolderItemEntity;
+            var model = item as ItemEntity;
 
-            var folderCategoriesCount = (await _itemDBService.GetCategoriesByParentIdAll(model.Id)).Count();
-            var result = await _userDialogs.ConfirmAsync($"Remove folder with {folderCategoriesCount} categories?", "Confirmation", "Yes", "No");
+            var folderCategoriesCount = (await _itemDBService.GetItemsByParentIdAll(model.Id)).Count();
+            var result = await _userDialogs.ConfirmAsync($"Remove {folderCategoriesCount} items?", "Confirmation", "Yes", "No");
 
             if (!result) return;
 
-            await _itemDBService.DeleateFolderItem(model);
+            await _itemDBService.DeleateItemWithChildren(model);
 
             BookletItems.Remove(model);
 
@@ -80,6 +80,7 @@ namespace ArtScanner.ViewModels
                 IsFoldersListEmpty = true;
             }
         });
+
 
         public ICommand NavigateToGalleyCommand => new Command(async () =>
         {
@@ -92,7 +93,7 @@ namespace ArtScanner.ViewModels
         });
 
 
-        public ICommand NavigateToBookletsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.BookletPage); });
+        //public ICommand NavigateToBookletsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.BookletPage); });
 
         public ICommand SettingsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.ChooseLanguagePage); });
 
@@ -181,7 +182,7 @@ namespace ArtScanner.ViewModels
             {
                 BookletItems.Clear();
 
-                var result = await _itemDBService.GetAllFolders();
+                var result = await _itemDBService.GetAllMainFolders();
 
                 if (result.Count == 0)
                 {
@@ -194,11 +195,12 @@ namespace ArtScanner.ViewModels
 
                 foreach (var item in result)
                 {
-                    BookletItems.Add(new FolderItemEntity
+                    BookletItems.Add(new ItemEntity
                     {
                         LocalId = item.LocalId,
                         Id = item.Id,
                         Title = item.Title,
+                        IsFolder = item.IsFolder,
                         ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName))
                     });
                 }

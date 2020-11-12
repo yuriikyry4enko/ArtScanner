@@ -26,6 +26,8 @@ namespace ArtScanner.ViewModels
         private IAppFileSystemService _appFileSystemService;
         private IRestService _restService;
 
+        private long _ParentItemEntityId;
+
         #region Properties
 
         private ItemEntity _itemModel = new ItemEntity();
@@ -193,6 +195,7 @@ namespace ArtScanner.ViewModels
 
                     var resultId = await _itemDBService.InsertOrUpdateWithChildren(ItemModel);
                     ItemModel.LocalId = resultId;
+                    
 
                     await InitParentEntities();
                 }
@@ -221,8 +224,9 @@ namespace ArtScanner.ViewModels
         {
             await Share.RequestAsync(new ShareTextRequest
             {
-                Uri = ItemModel.WikiUrl,
-                Title = ItemModel.Title
+                Title = ItemModel.Title,
+                Text = ItemModel.Description,
+                Uri = ItemModel.ImageUrl,
             });
         });
 
@@ -261,40 +265,36 @@ namespace ArtScanner.ViewModels
         {
             try
             {
-                if (ItemModel.Liked)
+                _ParentItemEntityId = ItemModel.ParentId;
+
+                while (_ParentItemEntityId != -1)
                 {
-                    var categoryItem = await _itemDBService.FindCategoryById(ItemModel.ParentId);
-                    if(categoryItem == null)
+                    if (ItemModel.Liked)
                     {
-                        var category = await _restService.GetGeneralItemInfo(ItemModel.ParentId.ToString());
-
-                        var imageCategoryByteArray = await _restService.GetImageById(ItemModel.ParentId.ToString());
-                        if (imageCategoryByteArray == null)
+                        var parentItemEntity = await _itemDBService.FindItemEntityById(_ParentItemEntityId);
+                        if (parentItemEntity == null)
                         {
-                            await _userDialogs.AlertAsync("I can't find pictures for category with such " + "id: " + ItemModel.ParentId, "Oops", "Ok");
-                            return;
-                        }
-                        else
-                        {
-                            await _itemDBService.InsertOrUpdateCategoryWithChildren(new CategoryItemEntity { Id = ItemModel.ParentId, Title = category.DefaultTitle, ParentId = category.ParentId, ImageByteArray = imageCategoryByteArray, });
-                        }
+                            var generalInfoParentItemEntity = await _restService.GetGeneralItemInfo(_ParentItemEntityId);
 
-
-                        var folderItem = await _itemDBService.FindFolderById(category.ParentId);
-                        if (folderItem == null)
-                        {
-                            var folder = await _restService.GetGeneralItemInfo(category.ParentId.ToString());
-
-                            var imageFolderByteArray = await _restService.GetImageById(category.ParentId.ToString());
-                            if(imageFolderByteArray == null)
+                            var imageParentItemEntityByteArray = await _restService.GetImageById(_ParentItemEntityId);
+                            if (imageParentItemEntityByteArray == null)
                             {
-                                await _userDialogs.AlertAsync("I can't find pictures for folder with such " + "id: " + ItemModel.ParentId, "Oops", "Ok");
-
+                                await _userDialogs.AlertAsync("I can't find pictures for category with such " + "id: " + ItemModel.ParentId, "Oops", "Ok");
+                                return;
                             }
                             else
                             {
-                                await _itemDBService.InsertOrUpdateFolderWithChildren(new FolderItemEntity { Id = category.ParentId, Title = folder.DefaultTitle, ImageByteArray = imageFolderByteArray, });
+                                await _itemDBService.InsertOrUpdateWithChildren(new ItemEntity
+                                {
+                                    Id = _ParentItemEntityId,
+                                    Title = generalInfoParentItemEntity.DefaultTitle,
+                                    ParentId = generalInfoParentItemEntity.ParentId ?? -1,
+                                    ImageByteArray = imageParentItemEntityByteArray,
+                                    IsFolder = generalInfoParentItemEntity.IsFolder,
+                                });
                             }
+
+                            _ParentItemEntityId = generalInfoParentItemEntity.ParentId.HasValue ? generalInfoParentItemEntity.ParentId.Value : -1;
                         }
                     }
                 }

@@ -7,9 +7,9 @@ namespace ArtScanner.Services
 {
     interface IRestService
     {
-        Task<byte[]> GetImageById(string id);
-        Task<TextItemInfoModel> GetTextById(string langTag, string id);
-        Task<GeneralItemInfoModel> GetGeneralItemInfo(string id);
+        Task<byte[]> GetImageById(long id);
+        Task<TextItemInfoModel> GetTextById(string langTag, long id);
+        Task<GeneralItemInfoModel> GetGeneralItemInfo(long id);
         Task<QRcodeDataResultModel> GetIdByQRCode(string qrcodeData);
 
     }

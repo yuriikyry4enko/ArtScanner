@@ -63,7 +63,8 @@ namespace ArtScanner.ViewModels
                 {
                     var foundedItem = new ItemEntity
                     {
-                        Id = Result?.Text,
+                        Id = Int64.Parse(Result?.Text),
+                        //Id = 5,
                     };
 
                    Device.BeginInvokeOnMainThread(async () =>
@@ -104,7 +105,7 @@ namespace ArtScanner.ViewModels
                             if (intersectFirstItem != null)
                             {
                                 foundedItem.LangTag = intersectFirstItem;
-                                foundedItem.ParentId = result.ParentId;
+                                foundedItem.ParentId = result.ParentId.Value;
                                 await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(foundedItem));
                             }
                             else
@@ -116,7 +117,7 @@ namespace ArtScanner.ViewModels
                                     {
                                         if (!string.IsNullOrEmpty(langTagSelected))
                                         {
-                                            foundedItem.ParentId = result.ParentId;
+                                            foundedItem.ParentId = result.ParentId.Value;
                                             foundedItem.LangTag = langTagSelected;
                                             await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(foundedItem));
                                             IsBusy = false;

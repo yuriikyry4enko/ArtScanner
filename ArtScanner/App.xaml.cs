@@ -88,7 +88,6 @@ namespace ArtScanner
             containerRegistry.RegisterForNavigation<HomePage, HomePageViewModel>();
             containerRegistry.RegisterForNavigation<StartPage, StartPageViewModel>();
             containerRegistry.RegisterForNavigation<ScannerPage, ScannerPageViewModel>();
-            containerRegistry.RegisterForNavigation<BookletPage, BookletPageViewModel>();
             containerRegistry.RegisterForNavigation<BookletItemDetailsPage, BookletItemDetailsPageViewModel>();
             containerRegistry.RegisterForNavigation<BookleItemDetailsFolderPage, BookleItemDetailsFolderPageViewModel>();
             containerRegistry.RegisterForNavigation<ItemsGalleryPage, ItemsGalleryPageViewModel>();

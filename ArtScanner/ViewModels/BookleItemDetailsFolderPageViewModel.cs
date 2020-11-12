@@ -31,12 +31,12 @@ namespace ArtScanner.ViewModels
             set => SetProperty(ref _bookletItems, value);
         }
 
-        private CategoryItemEntity _navigatedItem;
-        public CategoryItemEntity NavigatedItem
-        {
-            get => _navigatedItem;
-            set => SetProperty(ref _navigatedItem, value);
-        }
+        //private CategoryItemEntity _navigatedItem;
+        //public CategoryItemEntity NavigatedItem
+        //{
+        //    get => _navigatedItem;
+        //    set => SetProperty(ref _navigatedItem, value);
+        //}
 
 
         private ItemEntity _selectedItem;
@@ -65,7 +65,7 @@ namespace ArtScanner.ViewModels
 
             if (parameters.GetNavigationMode() != NavigationMode.Back)
             {
-                NavigatedItem = GetParameters<CategoryItemEntity>(parameters);
+                //NavigatedItem = GetParameters<CategoryItemEntity>(parameters);
 
                 await InitItemsList();
             }
@@ -90,8 +90,9 @@ namespace ArtScanner.ViewModels
 
             if (BookletItems.Count == 0)
             {
-                await _itemDBService.DeleateCategoryItem(NavigatedItem);
-                await _itemDBService.CheckAndDeleteFolder(NavigatedItem.ParentId, NavigatedItem.LocalId);
+                //TODO:!!!
+                //await _itemDBService.DeleateCategoryItem(NavigatedItem);
+                //await _itemDBService.CheckAndDeleteFolder(NavigatedItem.ParentId, NavigatedItem.LocalId);
 
                 appSettings.NeedToUpdateHomePage = true;
 
@@ -106,26 +107,25 @@ namespace ArtScanner.ViewModels
             {
                 BookletItems.Clear();
 
-                var result = await _itemDBService.GetItemsByParentIdAll(NavigatedItem.Id);
-                foreach(var item in result)
-                {
-                    BookletItems.Add(new ItemEntity
-                    {
-                        Liked = item.Liked,
-                        LangTag = item.LangTag,
-                        Author = item.Author,
-                        LocalId = item.LocalId,
-                        MusicUrl = item.MusicUrl,
-                        ImageFileName = item.ImageFileName,
-                        ImageUrl = item.ImageUrl,
-                        ParentId = item.ParentId,
-                        MusicFileName = item.MusicFileName,
-                        Description = item.Description,
-                        Id = item.Id,
-                        Title = item.Title,
-                        ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName)),
-                    });
-                }
+                //var result = await _itemDBService.GetItemsByParentIdAll(NavigatedItem.Id);
+                //foreach(var item in result)
+                //{
+                //    BookletItems.Add(new ItemEntity
+                //    {
+                //        Liked = item.Liked,
+                //        LangTag = item.LangTag,
+                //        LocalId = item.LocalId,
+                //        MusicUrl = item.MusicUrl,
+                //        ImageFileName = item.ImageFileName,
+                //        ImageUrl = item.ImageUrl,
+                //        ParentId = item.ParentId,
+                //        MusicFileName = item.MusicFileName,
+                //        Description = item.Description,
+                //        Id = item.Id,
+                //        Title = item.Title,
+                //        ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName)),
+                //    });
+                //}
             }
             catch (Exception ex)
             {

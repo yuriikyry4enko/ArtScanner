@@ -16,7 +16,7 @@ namespace ArtScanner.Services
 
         }
 
-        public async Task<GeneralItemInfoModel> GetGeneralItemInfo(string itemId)
+        public async Task<GeneralItemInfoModel> GetGeneralItemInfo(long itemId)
         {
             Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetGeneralById, itemId));
             try
@@ -35,7 +35,7 @@ namespace ArtScanner.Services
             return null;
         }
 
-        public async Task<byte[]> GetImageById(string id)
+        public async Task<byte[]> GetImageById(long id)
         {
             Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetJPGById, id));
             try
@@ -53,7 +53,7 @@ namespace ArtScanner.Services
             return null;
         }
 
-        public async Task<TextItemInfoModel> GetTextById(string langTag, string id)
+        public async Task<TextItemInfoModel> GetTextById(string langTag, long id)
         {
             Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetTextById, langTag, id));
             try

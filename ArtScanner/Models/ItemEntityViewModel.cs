@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Input;
+using ArtScanner.Resources;
 using ArtScanner.Utils.AuthConfigs;
 using ArtScanner.Utils.Constants;
 using MediaManager;
@@ -15,8 +16,11 @@ namespace ArtScanner.Models
     {
         public INavigationService _navigationService { get; set; }
 
+        [Ignore]
+        public bool firstPlaying { get; set; } = true;
+
         // Server Id
-        public string Id { get; set; }
+        public long Id { get; set; }
 
         public long ParentId { get; set; }
 
@@ -48,6 +52,14 @@ namespace ArtScanner.Models
 
         public string ImageFileName { get; set; }
 
+        [Ignore]
+        public string PlayIcon
+        {
+            get { return IsPlaying ? Images.Pause : Images.Play; }
+        }
+
+
+
         public ICommand TwittCommand => new Command(async () =>
         {
             if (OAuthConfig.User == null)
@@ -66,6 +78,7 @@ namespace ArtScanner.Models
             });
         });
 
+        
 
         public ICommand PlayCommand => new Command(async () =>
         {
@@ -73,18 +86,28 @@ namespace ArtScanner.Models
             {
                 IsPlayButtonEnable = false;
 
-                await CrossMediaManager.Current.Play();
+                if (firstPlaying)
+                {
+                    await CrossMediaManager.Current.Play(string.Format(ApiConstants.GetAudioStreamById, LangTag, Id));
+                }
 
                 if (IsPlaying)
                 {
-                    await CrossMediaManager.Current.Pause();
                     IsPlaying = false;
+                    OnPropertyChanged(nameof(PlayIcon));
+
+                    await CrossMediaManager.Current.Pause();
+                    
                 }
                 else
                 {
-                    await CrossMediaManager.Current.Play();
                     IsPlaying = true;
+                    OnPropertyChanged(nameof(PlayIcon));
+
+                    await CrossMediaManager.Current.Play();
                 }
+
+                
             }
             catch (Exception ex)
             {

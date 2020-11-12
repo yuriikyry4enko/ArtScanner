@@ -5,7 +5,6 @@
     xmlns:yummy="clr-namespace:Xamarin.Forms.PancakeView;assembly=Xamarin.Forms.PancakeView"
     xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     x:Class="ArtScanner.Controls.ItemGalleryComponent"
-    xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
     xmlns:converters="clr-namespace:ArtScanner.Converters"
     xmlns:controls="clr-namespace:ArtScanner.Controls"
     VerticalOptions="FillAndExpand"
@@ -30,14 +29,10 @@
             Source="{Binding ImageByteArray, Converter={StaticResource ByteArrayToImage}}"
             Aspect="AspectFill">
         </ffimageloading:CachedImage>
-
         <yummy:PancakeView.GestureRecognizers>
             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
         </yummy:PancakeView.GestureRecognizers>
-
     </yummy:PancakeView>
-
-   
 
     <ScrollView
         BackgroundColor="White"
@@ -114,14 +109,13 @@
             <controls:Circle
                 HeightRequest="60"
                 WidthRequest="60"
-                IsEnabled="{Binding IsPlayButtonEnable}"
                 Color="Gray"
                 HorizontalOptions="Center">
                 <controls:TintedCachedImage
                     VerticalOptions="Center"
                     HorizontalOptions="Center"
+                    WidthRequest="35"
                     Source="{Binding PlayIcon}"
-                    WidthRequest="35"   
                     TintColor="White"
                     HeightRequest="32"/>
                 <controls:Circle.GestureRecognizers>
@@ -149,7 +143,7 @@
             </controls:Circle>
             <StackLayout.GestureRecognizers>
                 <!--<SwipeGestureRecognizer Direction="Left,Right" Swiped="OnSwiped"/>-->
-                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
+                <!--<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>-->
             </StackLayout.GestureRecognizers>
         </StackLayout>
     </Frame>
@@ -206,7 +200,7 @@
                     VerticalOptions="Center"
                     HorizontalOptions="Center"
                     WidthRequest="35"
-                    Source="{x:Static resources:Images.Share}"
+                    Source="{Binding PlayIcon}"
                     TintColor="White"
                     HeightRequest="32"/>
                 <controls:Circle.GestureRecognizers>
@@ -232,11 +226,10 @@
                     <TapGestureRecognizer Command="{Binding TwittCommand}"/>
                 </controls:Circle.GestureRecognizers>
             </controls:Circle>
-
         </StackLayout>
         <StackLayout.GestureRecognizers>
             <!--<SwipeGestureRecognizer Direction="Left,Right" Swiped="OnSwiped"/>-->
-            <!--<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>-->
+            <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
         </StackLayout.GestureRecognizers>
     </StackLayout>
    

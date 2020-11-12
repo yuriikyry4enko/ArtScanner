@@ -5,13 +5,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
-using ArtScanner.Models;
 using ArtScanner.Models.Entities;
 using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
 using ArtScanner.Utils.Helpers;
-using ArtScanner.Views; 
-using Plugin.SharedTransitions;
+using ArtScanner.Views;
 using Prism.Navigation;
 using Xamarin.Forms;
 
@@ -24,22 +22,22 @@ namespace ArtScanner.ViewModels
         private readonly IAppFileSystemService _appFileSystemService;
         private readonly IAppSettings appSettings;
 
-        private ObservableCollection<CategoryItemEntity> _bookletItems = new ObservableCollection<CategoryItemEntity>();
-        public ObservableCollection<CategoryItemEntity> BookletItems
+        private ObservableCollection<ItemEntity> _bookletItems = new ObservableCollection<ItemEntity>();
+        public ObservableCollection<ItemEntity> BookletItems
         {
             get => _bookletItems;
             set => SetProperty(ref _bookletItems, value);
         }
 
-        private CategoryItemEntity _selectedBookletItem;
-        public CategoryItemEntity SelectedBookletItem
+        private ItemEntity _selectedBookletItem;
+        public ItemEntity SelectedBookletItem
         {
             get => _selectedBookletItem;
             set => SetProperty(ref _selectedBookletItem, value);
         }
 
-        private FolderItemEntity _navigatedFolderItem;
-        public FolderItemEntity NavigatedFolderItem
+        private ItemEntity _navigatedFolderItem;
+        public ItemEntity NavigatedFolderItem
         {
             get => _navigatedFolderItem;
             set => SetProperty(ref _navigatedFolderItem, value);
@@ -58,22 +56,28 @@ namespace ArtScanner.ViewModels
             this.appSettings = appSettings;
         }
 
-        public ICommand ItemTappedCommad => new Command<CategoryItemEntity>(async (item) =>
+        public ICommand ItemTappedCommad => new Command<ItemEntity>(async (item) =>
         {
-            await navigationService.NavigateAsync(PageNames.BookleItemDetailsFolderPage, CreateParameters(item));
+            if (!item.IsFolder)
+            {
+                await navigationService.NavigateAsync(PageNames.ItemsGalleryPage, CreateParameters(NavigatedFolderItem));
+            }
+            else
+            {
+                await navigationService.NavigateAsync(PageNames.BookletItemDetailsPage, CreateParameters(item));
+            }
         });
 
         public ICommand DeleteCommand => new Command(async (item) =>
         {
-            var model = item as CategoryItemEntity;
+            var model = item as ItemEntity;
 
             int countOfCategoryItems = (await _itemDBService.GetItemsByParentIdAll(model.Id)).Count();
-            var result = await _userDialogs.ConfirmAsync($"Remove category with {countOfCategoryItems} items?", "Confirmation", "Yes", "No");
+            var result = await _userDialogs.ConfirmAsync($"Remove {countOfCategoryItems} items?", "Confirmation", "Yes", "No");
 
             if (!result) return;
 
-           
-            await _itemDBService.DeleateCategoryItem(model);
+            await _itemDBService.DeleateItemWithChildren(model);
 
             BookletItems.Remove(model);
 
@@ -81,8 +85,7 @@ namespace ArtScanner.ViewModels
 
             if (BookletItems.Count == 0)
             {
-
-                await _itemDBService.DeleateFolderItem(NavigatedFolderItem);
+                await _itemDBService.DeleateItem(NavigatedFolderItem);
 
                 await navigationService.GoBackToRootAsync();
                 await navigationService.NavigateAsync($"{nameof(HomePage)}");
@@ -95,7 +98,7 @@ namespace ArtScanner.ViewModels
 
             if (parameters.GetNavigationMode() != NavigationMode.Back)
             {
-                NavigatedFolderItem = GetParameters<FolderItemEntity>(parameters);
+                NavigatedFolderItem = GetParameters<ItemEntity>(parameters);
 
                 await InitItemsList();
             }
@@ -107,15 +110,16 @@ namespace ArtScanner.ViewModels
             {
                 BookletItems.Clear();
 
-                var result = await _itemDBService.GetCategoriesByParentIdAll(NavigatedFolderItem.Id);
+                var result = await _itemDBService.GetItemsByParentIdAll(NavigatedFolderItem.Id);
                 foreach (var item in result)
                 {
-                    BookletItems.Add(new CategoryItemEntity
+                    BookletItems.Add(new ItemEntity
                     {
                         LocalId = item.LocalId,
                         Id = item.Id,
                         ParentId = item.ParentId,
                         Title = item.Title,
+                        IsFolder = item.IsFolder,
                         ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName))
                     });
                 }
