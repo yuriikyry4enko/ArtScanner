@@ -50,6 +50,7 @@
     <Folder Include="Converters\" />
     <Folder Include="Resx\" />
     <Folder Include="Popups\" />
+    <Folder Include="TemplateSelectors\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\play.svg" />

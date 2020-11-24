@@ -111,7 +111,7 @@ namespace ArtScanner.ViewModels
                 if (parameters.GetNavigationMode() != NavigationMode.Back)
                 {
                     ItemModel = GetParameters<ItemEntity>(parameters);
-                       
+                                           
                     RaisePropertyChanged(nameof(ItemModel));
 
                     IsPlayButtonEnable = false;
@@ -317,7 +317,6 @@ namespace ArtScanner.ViewModels
                     return;
                 }
 
-                ItemModel.Title = textModel.Title;
                 ItemModel.Description = textModel.Description;
 
                 RaisePropertyChanged(nameof(ItemModel));

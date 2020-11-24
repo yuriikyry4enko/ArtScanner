@@ -62,10 +62,17 @@ namespace ArtScanner.Models
 
         public ICommand TwittCommand => new Command(async () =>
         {
-            if (OAuthConfig.User == null)
+            try
             {
-                OAuthConfig.navigationService = _navigationService;
-                await _navigationService.NavigateAsync(PageNames.ProviderLoginPage);
+                if (OAuthConfig.User == null)
+                {
+                    OAuthConfig.navigationService = _navigationService;
+                    await _navigationService.NavigateAsync(PageNames.ProviderLoginPage);
+                }
+            }
+            catch(Exception ex)
+            {
+
             }
         });
 
@@ -89,6 +96,7 @@ namespace ArtScanner.Models
                 if (firstPlaying)
                 {
                     await CrossMediaManager.Current.Play(string.Format(ApiConstants.GetAudioStreamById, LangTag, Id));
+                    firstPlaying = false;
                 }
 
                 if (IsPlaying)

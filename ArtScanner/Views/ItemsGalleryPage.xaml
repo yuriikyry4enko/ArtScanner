@@ -20,10 +20,10 @@
     <Grid
         Padding="0">
         <CarouselView
-            CurrentItem="{Binding CurrentCarouselItem}"
+            CurrentItem="{Binding Path=BindingContext.CurrentCarouselItem,Source={x:Reference itemsGalleryPage}}"
             x:Name="carouselGalleyItems"
             Margin="0"
-            
+            IsScrollAnimated="False"
             IsSwipeEnabled="True"
             VerticalOptions="FillAndExpand"
             ItemsSource="{Binding Items}">

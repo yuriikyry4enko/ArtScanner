@@ -18,6 +18,7 @@ namespace ArtScanner.ViewModels
     {
         #region Services
 
+        private GalleryNavigationArgs _navArgs;
         private readonly IAppFileSystemService _appFileSystemService;
         private readonly IItemDBService _itemDBService;
 
@@ -65,7 +66,6 @@ namespace ArtScanner.ViewModels
             IItemDBService itemDBService,
             IAppFileSystemService appFileSystemService) : base(navigationService)
         {
-
             this._itemDBService = itemDBService;
             this._appFileSystemService = appFileSystemService;
         }
@@ -78,7 +78,9 @@ namespace ArtScanner.ViewModels
             {
                 try
                 {
-                    NavigatedItemModel = GetParameters<ItemEntity>(parameters);
+                    _navArgs = GetParameters<GalleryNavigationArgs>(parameters);
+                    NavigatedItemModel = _navArgs.NavigatedModel;
+
 
                     Items.Clear();
 
@@ -106,9 +108,11 @@ namespace ArtScanner.ViewModels
                             });
                         }
 
-                        CurrentCarouselItem = Items.FirstOrDefault(x => x.LocalId == NavigatedItemModel.LocalId);
+                        CurrentCarouselItem = Items.FirstOrDefault(x => x.Id == _navArgs.SelectedChildModel.Id);
 
                         RaisePropertyChanged(nameof(Items));
+                        RaisePropertyChanged(nameof(CurrentCarouselItem));
+
                     }
                 }
                 catch (Exception ex)

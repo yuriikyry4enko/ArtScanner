@@ -52,10 +52,19 @@
             </BindableLayout.ItemTemplate>
         </StackLayout>
 
+        <Label
+            Text="1.0.27"
+            VerticalOptions="End"
+            HorizontalOptions="Start"
+            FontSize="20"
+            Margin="25"
+            FontAttributes="Bold"
+            TextColor="White"/>
+
         <Button
             Text="X"
             FontSize="30"
-            Margin="10,10"
+            Margin="25"
             FontAttributes="Bold"
             TextColor="White"
             VerticalOptions="Start"

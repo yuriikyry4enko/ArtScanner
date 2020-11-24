@@ -68,7 +68,6 @@
                 Text="{Binding Description}"/>
             <StackLayout.GestureRecognizers>
                 <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
-                <!--<SwipeGestureRecognizer Direction="Left,Right" Swiped="OnSwiped"/>-->
             </StackLayout.GestureRecognizers>
         </StackLayout>
     </ScrollView>

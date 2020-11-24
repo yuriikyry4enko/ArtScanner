@@ -13,9 +13,29 @@
         Padding="0"
         Margin="0"
         Spacing="0">
-        <Grid VerticalOptions="FillAndExpand"
-              HorizontalOptions="FillAndExpand"
-              BackgroundColor="Black">
+        <controls:Circle
+            VerticalOptions="Start"
+            Padding="0"
+            HeightRequest="45"
+            Margin="25,30,0,0"
+            WidthRequest="45"
+            HorizontalOptions="Start"
+            Color="White">
+            <controls:TintedCachedImage
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Source="{x:Static resources:Images.BackArrow}"
+                WidthRequest="20"   
+                TintColor="Black"
+                HeightRequest="20"/>
+            <controls:Circle.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding BackCommand}"/>
+            </controls:Circle.GestureRecognizers>
+        </controls:Circle>
+        <Grid
+            VerticalOptions="FillAndExpand"
+            HorizontalOptions="FillAndExpand"
+            BackgroundColor="Black">
             
             <zxing:ZXingScannerView
                 x:Name="scanView"
@@ -48,12 +68,12 @@
             <controls:TintedCachedImage
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
-                Source="{x:Static resources:Images.BackArrow}"
+                Source="{x:Static resources:Images.Scan}"
                 WidthRequest="20"   
                 TintColor="Black"
                 HeightRequest="20"/>
             <controls:Circle.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding BackCommand}"/>
+                <TapGestureRecognizer Command="{Binding QRScanResultCommand}"/>
             </controls:Circle.GestureRecognizers>
         </controls:Circle>
     </StackLayout>

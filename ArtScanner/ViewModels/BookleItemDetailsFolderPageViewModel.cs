@@ -31,14 +31,6 @@ namespace ArtScanner.ViewModels
             set => SetProperty(ref _bookletItems, value);
         }
 
-        //private CategoryItemEntity _navigatedItem;
-        //public CategoryItemEntity NavigatedItem
-        //{
-        //    get => _navigatedItem;
-        //    set => SetProperty(ref _navigatedItem, value);
-        //}
-
-
         private ItemEntity _selectedItem;
         public ItemEntity SelectedItem
         {
@@ -65,7 +57,7 @@ namespace ArtScanner.ViewModels
 
             if (parameters.GetNavigationMode() != NavigationMode.Back)
             {
-                //NavigatedItem = GetParameters<CategoryItemEntity>(parameters);
+                //NavigatedItem = GetParameters<ItemEntity>(parameters);
 
                 await InitItemsList();
             }

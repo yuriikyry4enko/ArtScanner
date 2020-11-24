@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
+using ArtScanner.Models;
 using ArtScanner.Models.Entities;
 using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
@@ -21,6 +22,7 @@ namespace ArtScanner.ViewModels
         private readonly IItemDBService _itemDBService;
         private readonly IAppFileSystemService _appFileSystemService;
         private readonly IAppSettings appSettings;
+        private readonly IRestService _restService;
 
         private ObservableCollection<ItemEntity> _bookletItems = new ObservableCollection<ItemEntity>();
         public ObservableCollection<ItemEntity> BookletItems
@@ -48,19 +50,25 @@ namespace ArtScanner.ViewModels
             INavigationService navigationService,
             IAppFileSystemService appFileSystemService,
             IAppSettings appSettings,
+            IRestService restService,
             IItemDBService itemDBService) : base(navigationService)
         {
             this._userDialogs = userDialogs;
             this._itemDBService = itemDBService;
             this._appFileSystemService = appFileSystemService;
             this.appSettings = appSettings;
+            this._restService = restService;
         }
 
         public ICommand ItemTappedCommad => new Command<ItemEntity>(async (item) =>
         {
             if (!item.IsFolder)
             {
-                await navigationService.NavigateAsync(PageNames.ItemsGalleryPage, CreateParameters(NavigatedFolderItem));
+                await navigationService.NavigateAsync(PageNames.ItemsGalleryPage, CreateParameters(new GalleryNavigationArgs
+                {
+                    SelectedChildModel = item,
+                    NavigatedModel = NavigatedFolderItem,
+                }));
             }
             else
             {
@@ -100,6 +108,13 @@ namespace ArtScanner.ViewModels
             {
                 NavigatedFolderItem = GetParameters<ItemEntity>(parameters);
 
+                if(NavigatedFolderItem?.ImageByteArray == null && NavigatedFolderItem.Id != 0)
+                {
+                    NavigatedFolderItem.ImageByteArray = await _restService.GetImageById(NavigatedFolderItem.Id);
+                    RaisePropertyChanged(nameof(NavigatedFolderItem));
+
+                }
+
                 await InitItemsList();
             }
         }
@@ -117,6 +132,7 @@ namespace ArtScanner.ViewModels
                     {
                         LocalId = item.LocalId,
                         Id = item.Id,
+                        Description = item.Description,
                         ParentId = item.ParentId,
                         Title = item.Title,
                         IsFolder = item.IsFolder,
