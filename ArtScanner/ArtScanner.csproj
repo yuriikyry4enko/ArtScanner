@@ -51,6 +51,7 @@
     <Folder Include="Resx\" />
     <Folder Include="Popups\" />
     <Folder Include="TemplateSelectors\" />
+    <Folder Include="Models\Analytics\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Resources\play.svg" />
@@ -95,6 +96,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Resources\ItemGalleryComponent.xaml.cs" />
+    <Compile Remove="ViewModels\ScannerPage.xaml.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Resx\AppResources.Designer.cs">

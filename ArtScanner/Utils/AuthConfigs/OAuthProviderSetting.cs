@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using ArtScanner.Services;
 using Xamarin.Auth;
 
 namespace ArtScanner.Utils.AuthConfigs
@@ -35,7 +36,7 @@ namespace ArtScanner.Utils.AuthConfigs
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogService.Log(ex);
             }
             return Twitterauth;
         }

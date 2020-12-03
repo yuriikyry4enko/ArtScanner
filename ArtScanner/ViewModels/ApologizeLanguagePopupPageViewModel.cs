@@ -73,7 +73,7 @@ namespace ArtScanner.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex);
+                    LogService.Log(ex);
                 }
                 finally
                 {
@@ -91,7 +91,7 @@ namespace ArtScanner.ViewModels
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogService.Log(ex);
             }
         });
 
@@ -116,7 +116,7 @@ namespace ArtScanner.ViewModels
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogService.Log(ex);
             }
         });
 

@@ -9,6 +9,8 @@
     xmlns:controls="clr-namespace:ArtScanner.Controls"
     VerticalOptions="FillAndExpand"
     HorizontalOptions="FillAndExpand"
+    Padding="0"
+    Margin="0"
     xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
     x:Name="artItem">
     <Grid.Resources>
@@ -22,19 +24,21 @@
     </Grid.RowDefinitions>
 
     <yummy:PancakeView
+        Padding="0"
         Grid.Row="0"
         Grid.RowSpan="2"
+        Margin="0"
         x:Name="artItemImage">
         <ffimageloading:CachedImage
             Source="{Binding ImageByteArray, Converter={StaticResource ByteArrayToImage}}"
             Aspect="AspectFill">
         </ffimageloading:CachedImage>
-        <yummy:PancakeView.GestureRecognizers>
+        <!--<yummy:PancakeView.GestureRecognizers>
             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
-        </yummy:PancakeView.GestureRecognizers>
+        </yummy:PancakeView.GestureRecognizers>-->
     </yummy:PancakeView>
 
-    <ScrollView
+    <!--<ScrollView
         BackgroundColor="White"
         Opacity="0"
         x:Name="scrollData"
@@ -70,9 +74,9 @@
                 <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
             </StackLayout.GestureRecognizers>
         </StackLayout>
-    </ScrollView>
+    </ScrollView>-->
 
-    <Frame
+    <!--<Frame
         Grid.Row="0"
         Grid.RowSpan="2"
         x:Name="frameButtons"
@@ -141,13 +145,13 @@
                 </controls:Circle.GestureRecognizers>
             </controls:Circle>
             <StackLayout.GestureRecognizers>
-                <!--<SwipeGestureRecognizer Direction="Left,Right" Swiped="OnSwiped"/>-->
-                <!--<TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>-->
+                <SwipeGestureRecognizer Direction="Left,Right" Swiped="OnSwiped"/>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
             </StackLayout.GestureRecognizers>
         </StackLayout>
-    </Frame>
+    </Frame>-->
 
-    <StackLayout
+    <!--<StackLayout
         Grid.Row="0"
         Grid.RowSpan="2"
         Opacity="0"
@@ -227,9 +231,8 @@
             </controls:Circle>
         </StackLayout>
         <StackLayout.GestureRecognizers>
-            <!--<SwipeGestureRecognizer Direction="Left,Right" Swiped="OnSwiped"/>-->
             <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped_1"/>
         </StackLayout.GestureRecognizers>
-    </StackLayout>
+    </StackLayout>-->
    
 </Grid>

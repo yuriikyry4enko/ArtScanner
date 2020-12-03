@@ -173,6 +173,7 @@
         </controls:Circle>
 
          <StackLayout
+             Opacity="{Binding OpacityButton}"
             IsVisible="{Binding IsFoldersListEmpty}"
             Grid.Row="0"
             Grid.RowSpan="2"

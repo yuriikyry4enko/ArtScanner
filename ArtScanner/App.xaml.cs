@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using Acr.UserDialogs;
+using ArtScanner.Models.Analytics;
 using ArtScanner.Popups;
 using ArtScanner.Resx;
 using ArtScanner.Services;
@@ -76,8 +77,15 @@ namespace ArtScanner
             containerRegistry.RegisterSingleton<IRestService, RestService>();
             containerRegistry.RegisterSingleton<IBaseDBService, BaseDBService>();
             containerRegistry.RegisterSingleton<IItemDBService, ItemDBService>();
-    
-          
+            containerRegistry.RegisterSingleton<IAnalyticsService, AnalyticsService>();
+
+            var analyticsService = (IAnalyticsService)Container.Resolve(typeof(IAnalyticsService));
+            analyticsService.SetProvider(new AnalyticsServiceFileProvider(Utils.Constants.AppConstants.csLocalAnalyticsFilePath));
+            LogService.SetAnalyticsService(analyticsService);
+
+
+
+
             containerRegistry.RegisterForNavigation<ProviderLoginPage>();
             containerRegistry.RegisterForNavigation<SharedTransitionNavigationPage>();
            
@@ -99,6 +107,10 @@ namespace ArtScanner
             containerRegistry.RegisterForNavigation<LoadingPopupPage, LoadingPopupPageViewModel>();
             containerRegistry.RegisterForNavigation<BurgerMenuPopupPage, BurgerMenuPopupPageViewModel>();
 
+            containerRegistry.RegisterForNavigation<BurgerMenuPopupPage, BurgerMenuPopupPageViewModel>();
+
+
+            //dependencyService.Get<IAnalyticsService>().SetProvider(new Framework.Data.Models.Analytics.AnalyticsServiceFileProvider(Constants.csLocalAnalyticsFilePath));
             containerRegistry.RegisterPopupNavigationService();
         }
 

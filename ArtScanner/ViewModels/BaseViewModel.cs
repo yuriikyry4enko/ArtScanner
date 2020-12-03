@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Input;
+using ArtScanner.Utils.Constants;
 using Prism.AppModel;
 using Prism.Mvvm;
 using Prism.Navigation;
@@ -18,6 +19,10 @@ namespace ArtScanner.ViewModels
 
         public ICommand BackCommand => new Command(async () => { await navigationService.GoBackAsync(); });
 
+        public ICommand OpenBurgerMenuCommand => new Command(async () =>
+        {
+            await navigationService.NavigateAsync(PageNames.BurgerMenuPopupPage);
+        });
 
         protected const string Params = "params";
 

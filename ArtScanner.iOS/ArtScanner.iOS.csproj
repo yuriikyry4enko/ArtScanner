@@ -75,7 +75,6 @@
     <Compile Include="AppDelegate.cs" />
     <None Include="Entitlements.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Info.plist" />
     <Compile Include="Renderers\CircleRenderer.cs" />
     <Compile Include="Renderers\ExtendedScrollViewRenderer.cs" />
     <Compile Include="Renderers\ProviderLoginPageRenderer.cs" />
@@ -84,6 +83,7 @@
     <Compile Include="SplashViewController.designer.cs">
       <DependentUpon>SplashViewController.cs</DependentUpon>
     </Compile>
+    <None Include="Info.plist" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />

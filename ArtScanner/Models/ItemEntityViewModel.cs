@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows.Input;
 using ArtScanner.Resources;
+using ArtScanner.Services;
 using ArtScanner.Utils.AuthConfigs;
 using ArtScanner.Utils.Constants;
 using MediaManager;
@@ -119,7 +120,7 @@ namespace ArtScanner.Models
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogService.Log(ex);
             }
             finally
             {

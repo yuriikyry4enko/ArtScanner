@@ -198,82 +198,14 @@
             ItemTemplate="{StaticResource bookletTemplateSelector}"
             SelectionMode="Single"
             BackgroundColor="Transparent">
-            <!--<ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <context:SideContextMenuView
-                            ForceCloseCommand="{Binding ForceCloseCommand}">
-                            <context:SideContextMenuView.View>
-                                <Frame
-                                    HorizontalOptions="FillAndExpand"
-                                    Padding="0"
-                                    HasShadow="False"
-                                    WidthRequest="{Binding Source={x:Reference CollectionView}, Path=Width, Converter={StaticResource MenuFitWidthConverter}, ConverterParameter='0'}">
-                                
-                                     <Grid
-                                          Padding="0"
-                                          Margin="0"
-                                          HeightRequest="90">
-
-                                          <Image
-                                              VerticalOptions="FillAndExpand"
-                                              HorizontalOptions="FillAndExpand"
-                                              Aspect="AspectFill"
-                                              Source="{Binding ImageByteArray, 
-                                                    Converter={StaticResource ByteArrayToImage}}"/>
-                                          <Label
-                                              Padding="30"
-                                              TextColor="White"
-                                              FontAttributes="Bold"
-                                              FontSize="Large"
-                                              VerticalOptions="Center"
-                                              HorizontalOptions="FillAndExpand"
-                                              Text="{Binding Title}"/>
-                                    </Grid>
-                                    <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer
-                                            Command="{Binding Path=BindingContext.ItemTappedCommad,Source={x:Reference root}}" CommandParameter="{Binding .}"/>
-                                    </Frame.GestureRecognizers>
-                                </Frame>
-
-                            </context:SideContextMenuView.View>
-                            <context:SideContextMenuView.ContextTemplate>
-                                <DataTemplate>
-                                    <Frame
-                                        Padding="30,0"
-                                            IsClippedToBounds="true"
-                                            HasShadow="False"
-                                            BackgroundColor="Red">
-                                        <StackLayout
-                                            VerticalOptions="Center">
-                                            <controls:TintedCachedImage
-                                                TintColor="White"
-                                                Source="{x:Static resources:Images.Trash}"
-                                                VerticalOptions="Center"
-                                                HorizontalOptions="EndAndExpand"
-                                                WidthRequest="35"
-                                                HeightRequest="35">
-                                                <forms:SvgCachedImage.GestureRecognizers>
-                                                    <TapGestureRecognizer
-                                                        Command="{Binding Source={x:Reference CollectionView}, Path=BindingContext.DeleteCommand}"
-                                                        CommandParameter="{Binding}"/>
-                                                </forms:SvgCachedImage.GestureRecognizers>
-                                            </controls:TintedCachedImage>
-                                    </StackLayout>
-                                    </Frame>
-                                </DataTemplate>
-                            </context:SideContextMenuView.ContextTemplate>  
-                        </context:SideContextMenuView>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>-->
+           
         </ListView>
         <controls:Circle
-            Grid.Row="1"
-            VerticalOptions="End"
+            Grid.Row="0"
+            VerticalOptions="Start"
             Padding="0"
             HeightRequest="45"
-            Margin="25,0,0,25"
+            Margin="25,30,0,0"
             WidthRequest="45"
             HorizontalOptions="Start"
             Color="White">
@@ -288,5 +220,27 @@
                 <TapGestureRecognizer Command="{Binding BackCommand}"/>
             </controls:Circle.GestureRecognizers>
         </controls:Circle>
+        <controls:Circle
+            Grid.Row="0"
+            VerticalOptions="Start"
+            Padding="0"
+            HeightRequest="45"
+            Margin="0,30,25,0"
+            WidthRequest="45"
+            HorizontalOptions="End"
+            Color="White">
+            <controls:TintedCachedImage
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Source="{x:Static resources:Images.Menu}"
+                WidthRequest="20"   
+                TintColor="Black"
+                HeightRequest="20"/>
+            <controls:Circle.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding OpenBurgerMenuCommand}"/>
+            </controls:Circle.GestureRecognizers>
+        </controls:Circle>
+
+
     </Grid>
 </views:BasePage>

@@ -63,8 +63,8 @@ namespace ArtScanner.ViewModels
             {
                 var foundedItem = new ItemEntity
                 {
-                    Id = Int64.Parse(Result?.Text),
-                    //Id = 6,
+                    //Id = Int64.Parse(Result?.Text),
+                    Id = 5,
                 };
 
                 Device.BeginInvokeOnMainThread(async () =>
@@ -163,7 +163,7 @@ namespace ArtScanner.ViewModels
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex);
+                        LogService.Log(ex);
                     }
 
                 });

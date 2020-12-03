@@ -54,6 +54,13 @@ namespace ArtScanner.ViewModels
             set => SetProperty(ref _isFoldersListEmpty, value);
         }
 
+        private int _opacityButton = 0;
+        public int OpacityButton 
+        {
+            get => _opacityButton;
+            set => SetProperty(ref _opacityButton, value);
+        }
+
 
         #region Commands
 
@@ -97,10 +104,7 @@ namespace ArtScanner.ViewModels
 
         public ICommand SettingsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.ChooseLanguagePage); });
 
-        public ICommand OpenBurgerMenuCommand => new Command(async () =>
-        {
-            await navigationService.NavigateAsync(PageNames.BurgerMenuPopupPage);
-        });
+        
 
         public ICommand ScannCommand => new Command(async () =>
         {
@@ -137,7 +141,7 @@ namespace ArtScanner.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogService.Log(ex);
             }
         });
 
@@ -187,10 +191,12 @@ namespace ArtScanner.ViewModels
                 if (result.Count == 0)
                 {
                     IsFoldersListEmpty = true;
+                    OpacityButton = 1;
                 }
                 else
                 {
                     IsFoldersListEmpty = false;
+                    OpacityButton = 0;
                 }
 
                 foreach (var item in result)
@@ -207,7 +213,7 @@ namespace ArtScanner.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogService.Log(ex);
             }
         }
     }

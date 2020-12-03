@@ -37,7 +37,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.28</string>
+	<string>1.0.32</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>de</string>
@@ -46,5 +46,13 @@
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>mailto</string>
+	</array>
+	<key>UISupportsDocumentBrowser</key>
+    <true/>
+	<key>LSSupportsOpeningDocumentsInPlace</key>
+    <true/>
 </dict>
 </plist>

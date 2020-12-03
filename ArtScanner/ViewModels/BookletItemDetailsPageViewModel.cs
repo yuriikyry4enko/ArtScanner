@@ -142,7 +142,7 @@ namespace ArtScanner.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogService.Log(ex);
             }
         }
     }

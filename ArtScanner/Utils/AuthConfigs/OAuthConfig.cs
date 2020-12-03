@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
 using LinqToTwitter;
 using Prism.Navigation;
@@ -45,7 +46,7 @@ namespace ArtScanner.Utils.AuthConfigs
                         }
                         catch(Exception ex)
                         {
-                            Debug.WriteLine(ex);
+                            LogService.Log(ex);
                         }
                     }
                 });

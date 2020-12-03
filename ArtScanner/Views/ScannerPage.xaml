@@ -72,9 +72,9 @@
                 WidthRequest="20"   
                 TintColor="Black"
                 HeightRequest="20"/>
-            <controls:Circle.GestureRecognizers>
-                <TapGestureRecognizer Command="{Binding QRScanResultCommand}"/>
-            </controls:Circle.GestureRecognizers>
+                <controls:Circle.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding QRScanResultCommand}"/>
+                </controls:Circle.GestureRecognizers>
         </controls:Circle>
     </StackLayout>
 </views:BasePage>

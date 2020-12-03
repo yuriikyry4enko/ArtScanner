@@ -1,6 +1,8 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
 using ArtScanner.Views;
 using Plugin.SharedTransitions;
@@ -15,6 +17,7 @@ namespace ArtScanner.ViewModels
         Home,
         Settings,
         ChooseLang,
+        SendLogs,
 
     }
 
@@ -50,6 +53,11 @@ namespace ArtScanner.ViewModels
                 Title = "Choose Language",
                 Page = BurgerMenuPages.ChooseLang,
             });
+            _menuItems.Add(new MenuItem()
+            {
+                Title = "Send Logs",
+                Page = BurgerMenuPages.SendLogs,
+            });
         }
 
         public ICommand NavigationCommand => new Command<MenuItem>(async (item) =>
@@ -84,6 +92,22 @@ namespace ArtScanner.ViewModels
                 else
                 {
                     await navigationService.GoBackAsync();
+                }
+            }
+            else if(item.Page == BurgerMenuPages.SendLogs)
+            {
+                try
+                {
+                    Xamarin.Essentials.EmailMessage emailMessage = new Xamarin.Essentials.EmailMessage();
+                    emailMessage.To = new System.Collections.Generic.List<string>() { Utils.Constants.AppConstants.csEmailSupport };
+                    emailMessage.Subject = Utils.Constants.AppConstants.csEmailSupportSubject;
+                    emailMessage.Body = Utils.Constants.AppConstants.csEmailSupportBody;
+                    emailMessage.Attachments.Add(new Xamarin.Essentials.EmailAttachment(Utils.Constants.AppConstants.csLocalAnalyticsFilePath));
+                    await Xamarin.Essentials.Email.ComposeAsync(emailMessage);
+                }
+                catch(Exception ex)
+                {
+                    LogService.Log(ex); 
                 }
             }
 

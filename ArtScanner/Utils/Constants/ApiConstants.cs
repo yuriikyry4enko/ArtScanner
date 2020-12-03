@@ -1,4 +1,8 @@
 ﻿using System;
+using System.IO;
+using Xamarin.Forms;
+using Xamarin.Forms.PlatformConfiguration;
+
 namespace ArtScanner.Utils.Constants
 {
     static class ApiConstants
@@ -20,5 +24,28 @@ namespace ArtScanner.Utils.Constants
         public const string GetIdByQRCode = HOST_CORE + "/qr-code/{0}";
 
         public const string GetGeneralById = HOST_CORE + "/item/general/{0}";
+    }
+
+    static class AppConstants
+    {
+        public static string csLocalAnalyticsFilePath =
+            Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library"), "logs_smartbooklet.txt");
+
+        //Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "logs.txt");
+
+
+        public static string csEmailSupport = "yuriykiri4enko@gmail.com";
+        public static string csEmailSupportSubject = "Logs from SmartBooklet";
+        public static string csEmailSupportBody = $"It is auto-generated email with attached log file from SmartBooklet app.{Environment.NewLine}It will help us to improve application and resolve issues.";
+
+    }
+
+
+
+    public static class DateTimeFormats
+    {
+        public const string csTimeFormat = @"hh\:mm";
+        public static string csDateTimeFormat = "yyyy-MM-ddTHH:mm:ss";
+        public const string csEmptyTimeFormat = "00:00";
     }
 }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Threading.Tasks;
 using ArtScanner.Models;
+using ArtScanner.Models.Analytics;
 using Newtonsoft.Json;
 
 namespace ArtScanner.Services
@@ -21,15 +22,18 @@ namespace ArtScanner.Services
             Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetGeneralById, itemId));
             try
             {
-                using (client = new HttpClient())
+                using (var bench = new Benchmark($"Get general info by id = {itemId}"))
                 {
-                    var result = await client.GetStringAsync(uri);
-                    return JsonConvert.DeserializeObject<GeneralItemInfoModel>(result);
+                    using (client = new HttpClient())
+                    {
+                        var result = await client.GetStringAsync(uri);
+                        return JsonConvert.DeserializeObject<GeneralItemInfoModel>(result);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                LogService.Log(ex);
             }
 
             return null;
@@ -40,14 +44,17 @@ namespace ArtScanner.Services
             Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetJPGById, id));
             try
             {
-                using (client = new HttpClient())
+                using (var bench = new Benchmark($"Get Image by id = {id}"))
                 {
-                    return await client.GetByteArrayAsync(uri); ;
+                    using (client = new HttpClient())
+                    {
+                        return await client.GetByteArrayAsync(uri); ;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                LogService.Log(ex);
             }
 
             return null;
@@ -58,19 +65,22 @@ namespace ArtScanner.Services
             Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetTextById, langTag, id));
             try
             {
-                using (client = new HttpClient())
+                using (var bench = new Benchmark($"Get text by id = {id} and tag = {langTag}"))
                 {
-                    HttpResponseMessage response = await client.GetAsync(uri);
-                    if (response.IsSuccessStatusCode)
+                    using (client = new HttpClient())
                     {
-                        var result = await client.GetStringAsync(uri);
-                        return JsonConvert.DeserializeObject<TextItemInfoModel>(result);
+                        HttpResponseMessage response = await client.GetAsync(uri);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            var result = await client.GetStringAsync(uri);
+                            return JsonConvert.DeserializeObject<TextItemInfoModel>(result);
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                LogService.Log(ex);
             }
 
             return null;
@@ -93,31 +103,7 @@ namespace ArtScanner.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
-            }
-
-            return null;
-        }
-
-
-        public async Task<GeneralItemInfoModel> GetGeneralInfoById(long id)
-        {
-            Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetGeneralById, id));
-            try
-            {
-                using (client = new HttpClient())
-                {
-                    HttpResponseMessage response = await client.GetAsync(uri);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var result = await client.GetStringAsync(uri);
-                        return JsonConvert.DeserializeObject<GeneralItemInfoModel>(result);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(@"\tERROR {0}", ex.Message);
+                LogService.Log(ex);
             }
 
             return null;

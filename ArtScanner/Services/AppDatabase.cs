@@ -55,7 +55,7 @@ namespace ArtScanner.Services
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogService.Log(ex);
             }
         }
 
