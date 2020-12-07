@@ -32,6 +32,7 @@
     <PackageReference Include="Rg.Plugins.Popup" Version="2.0.0.4" />
     <PackageReference Include="Prism.Plugin.Popups" Version="7.2.0.1046" />
     <PackageReference Include="ContextViewCell" Version="2.0.1" />
+    <PackageReference Include="Xam.Plugins.DownloadManager" Version="1.4.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\" />
@@ -70,6 +71,8 @@
     <None Remove="Resources\trash.svg" />
     <None Remove="Resources\Screenshot 2020-10-12 at 17.49.26.png" />
     <None Remove="Resources\menu.svg" />
+    <None Remove="Resources\cancel.svg" />
+    <None Remove="Resources\tick.svg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\play.svg" />
@@ -87,6 +90,8 @@
     <EmbeddedResource Include="Resources\flyer.svg" />
     <EmbeddedResource Include="Resources\trash.svg" />
     <EmbeddedResource Include="Resources\menu.svg" />
+    <EmbeddedResource Include="Resources\cancel.svg" />
+    <EmbeddedResource Include="Resources\tick.svg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resx\AppResources.resx">

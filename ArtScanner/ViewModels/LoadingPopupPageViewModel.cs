@@ -31,7 +31,10 @@ namespace ArtScanner.ViewModels
         {
             try
             {
-                await navigationService.GoBackAsync();
+                await navigationService.GoBackAsync(CreateParameters(new LoadingNavigationArgs()
+                {
+                    IsCanceled = false,
+                })) ;
             }
             catch (Exception ex)
             {
@@ -43,7 +46,10 @@ namespace ArtScanner.ViewModels
         {
             try
             {
-                await navigationService.GoBackAsync();
+                await navigationService.GoBackAsync(CreateParameters(new LoadingNavigationArgs()
+                {
+                    IsCanceled = true,
+                }));
                 _NavArgs.PageLoadingCanceled.Invoke();
             }
             catch (Exception ex)

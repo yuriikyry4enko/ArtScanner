@@ -8,7 +8,6 @@ using ArtScanner.Models;
 using ArtScanner.Models.Entities;
 using ArtScanner.Services;
 using Prism.Navigation;
-using Rg.Plugins.Popup.Services;
 using Xamarin.Forms;
 
 namespace ArtScanner.ViewModels
@@ -112,7 +111,7 @@ namespace ArtScanner.ViewModels
                 }
 
                 await navigationService.GoBackAsync();
-                _NavArgs.PopupResultAction.Invoke(SelectedCulture.TwoLetterISOLanguageName);
+                _NavArgs.PopupResultAction.Invoke(SelectedCulture?.TwoLetterISOLanguageName);
             }
             catch(Exception ex)
             {

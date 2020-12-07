@@ -4,6 +4,7 @@ using System.Linq;
 using ContextMenu.iOS;
 using Foundation;
 using Lottie.Forms.iOS.Renderers;
+using Plugin.DownloadManager;
 using Prism;
 using Prism.Ioc;
 using UIKit;
@@ -53,21 +54,10 @@ namespace ArtScanner.iOS
             }
         }
 
-        //public override bool FinishedLaunching(UIApplication app, NSDictionary options)
-        //{
-        //    FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
-        //    global::ZXing.Net.Mobile.Forms.iOS.Platform.Init();
-        //    AnimationViewRenderer.Init();
-        //    Rg.Plugins.Popup.Popup.Init();
-
-        //    global::Xamarin.Forms.Forms.Init();
-
-        //    ContextMenuViewRenderer.Preserve();
-
-        //    LoadApplication(new App(new iOSInitializer()));
-                
-        //    return base.FinishedLaunching(app, options);
-        //}
+        public override void HandleEventsForBackgroundUrl(UIApplication application, string sessionIdentifier, System.Action completionHandler)
+        {
+            CrossDownloadManager.BackgroundSessionCompletionHandler = completionHandler;
+        }
     }
 
     public class iOSInitializer : IPlatformInitializer

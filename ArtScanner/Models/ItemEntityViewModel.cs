@@ -13,29 +13,32 @@ using Xamarin.Forms;
 
 namespace ArtScanner.Models
 {
-    public class ItemEntityViewModel : BaseModel
+    class ItemEntityViewModel : BaseModel
     {
         public INavigationService _navigationService { get; set; }
+        private readonly IAppFileSystemService _appFileSystemService;
 
-        [Ignore]
-        public bool firstPlaying { get; set; } = true;
+        public ItemEntityViewModel(
+            IAppFileSystemService appFileSystemService)
+        {
+            _appFileSystemService = appFileSystemService;
+        }
+
+        #region Properties
 
         // Server Id
         public long Id { get; set; }
-
         public long ParentId { get; set; }
-
         public string Title { get; set; }
         public string Description { get; set; }
         public string Author { get; set; }
         public string MusicUrl { get; set; }
         public string ImageUrl { get; set; }
         public string WikiUrl { get; set; }
-
-
         public string LangTag { get; set; }
-
         public bool Liked { get; set; }
+        public string AudioFileName { get; set; }
+        public string ImageFileName { get; set; }
 
         [Ignore]
         public bool IsPlayButtonEnable { get; set; }
@@ -47,11 +50,10 @@ namespace ArtScanner.Models
         public byte[] ImageByteArray { get; set; }
 
         [Ignore]
-        public byte[] MusicByteArray { get; set; }
+        public byte[] AudioByteArray { get; set; }
 
-        public string MusicFileName { get; set; }
-
-        public string ImageFileName { get; set; }
+        [Ignore]
+        public bool firstPlaying { get; set; } = true;
 
         [Ignore]
         public string PlayIcon
@@ -59,7 +61,9 @@ namespace ArtScanner.Models
             get { return IsPlaying ? Images.Pause : Images.Play; }
         }
 
+        #endregion
 
+        #region Commands
 
         public ICommand TwittCommand => new Command(async () =>
         {
@@ -73,7 +77,7 @@ namespace ArtScanner.Models
             }
             catch(Exception ex)
             {
-
+                LogService.Log(ex);
             }
         });
 
@@ -86,8 +90,6 @@ namespace ArtScanner.Models
             });
         });
 
-        
-
         public ICommand PlayCommand => new Command(async () =>
         {
             try
@@ -96,7 +98,14 @@ namespace ArtScanner.Models
 
                 if (firstPlaying)
                 {
-                    await CrossMediaManager.Current.Play(string.Format(ApiConstants.GetAudioStreamById, LangTag, Id));
+                    if (!string.IsNullOrEmpty(this.AudioFileName) && _appFileSystemService.DoesAudioExist(this.AudioFileName))
+                    {
+                        await CrossMediaManager.Current.Play(this.AudioFileName);
+                    }
+                    else
+                    {
+                        await CrossMediaManager.Current.Play(string.Format(ApiConstants.GetAudioStreamById, LangTag, Id));
+                    }
                     firstPlaying = false;
                 }
 
@@ -106,7 +115,6 @@ namespace ArtScanner.Models
                     OnPropertyChanged(nameof(PlayIcon));
 
                     await CrossMediaManager.Current.Pause();
-                    
                 }
                 else
                 {
@@ -115,8 +123,6 @@ namespace ArtScanner.Models
 
                     await CrossMediaManager.Current.Play();
                 }
-
-                
             }
             catch (Exception ex)
             {
@@ -128,5 +134,6 @@ namespace ArtScanner.Models
             }
         });
 
+        #endregion
     }
 }

@@ -112,7 +112,6 @@ namespace ArtScanner.ViewModels
                 {
                     NavigatedFolderItem.ImageByteArray = await _restService.GetImageById(NavigatedFolderItem.Id);
                     RaisePropertyChanged(nameof(NavigatedFolderItem));
-
                 }
 
                 await InitItemsList();
@@ -125,8 +124,42 @@ namespace ArtScanner.ViewModels
             {
                 BookletItems.Clear();
 
-                var result = await _itemDBService.GetItemsByParentIdAll(NavigatedFolderItem.Id);
-                foreach (var item in result)
+                await LoadItems(0, 10);
+                //var result = await _itemDBService.GetItemsByParentIdAll(NavigatedFolderItem.Id);
+                //foreach (var item in result)
+                //{
+                //    BookletItems.Add(new ItemEntity
+                //    {
+                //        LocalId = item.LocalId,
+                //        Id = item.Id,
+                //        Description = item.Description,
+                //        ParentId = item.ParentId,
+                //        Title = item.Title,
+                //        IsFolder = item.IsFolder,
+                //        AudioFileName = item.AudioFileName,
+                //        //AudioByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.AudioFileName, FileType.Audio)),
+                //        ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName, FileType.Image))
+                //    });
+                //}
+            }
+            catch (Exception ex)
+            {
+                LogService.Log(ex);
+            }
+        }
+
+
+        public async Task LoadItems(int lastItemIndex = 0, int page = 10)
+        {
+            try
+            {
+                var res = await _itemDBService.GetItemsByPageWithChildren(
+                    NavigatedFolderItem.IsFolder,
+                    NavigatedFolderItem.Id,
+                    lastItemIndex,
+                    page);
+
+                foreach (var item in res)
                 {
                     BookletItems.Add(new ItemEntity
                     {
@@ -136,11 +169,13 @@ namespace ArtScanner.ViewModels
                         ParentId = item.ParentId,
                         Title = item.Title,
                         IsFolder = item.IsFolder,
-                        ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName))
+                        AudioFileName = item.AudioFileName,
+                        //AudioByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.AudioFileName, FileType.Audio)),
+                        ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName, FileType.Image))
                     });
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 LogService.Log(ex);
             }

@@ -18,13 +18,14 @@ namespace ArtScanner.ViewModels
     {
         #region Services
 
-        private GalleryNavigationArgs _navArgs;
         private readonly IAppFileSystemService _appFileSystemService;
         private readonly IItemDBService _itemDBService;
 
         #endregion
 
         #region Properties
+
+        private GalleryNavigationArgs _navArgs;
 
         private ObservableCollection<ItemEntityViewModel> _items = new ObservableCollection<ItemEntityViewModel>();
         public ObservableCollection<ItemEntityViewModel> Items
@@ -40,7 +41,7 @@ namespace ArtScanner.ViewModels
             set => SetProperty(ref _selectedId, value);
         }
 
-        private ItemEntityViewModel _currentCarouselItem = new ItemEntityViewModel();
+        private ItemEntityViewModel _currentCarouselItem = new ItemEntityViewModel(null);
         public ItemEntityViewModel CurrentCarouselItem
         {
             get => _currentCarouselItem;
@@ -90,10 +91,11 @@ namespace ArtScanner.ViewModels
                     {
                         foreach (var item in items)
                         {
-                            Items.Add(new ItemEntityViewModel()
+                            Items.Add(new ItemEntityViewModel(_appFileSystemService)
                             {
-                                ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName)),
-                                MusicByteArray = item.MusicByteArray,
+                                ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName, FileType.Image)),
+                                //AudioByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.AudioFileName, FileType.Audio)),
+                                AudioFileName = item.AudioFileName,
                                 Id = item.Id,
                                 Description = item.Description,
                                 ImageFileName = item.ImageFileName,
@@ -101,7 +103,6 @@ namespace ArtScanner.ViewModels
                                 LangTag = item.LangTag,
                                 Liked = item.Liked,
                                 LocalId = item.LocalId,
-                                MusicFileName = item.MusicFileName,
                                 MusicUrl = item.MusicUrl,
                                 ParentId = item.ParentId,
                                 Title = item.Title,

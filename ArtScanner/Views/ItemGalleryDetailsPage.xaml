@@ -33,7 +33,6 @@
                         Aspect="AspectFill"/>
                         
                      <Image
-                        
                         IsVisible="{Binding ItemModel.ImageUrl, Converter={StaticResource NullToBoolConverter}}"
                         Source="{Binding ItemModel.ImageUrl}"
                         Aspect="AspectFill"/>
@@ -121,6 +120,24 @@
                                     HeightRequest="32"/>
                                 <controls:Circle.GestureRecognizers>
                                     <TapGestureRecognizer Command="{Binding TwittCommand}"/>
+                                </controls:Circle.GestureRecognizers>
+                            </controls:Circle>
+
+                            <controls:Circle
+                                Color="Gray"
+                                VerticalOptions="Start"
+                                Padding="0"
+                                HeightRequest="60"
+                                WidthRequest="60"
+                                HorizontalOptions="Start">
+                                <Label
+                                    FontSize="24"
+                                    Text="{Binding ItemModel.LangTag}"
+                                    VerticalOptions="CenterAndExpand"
+                                    HorizontalOptions="CenterAndExpand"
+                                    TextColor="White"/>
+                                <controls:Circle.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding ChangeLanguageCommand}"/>
                                 </controls:Circle.GestureRecognizers>
                             </controls:Circle>
 

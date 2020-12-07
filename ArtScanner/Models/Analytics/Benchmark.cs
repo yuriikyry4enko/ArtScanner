@@ -20,11 +20,7 @@ namespace ArtScanner.Models.Analytics
             timer.Stop();
 
             TimeSpan timeSpan = timer.Elapsed;
-            Console.WriteLine("{0},  Time: {1}h {2}m {3}s {4}ms", benchmarkName, timeSpan.Hours, timeSpan.Minutes,
-            timeSpan.Seconds, timeSpan.Milliseconds);
-
-            //LogService.Log(null, $"{benchmarkName} {timer.Elapsed}");
-            //Console.WriteLine($"{benchmarkName} {timer.Elapsed}");
+            LogService.Log(null, $"{benchmarkName},  Time: {timeSpan.Hours}h {timeSpan.Minutes}m {timeSpan.Seconds}s {timeSpan.Milliseconds}ms");
         }
     }
 }

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.IO;
-using Xamarin.Forms;
-using Xamarin.Forms.PlatformConfiguration;
 
 namespace ArtScanner.Utils.Constants
 {
@@ -29,7 +27,11 @@ namespace ArtScanner.Utils.Constants
     static class AppConstants
     {
         public static string csLocalAnalyticsFilePath =
-            Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "..", "Library"), "logs_smartbooklet.txt");
+                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "logs.txt");
+
+
+        public static string csSpecialFolder =
+                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
 
         //Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "logs.txt");
 
@@ -39,8 +41,6 @@ namespace ArtScanner.Utils.Constants
         public static string csEmailSupportBody = $"It is auto-generated email with attached log file from SmartBooklet app.{Environment.NewLine}It will help us to improve application and resolve issues.";
 
     }
-
-
 
     public static class DateTimeFormats
     {

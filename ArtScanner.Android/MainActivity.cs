@@ -13,10 +13,12 @@ using Lottie.Forms.Droid;
 using Plugin.Permissions;
 using Acr.UserDialogs;
 using Xamarin.Auth.Presenters.XamarinAndroid;
+using Android;
+using Android.Support.V4.Content;
 
 namespace ArtScanner.Droid
 {
-    [Activity(Label = "ArtScanner", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = false, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
+    [Activity(Label = "SmartBooklet", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = false, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)

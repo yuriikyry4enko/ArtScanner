@@ -35,8 +35,8 @@
             VerticalOptions="Center"
             HorizontalOptions="Center">
             <controls:TintedCachedImage
-                HorizontalOptions="Start"
-                Source="{x:Static resources:Images.BackArrow}"
+                HorizontalOptions="End"
+                Source="{x:Static resources:Images.Cancel}"
                 WidthRequest="20"   
                 TintColor="Black"
                 HeightRequest="20">
@@ -44,32 +44,59 @@
                     <TapGestureRecognizer Command="{Binding CloseCommand}"/>
                 </controls:TintedCachedImage.GestureRecognizers>
             </controls:TintedCachedImage>
-            <Label
-                Text="Oops..."
-                TextColor="Black"
-                FontAttributes="Bold"
-                FontSize="16"
-                Margin="50,20,50,10"
-                HorizontalOptions="Center"/>
 
-            <controls:TintedCachedImage
+            <!--<controls:TintedCachedImage
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
                 Source="{x:Static resources:Images.SadIdiom}"
                 Margin="0,10,0,10"
                 WidthRequest="60"   
                 TintColor="Black"
-                HeightRequest="60"/>
+                HeightRequest="60"/>-->
             <Label
-                Margin="0,10,0,30"
-                Text="{x:Static resourceResx:AppResources.NoTranslationApologise}"
+                FontAttributes="Bold"
+                Margin="20,25,20,10"
+                FontSize="20"
+                TextColor="Black"
+                Text="Choose Language"
                 HorizontalOptions="Center"/>
-             <Picker
+            <ScrollView
+                Padding="0"
+                Margin="0"
+                HeightRequest="170">
+                <StackLayout
+                    Padding="0"
+                    VerticalOptions="Start"
+                    HorizontalOptions="Fill"
+                    BindableLayout.ItemsSource="{Binding AvailableCulturesList}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                                <StackLayout
+                                    Padding="0"
+                                    Spacing="0"
+                                    Margin="10,0,10,0"
+                                    HeightRequest="70"
+                                    Orientation="Horizontal">
+                                    <Label
+                                        HorizontalOptions="StartAndExpand"
+                                        VerticalOptions="Center"
+                                        TextColor="Black"
+                                        FontSize="16"
+                                        Text="{Binding NativeName}"/>
+                                    <CheckBox
+                                        HorizontalOptions="End"
+                                        VerticalOptions="Center"/>
+                                </StackLayout>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </ScrollView>
+             <!--<Picker
                 HorizontalOptions="FillAndExpand"
                 SelectedIndex="0"
                 SelectedItem="{Binding SelectedCulture}"
                 ItemDisplayBinding="{Binding NativeName}"
-                ItemsSource="{Binding AvailableCulturesList}"/>
+                ItemsSource="{Binding AvailableCulturesList}"/>-->
 
             <StackLayout>
                 <Switch
@@ -77,12 +104,13 @@
                     HorizontalOptions="Start"
                     IsToggled="{Binding IsSavePreference}"/>
                 <Label
+                    FontAttributes="Italic"
                     VerticalOptions="Center"
                     HorizontalOptions="Start"
                     Text="{x:Static resourceResx:AppResources.SaveToPref}"/>
             </StackLayout>
             <Button
-                Text="Ok"
+                Text="Next"
                 Margin="10,10"
                 TextColor="White"
                 BackgroundColor="Black"

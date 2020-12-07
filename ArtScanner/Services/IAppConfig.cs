@@ -10,6 +10,8 @@ namespace ArtScanner.Services
 
         string ImagesFolderName { get; }
 
+        string AudioFolderName { get; }
+
         string RootFolderPath { get; }
 
         string DatabaseName { get; }

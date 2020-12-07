@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
+using ArtScanner.Models;
 using ArtScanner.Models.Entities;
 using ArtScanner.Resources;
 using ArtScanner.Resx;
@@ -25,8 +26,10 @@ namespace ArtScanner.ViewModels
         private IItemDBService _itemDBService;
         private IAppFileSystemService _appFileSystemService;
         private IRestService _restService;
+        private IAppSettings _appSettings;
 
         private long _ParentItemEntityId;
+        private bool _firstTouchPlayButton = true;
 
         #region Properties
 
@@ -93,6 +96,7 @@ namespace ArtScanner.ViewModels
             INavigationService navigationService,
             IItemDBService itemDBService,
             IRestService restService,
+            IAppSettings appSettings,
             IAppFileSystemService appFileSystemService,
             IUserDialogs userDialogs) : base(navigationService)
         {
@@ -100,6 +104,7 @@ namespace ArtScanner.ViewModels
             this._itemDBService = itemDBService;
             this._appFileSystemService = appFileSystemService;
             this._restService = restService;
+            this._appSettings = appSettings;
         }
 
         public override async void OnNavigatedTo(INavigationParameters parameters)
@@ -146,20 +151,23 @@ namespace ArtScanner.ViewModels
                 {
                     ItemModel.Liked = true;
                     ItemModel = itemEntity;
-                    ItemModel.ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(ItemModel.ImageFileName));
+                    ItemModel.ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(ItemModel.ImageFileName, FileType.Image));
+                    //ItemModel.AudioByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(ItemModel.AudioFileName, FileType.Audio));
+
+                    RaisePropertyChanged(nameof(ItemModel));
                 }
                 else
                 {
-                    await LoadAndInitItemModel();
+                    await LoadTextInfoItemModel();
 
                     ItemModel.ImageByteArray = await _restService.GetImageById(ItemModel.Id);
-                }
 
-                RaisePropertyChanged(nameof(ItemModel));
+                    RaisePropertyChanged(nameof(ItemModel));
+                }
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogService.Log(ex);
             }
         }
 
@@ -190,25 +198,24 @@ namespace ArtScanner.ViewModels
                 }
                 else
                 {
-                    var imageByteArray = await _restService.GetImageById(ItemModel.Id);
-                    ItemModel.ImageByteArray = imageByteArray;
-
                     var resultId = await _itemDBService.InsertOrUpdateWithChildren(ItemModel);
                     ItemModel.LocalId = resultId;
                     
-
                     await InitParentEntities();
-                }
 
-                IsBusy = false;
+                    await _itemDBService.SaveAudioFileFromStream(ItemModel);
+                }
 
                 _userDialogs.Toast(AppResources.GalleryUpdated);
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogService.Log(ex);
             }
-
+            finally
+            {
+                IsBusy = false;
+            }
         });
 
         public ICommand TwittCommand => new Command(async () =>
@@ -230,15 +237,40 @@ namespace ArtScanner.ViewModels
             });
         });
 
+        public ICommand ChangeLanguageCommand => new Command(async () =>
+        {
+            try
+            {
+                GeneralItemInfoModel result = await _restService.GetGeneralItemInfo(ItemModel.Id);
+
+                await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
+                {
+                    LanguageTags = result.Languages,
+                    PopupResultAction = async (string langTagSelected) =>
+                    {
+                       
+                    },
+                    PageApologizeFinishedLoading = () =>
+                    {
+                        IsBusy = false;
+                    }
+                }));
+            }
+            catch(Exception ex)
+            {
+                LogService.Log(ex);
+            }
+        });
+
+
         #endregion
 
         private async void Play()
         {
             try
             {
+              
                 IsPlayButtonEnable = false;
-
-                await CrossMediaManager.Current.Play();
 
                 if (isPlaying)
                 {
@@ -250,6 +282,14 @@ namespace ArtScanner.ViewModels
                     await CrossMediaManager.Current.Play();
                     IsPlaying = true;
                 }
+
+
+                if (ItemModel.LocalId == 0 && _firstTouchPlayButton)
+                {
+                    _firstTouchPlayButton = false;
+                    ItemModel.AudioStream = await _restService.GetMusicStreamById(ItemModel.Id, ItemModel.LangTag);
+                }
+
             }
             catch (Exception ex)
             {
@@ -279,11 +319,14 @@ namespace ArtScanner.ViewModels
                             var imageParentItemEntityByteArray = await _restService.GetImageById(_ParentItemEntityId);
                             if (imageParentItemEntityByteArray == null)
                             {
-                                await _userDialogs.AlertAsync("I can't find pictures for category with such " + "id: " + ItemModel.ParentId, "Oops", "Ok");
+                                await _userDialogs.AlertAsync("I can't find pictures for category with such " + "id: " + ItemModel.ParentId, "Not found", "Ok");
                                 return;
                             }
                             else
                             {
+                                if(generalInfoParentItemEntity.IsFolder)
+                                    _appSettings.NeedToUpdateHomePage = true;
+
                                 await _itemDBService.InsertOrUpdateWithChildren(new ItemEntity
                                 {
                                     Id = _ParentItemEntityId,
@@ -296,23 +339,27 @@ namespace ArtScanner.ViewModels
 
                             _ParentItemEntityId = generalInfoParentItemEntity.ParentId.HasValue ? generalInfoParentItemEntity.ParentId.Value : -1;
                         }
+                        else
+                        {
+                            _ParentItemEntityId = -1;
+                        }
                     }
                 }
             }
             catch(Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogService.Log(ex);
             }
         }
 
-        private async Task LoadAndInitItemModel()
+        private async Task LoadTextInfoItemModel()
         {
             try
             {
                 var textModel = await _restService.GetTextById(ItemModel.LangTag, ItemModel.Id);
                 if (textModel == null)
                 {
-                    await _userDialogs.AlertAsync("Сould not find by this qr-code...", "Oops", "Ok");
+                    await _userDialogs.AlertAsync("Text for your language tag preferences was not found...", "Not found", "Ok");
                     await navigationService.GoBackAsync();
                     return;
                 }
@@ -323,7 +370,7 @@ namespace ArtScanner.ViewModels
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogService.Log(ex);
             }
         }
     }

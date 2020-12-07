@@ -84,6 +84,7 @@
       <DependentUpon>SplashViewController.cs</DependentUpon>
     </Compile>
     <None Include="Info.plist" />
+    <Compile Include="Services\FileService.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />

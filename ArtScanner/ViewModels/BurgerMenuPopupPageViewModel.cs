@@ -18,7 +18,6 @@ namespace ArtScanner.ViewModels
         Settings,
         ChooseLang,
         SendLogs,
-
     }
 
     class BurgerMenuPopupPageViewModel : BaseViewModel
@@ -62,54 +61,107 @@ namespace ArtScanner.ViewModels
 
         public ICommand NavigationCommand => new Command<MenuItem>(async (item) =>
         {
-            if (item.Page == BurgerMenuPages.Settings)
-            {
-                //await navigationService.NavigateAsync(PageNames.);
-            }
-            else if(item.Page == BurgerMenuPages.ChooseLang)
+            try
             {
                 var actionPage = App.Current.MainPage;
-                if (actionPage.Navigation != null)
-                    actionPage = actionPage.Navigation.NavigationStack.Last();
 
-                if (actionPage.GetType() != typeof(ChooseLanguagePage))
+                switch (item.Page)
                 {
-                    await navigationService.NavigateAsync(PageNames.ChooseLanguagePage);
+                    case BurgerMenuPages.Settings:
+
+                        break;
+
+                    case BurgerMenuPages.ChooseLang:
+                       
+                        if (actionPage.Navigation != null)
+                            actionPage = actionPage.Navigation.NavigationStack.Last();
+
+                        if (actionPage.GetType() != typeof(ChooseLanguagePage))
+                        {
+                            await navigationService.NavigateAsync(PageNames.ChooseLanguagePage);
+                        }
+                        break;
+
+                    case BurgerMenuPages.Home:
+
+                        HomePageViewModel.NeedsToUpdate = true;
+
+                        if (actionPage.Navigation != null)
+                            actionPage = actionPage.Navigation.NavigationStack.Last();
+
+                        if (actionPage.GetType() != typeof(HomePage))
+                        {
+                            await navigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(HomePage)}");
+                        }
+                        else
+                        {
+                            await navigationService.GoBackAsync();
+                        }
+                        break;
+
+                    case BurgerMenuPages.SendLogs:
+                        Xamarin.Essentials.EmailMessage emailMessage = new Xamarin.Essentials.EmailMessage();
+                        emailMessage.To = new System.Collections.Generic.List<string>() { Utils.Constants.AppConstants.csEmailSupport };
+                        emailMessage.Subject = Utils.Constants.AppConstants.csEmailSupportSubject;
+                        emailMessage.Body = Utils.Constants.AppConstants.csEmailSupportBody;
+                        emailMessage.Attachments.Add(new Xamarin.Essentials.EmailAttachment(Utils.Constants.AppConstants.csLocalAnalyticsFilePath));
+                        await Xamarin.Essentials.Email.ComposeAsync(emailMessage);
+                      
+                        break;
                 }
             }
-            else if(item.Page == BurgerMenuPages.Home)
+            catch(Exception ex)
             {
-                HomePageViewModel.NeedsToUpdate = true;
-
-                var actionPage = App.Current.MainPage;
-                if (actionPage.Navigation != null)
-                    actionPage = actionPage.Navigation.NavigationStack.Last();
-
-                if (actionPage.GetType() != typeof(HomePage))
-                {
-                    await navigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(HomePage)}");
-                }
-                else
-                {
-                    await navigationService.GoBackAsync();
-                }
+                LogService.Log(ex);
             }
-            else if(item.Page == BurgerMenuPages.SendLogs)
-            {
-                try
-                {
-                    Xamarin.Essentials.EmailMessage emailMessage = new Xamarin.Essentials.EmailMessage();
-                    emailMessage.To = new System.Collections.Generic.List<string>() { Utils.Constants.AppConstants.csEmailSupport };
-                    emailMessage.Subject = Utils.Constants.AppConstants.csEmailSupportSubject;
-                    emailMessage.Body = Utils.Constants.AppConstants.csEmailSupportBody;
-                    emailMessage.Attachments.Add(new Xamarin.Essentials.EmailAttachment(Utils.Constants.AppConstants.csLocalAnalyticsFilePath));
-                    await Xamarin.Essentials.Email.ComposeAsync(emailMessage);
-                }
-                catch(Exception ex)
-                {
-                    LogService.Log(ex); 
-                }
-            }
+            //if (item.Page == BurgerMenuPages.Settings)
+            //{
+            //    //await navigationService.NavigateAsync(PageNames.);
+            //}
+            //else if(item.Page == BurgerMenuPages.ChooseLang)
+            //{
+            //    var actionPage = App.Current.MainPage;
+            //    if (actionPage.Navigation != null)
+            //        actionPage = actionPage.Navigation.NavigationStack.Last();
+
+            //    if (actionPage.GetType() != typeof(ChooseLanguagePage))
+            //    {
+            //        await navigationService.NavigateAsync(PageNames.ChooseLanguagePage);
+            //    }
+            //}
+            //else if(item.Page == BurgerMenuPages.Home)
+            //{
+            //    HomePageViewModel.NeedsToUpdate = true;
+
+            //    var actionPage = App.Current.MainPage;
+            //    if (actionPage.Navigation != null)
+            //        actionPage = actionPage.Navigation.NavigationStack.Last();
+
+            //    if (actionPage.GetType() != typeof(HomePage))
+            //    {
+            //        await navigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(HomePage)}");
+            //    }
+            //    else
+            //    {
+            //        await navigationService.GoBackAsync();
+            //    }
+            //}
+            //else if(item.Page == BurgerMenuPages.SendLogs)
+            //{
+            //    try
+            //    {
+            //        Xamarin.Essentials.EmailMessage emailMessage = new Xamarin.Essentials.EmailMessage();
+            //        emailMessage.To = new System.Collections.Generic.List<string>() { Utils.Constants.AppConstants.csEmailSupport };
+            //        emailMessage.Subject = Utils.Constants.AppConstants.csEmailSupportSubject;
+            //        emailMessage.Body = Utils.Constants.AppConstants.csEmailSupportBody;
+            //        emailMessage.Attachments.Add(new Xamarin.Essentials.EmailAttachment(Utils.Constants.AppConstants.csLocalAnalyticsFilePath));
+            //        await Xamarin.Essentials.Email.ComposeAsync(emailMessage);
+            //    }
+            //    catch(Exception ex)
+            //    {
+            //        LogService.Log(ex); 
+            //    }
+            //}
 
         });
     }

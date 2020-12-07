@@ -3,17 +3,17 @@ using System.IO;
 
 namespace ArtScanner.Services
 {
+    public enum FileType
+    {
+        Image,
+        Audio,
+    }
+
     class AppFileSystemService : IAppFileSystemService
     {
         private readonly IAppConfig appConfig;
 
         public string CurrentUserFolderPath { get; private set; }
-
-
-        //public void EnsureFileSystemTreeStructure()
-        //{
-        //    Directory.CreateDirectory(appConfig.RootFolderPath);
-        //}
 
         public void InitializeFoldersForUser(string userName)
         {
@@ -24,24 +24,11 @@ namespace ArtScanner.Services
             CurrentUserFolderPath = userFolderPath;
 
             var imagesFolderPath = GetImagesFolderPath();
+            var audioFolderPath = GetAudioFolderPath();
 
             Directory.CreateDirectory(imagesFolderPath);
+            Directory.CreateDirectory(audioFolderPath);
         }
-
-        //public string CopyImageIntoUserFolderIfNeeded(string imagePath)
-        //{
-        //    var folder = Path.GetDirectoryName(imagePath);
-
-        //    var imagesFolderPath = GetImagesFolderPath();
-
-        //    if (folder == imagesFolderPath) return imagePath;
-
-        //    var newImagePath = Path.Combine(imagesFolderPath, $"image_{DateTime.UtcNow:yyyy_MM_dd_HH_mm_ss_fff}");
-
-        //    File.Copy(imagePath, newImagePath, true);
-
-        //    return newImagePath;
-        //}
 
         public string SaveImage(byte[] data, string name)
         {
@@ -54,27 +41,28 @@ namespace ArtScanner.Services
             return newImagePath;
         }
 
-        public string SaveStreamAudio(byte[] data, string name)
+        public string SaveAudio(byte[] data, string name)
         {
-            var imagesFolderPath = GetImagesFolderPath();
+            var audioFolderPath = GetAudioFolderPath();
 
-            var newImagePath = Path.Combine(imagesFolderPath, name);
+            var newAudioPath = Path.Combine(audioFolderPath, name);
 
-            File.WriteAllBytes(newImagePath, data);
+            File.WriteAllBytes(newAudioPath, data);
 
-            return newImagePath;
+            return newAudioPath;
         }
 
-        //public string Rename(string path, string name)
-        //{
-        //    var imagesFolderPath = GetImagesFolderPath();
+        public bool DoesAudioExist(string name)
+        {
+            if (name == null)
+                return false;
 
-        //    var newImagePath = Path.Combine(imagesFolderPath, name);
+            var audioFolderPath = GetAudioFolderPath();
 
-        //    File.Move(path, newImagePath);
+            var audioPath = Path.Combine(audioFolderPath, name);
 
-        //    return newImagePath;
-        //}
+            return File.Exists(audioPath);
+        }
 
         public bool DoesImageExist(string name)
         {
@@ -88,11 +76,22 @@ namespace ArtScanner.Services
             return File.Exists(imagePath);
         }
 
-        public string GetFilePath(string name)
+        public string GetFilePath(string name, FileType fileType)
         {
-            var imagesFolderPath = GetImagesFolderPath();
+            switch(fileType)
+            {
+                case FileType.Image:
+                    var imagesFolderPath = GetImagesFolderPath();
+                    return Path.Combine(imagesFolderPath, name);
 
-            return Path.Combine(imagesFolderPath, name);
+                case FileType.Audio:
+                    var audioFolderPath = GetAudioFolderPath();
+                    return Path.Combine(audioFolderPath, name);
+
+                default:
+                    return string.Empty;
+            }
+            
         }
 
         public void DeleteFile(string path)
@@ -107,6 +106,10 @@ namespace ArtScanner.Services
             return Path.Combine(CurrentUserFolderPath, appConfig.ImagesFolderName);
         }
 
+        private string GetAudioFolderPath()
+        {
+            return Environment.GetFolderPath(Environment.SpecialFolder.Personal);
+        }
 
         public AppFileSystemService
             (IAppConfig appConfig)

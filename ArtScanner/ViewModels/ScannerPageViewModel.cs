@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -47,7 +46,9 @@ namespace ArtScanner.ViewModels
 
             if (parameters.GetNavigationMode() == NavigationMode.Back)
             {
-                IsScannerEnabled = true;
+                var _NavBackArgs = GetParameters<LoadingNavigationArgs>(parameters);
+                if (_NavBackArgs.IsCanceled)
+                    IsScannerEnabled = true;
             }
         }
 
@@ -61,6 +62,8 @@ namespace ArtScanner.ViewModels
 
             if (IsScannerEnabled)
             {
+                IsScannerEnabled = false;
+
                 var foundedItem = new ItemEntity
                 {
                     //Id = Int64.Parse(Result?.Text),
@@ -79,6 +82,7 @@ namespace ArtScanner.ViewModels
                             PageLoadingCanceled = async () =>
                             {
                                 isCanceled = true;
+                                IsScannerEnabled = true;
                                 await Task.CompletedTask;
                                 return;
                             },
@@ -121,6 +125,9 @@ namespace ArtScanner.ViewModels
                             }
                             else
                             {
+                                //Close Loading popup
+                                await navigationService.GoBackAsync();
+
                                 await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
                                 {
                                     LanguageTags = result.Languages,

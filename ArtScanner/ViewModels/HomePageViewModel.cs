@@ -23,6 +23,7 @@ namespace ArtScanner.ViewModels
         private readonly IItemDBService _itemDBService;
         private readonly IAppFileSystemService _appFileSystemService;
         private readonly IAppDatabase _appDatabase;
+        private readonly IAppSettings _appSettings;
 
         public static bool NeedsToUpdate = true;
 
@@ -85,6 +86,7 @@ namespace ArtScanner.ViewModels
             if (BookletItems.Count == 0)
             {
                 IsFoldersListEmpty = true;
+                OpacityButton = 1;
             }
         });
 
@@ -99,13 +101,10 @@ namespace ArtScanner.ViewModels
             await PopupNavigation.Instance.PopAsync();
         });
 
-
         //public ICommand NavigateToBookletsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.BookletPage); });
 
         public ICommand SettingsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.ChooseLanguagePage); });
-
         
-
         public ICommand ScannCommand => new Command(async () =>
         {
             try
@@ -155,12 +154,14 @@ namespace ArtScanner.ViewModels
             IUserDialogs userDialogs,
             IAppFileSystemService appFileSystemService,
             IAppDatabase appDatabase,
+            IAppSettings appSettings,
             IItemDBService itemDBService) : base(navigationService)
         {
             this._itemDBService = itemDBService;
             this._appFileSystemService = appFileSystemService;
             this._userDialogs = userDialogs;
             this._appDatabase = appDatabase;
+            this._appSettings = appSettings;
         }
 
         public override async void OnNavigatedTo(INavigationParameters parameters)
@@ -168,6 +169,7 @@ namespace ArtScanner.ViewModels
             base.OnNavigatedTo(parameters);
 
             await InitItemsList();
+
         }
 
         public override void Initialize(INavigationParameters parameters)
@@ -184,8 +186,6 @@ namespace ArtScanner.ViewModels
         {
             try
             {
-                BookletItems.Clear();
-
                 var result = await _itemDBService.GetAllMainFolders();
 
                 if (result.Count == 0)
@@ -199,16 +199,24 @@ namespace ArtScanner.ViewModels
                     OpacityButton = 0;
                 }
 
-                foreach (var item in result)
+                if (_appSettings.NeedToUpdateHomePage && BookletItems.Count() == 0)
                 {
-                    BookletItems.Add(new ItemEntity
+                    BookletItems.Clear();
+
+                    foreach (var item in result)
                     {
-                        LocalId = item.LocalId,
-                        Id = item.Id,
-                        Title = item.Title,
-                        IsFolder = item.IsFolder,
-                        ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName))
-                    });
+                        BookletItems.Add(new ItemEntity
+                        {
+                            LocalId = item.LocalId,
+                            Id = item.Id,
+                            Title = item.Title,
+                            IsFolder = item.IsFolder,
+                            ParentId = item.ParentId,
+                            ImageByteArray = StreamHelpers.GetByteArrayFromFilePath(_appFileSystemService.GetFilePath(item.ImageFileName, FileType.Image))
+                        });
+                    }
+
+                    _appSettings.NeedToUpdateHomePage = false;
                 }
             }
             catch (Exception ex)

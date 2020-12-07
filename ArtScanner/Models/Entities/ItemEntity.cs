@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using SQLite;
 
 namespace ArtScanner.Models.Entities
@@ -11,10 +12,12 @@ namespace ArtScanner.Models.Entities
         public long ParentId { get; set; }
 
         public string Title { get; set; }
-        public string Description { get; set; }
-        public string MusicUrl { get; set; }
-        public string ImageUrl { get; set; }
 
+        public string Description { get; set; }
+
+        public string MusicUrl { get; set; }
+
+        public string ImageUrl { get; set; }
 
         public string LangTag { get; set; }
 
@@ -22,16 +25,20 @@ namespace ArtScanner.Models.Entities
 
         public bool IsFolder { get; set; }
 
+        public string ImageFileName { get; set; }
+
+        public string AudioFileName { get; set; }
+
 
         [Ignore]
         public byte[] ImageByteArray { get; set; }
 
         [Ignore]
-        public byte[] MusicByteArray { get; set; }
+        public byte[] AudioByteArray { get; set; }
 
-        public string MusicFileName { get; set; }
+        [Ignore]
+        public Stream AudioStream { get; set; }
 
-        public string ImageFileName { get; set; }
 
 
     }

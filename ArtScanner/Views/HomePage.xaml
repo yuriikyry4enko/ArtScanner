@@ -75,6 +75,7 @@
         <ListView x:Name="CollectionView"
                 HasUnevenRows="True"
                 Grid.Row="1"
+                CachingStrategy="RecycleElementAndDataTemplate"
                 IsVisible="{Binding IsFoldersListEmpty, Converter={converters:InverseBoolConverter}}"
                 SelectedItem="{Binding SelectedBookletItem, Mode=TwoWay}"
                 ItemsSource="{Binding BookletItems}"

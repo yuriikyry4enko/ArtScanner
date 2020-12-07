@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using Acr.UserDialogs;
@@ -46,8 +48,6 @@ namespace ArtScanner
         {
             InitializeComponent();
 
-           
-
             var settings = (IAppSettings)Container.Resolve(typeof(IAppSettings));
 
             if (settings.IsLanguageSet)
@@ -68,6 +68,8 @@ namespace ArtScanner
             containerRegistry.RegisterInstance(UserDialogs.Instance);
             containerRegistry.RegisterInstance(PopupNavigation.Instance);
             containerRegistry.RegisterInstance(DependencyService.Get<ISQLite>());
+            containerRegistry.RegisterInstance(DependencyService.Get<IDownloadFileService>());
+            
 
             containerRegistry.RegisterSingleton<IAppSettings, AppSettings>();
             containerRegistry.RegisterSingleton<IAppConfig, AppConfig>();
@@ -97,7 +99,6 @@ namespace ArtScanner
             containerRegistry.RegisterForNavigation<StartPage, StartPageViewModel>();
             containerRegistry.RegisterForNavigation<ScannerPage, ScannerPageViewModel>();
             containerRegistry.RegisterForNavigation<BookletItemDetailsPage, BookletItemDetailsPageViewModel>();
-            containerRegistry.RegisterForNavigation<BookleItemDetailsFolderPage, BookleItemDetailsFolderPageViewModel>();
             containerRegistry.RegisterForNavigation<ItemsGalleryPage, ItemsGalleryPageViewModel>();
             containerRegistry.RegisterForNavigation<ItemGalleryDetailsPage, ItemGalleryDetailsPageViewModel>();
 
