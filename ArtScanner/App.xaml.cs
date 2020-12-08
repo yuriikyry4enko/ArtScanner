@@ -69,7 +69,8 @@ namespace ArtScanner
             containerRegistry.RegisterInstance(PopupNavigation.Instance);
             containerRegistry.RegisterInstance(DependencyService.Get<ISQLite>());
             containerRegistry.RegisterInstance(DependencyService.Get<IDownloadFileService>());
-            
+            containerRegistry.RegisterInstance(DependencyService.Get<IFileService>());
+
 
             containerRegistry.RegisterSingleton<IAppSettings, AppSettings>();
             containerRegistry.RegisterSingleton<IAppConfig, AppConfig>();
@@ -81,17 +82,17 @@ namespace ArtScanner
             containerRegistry.RegisterSingleton<IItemDBService, ItemDBService>();
             containerRegistry.RegisterSingleton<IAnalyticsService, AnalyticsService>();
 
+
+            IFileService fileService = (IFileService)Container.Resolve(typeof(IFileService));
+
             var analyticsService = (IAnalyticsService)Container.Resolve(typeof(IAnalyticsService));
-            analyticsService.SetProvider(new AnalyticsServiceFileProvider(Utils.Constants.AppConstants.csLocalAnalyticsFilePath));
+            analyticsService.SetProvider(new AnalyticsServiceFileProvider(fileService.GetAbsolutPath("logs.txt")));
             LogService.SetAnalyticsService(analyticsService);
-
-
 
 
             containerRegistry.RegisterForNavigation<ProviderLoginPage>();
             containerRegistry.RegisterForNavigation<SharedTransitionNavigationPage>();
-           
-
+          
             containerRegistry.RegisterForNavigation<ItemGalleryDetailsPage, ItemGalleryDetailsPageViewModel>();
             containerRegistry.RegisterForNavigation<ChooseLanguagePage, ChooseLanguagePageViewModel>();
 

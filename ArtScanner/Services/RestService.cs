@@ -116,7 +116,7 @@ namespace ArtScanner.Services
             {
                 Stream stream = null;
 
-                using (var bench = new Benchmark($"Get mp3 and save by id = {id} and langTag = {langTag}"))
+                using (var bench = new Benchmark($"Get and save (audio) stream by id = {id} and langTag = {langTag}"))
                 {
                     using ( client = new HttpClient())
                     {

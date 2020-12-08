@@ -10,7 +10,9 @@ using ArtScanner.Resx;
 using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
 using Prism.Navigation;
+using Xamarin.Essentials;
 using Xamarin.Forms;
+using NavigationMode = Prism.Navigation.NavigationMode;
 
 namespace ArtScanner.ViewModels
 {
@@ -19,6 +21,7 @@ namespace ArtScanner.ViewModels
         private IUserDialogs _userDialogs { get; set; }
         private IRestService _restService { get; set; }
         private IBaseDBService _baseDBService { get; set; }
+        private NetworkAccess _networkAccess { get; set; }
 
         public ZXing.Result Result { get; set; }
         private bool IsScannerEnabled { get; set; } = true;
@@ -38,6 +41,7 @@ namespace ArtScanner.ViewModels
         {
             base.OnAppearing();
             IsScannerEnabled = true;
+            _networkAccess = Connectivity.NetworkAccess;
         }
 
         public override void OnNavigatedTo(INavigationParameters parameters)
@@ -66,14 +70,22 @@ namespace ArtScanner.ViewModels
 
                 var foundedItem = new ItemEntity
                 {
-                    //Id = Int64.Parse(Result?.Text),
-                    Id = 5,
+                    Id = Int64.Parse(Result?.Text),
+                    //Id = 5,
                 };
 
                 Device.BeginInvokeOnMainThread(async () =>
                 {
                     try
                     {
+
+                        if (_networkAccess != NetworkAccess.Internet)
+                        {
+                            await _userDialogs.AlertAsync("No internet connection", "Network error", "Ok");
+                            IsScannerEnabled = true;
+                            return;
+                        }
+
                         string intersectFirstItem = string.Empty;
                         List<LangPreferencesItemEntity> langPrefs;
 

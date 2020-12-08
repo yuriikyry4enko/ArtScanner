@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using ArtScanner.Models.Analytics;
 using ArtScanner.Models.Entities;
 
 namespace ArtScanner.Services
@@ -162,21 +163,24 @@ namespace ArtScanner.Services
         {
             try
             {
-                using (var memoryStream = new MemoryStream())
+                using (var bench = new Benchmark($"Save audio stream to file with id {item.Id} and lang {item.LangTag}"))
                 {
-                    await item.AudioStream.CopyToAsync(memoryStream);
-                    item.AudioByteArray = memoryStream.ToArray();
-                }
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await item.AudioStream.CopyToAsync(memoryStream);
+                        item.AudioByteArray = memoryStream.ToArray();
+                    }
 
-                if (item.AudioByteArray != null)
-                {
-                    item.AudioFileName = _appFileSystemService.SaveAudio(item.AudioByteArray, $"{item.Title.Replace(" ", string.Empty)}{item.Id}.mp3");
-                    await Connection.UpdateAsync(item);
+                    if (item.AudioByteArray != null)
+                    {
+                        item.AudioFileName = _appFileSystemService.SaveAudio(item.AudioByteArray, $"{item.Title.Replace(" ", string.Empty)}{item.Id}.mp3");
+                        await Connection.UpdateAsync(item);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(ex);
+                LogService.Log(ex);
             }
         }
     }

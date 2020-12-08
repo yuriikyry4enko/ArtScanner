@@ -9,6 +9,7 @@ using ArtScanner.Models.Entities;
 using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
 using ArtScanner.Utils.Helpers;
+using ArtScanner.Views;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Prism.Navigation;
@@ -101,7 +102,6 @@ namespace ArtScanner.ViewModels
             await PopupNavigation.Instance.PopAsync();
         });
 
-        //public ICommand NavigateToBookletsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.BookletPage); });
 
         public ICommand SettingsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.ChooseLanguagePage); });
         
@@ -168,7 +168,10 @@ namespace ArtScanner.ViewModels
         {
             base.OnNavigatedTo(parameters);
 
-            await InitItemsList();
+            if (BookletItems.Count() == 0)
+            {
+                await InitItemsList();
+            }
 
         }
 
@@ -178,6 +181,20 @@ namespace ArtScanner.ViewModels
 
             this._appFileSystemService.InitializeFoldersForUser("sources");
             this._appDatabase.Initialize(_appFileSystemService.CurrentUserFolderPath);
+
+            _appSettings.NeedToUpdateHomePage = true;
+
+            //MessagingCenter.Subscribe<BaseViewModel>(this, AppConstants.csHomePageUpdate, async (sender) =>
+            //{
+            //    await InitItemsList();
+            //});
+        }
+
+        public override void Destroy()
+        {
+            base.Destroy();
+
+            //MessagingCenter.Unsubscribe<HomePageViewModel>(this, AppConstants.csHomePageUpdate);
         }
 
         #endregion

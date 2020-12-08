@@ -8,7 +8,7 @@ using Environment = System.Environment;
 
 namespace ArtScanner.Droid
 {
-    public class MyAsyncTask : AsyncTask<string, string, string>
+    public class BackgroundAudioFileAsyncTask : AsyncTask<string, string, string>
     {
         protected override string RunInBackground(params string[] @params)
         {

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Windows.Input;
 using ArtScanner.Models;
 using ArtScanner.Models.Entities;
@@ -18,8 +19,8 @@ namespace ArtScanner.ViewModels
 
         private ApologizeNavigationArgs _NavArgs { get; set; }
 
-        private ObservableCollection<CultureInfo> _availableCulturesList = new ObservableCollection<CultureInfo>();
-        public ObservableCollection<CultureInfo> AvailableCulturesList
+        private ObservableCollection<CultureInfoModelExtended> _availableCulturesList = new ObservableCollection<CultureInfoModelExtended>();
+        public ObservableCollection<CultureInfoModelExtended> AvailableCulturesList
         {
             get => _availableCulturesList;
             set
@@ -28,8 +29,8 @@ namespace ArtScanner.ViewModels
             }
         }
 
-        private CultureInfo _selectedCulture;
-        public CultureInfo SelectedCulture
+        private CultureInfoModelExtended _selectedCulture;
+        public CultureInfoModelExtended SelectedCulture
         {
             get => _selectedCulture;
             set
@@ -67,7 +68,7 @@ namespace ArtScanner.ViewModels
                 {
                     foreach (var item in _NavArgs.LanguageTags)
                     {
-                        AvailableCulturesList.Add(new CultureInfo(item));
+                        AvailableCulturesList.Add(new CultureInfoModelExtended(item));
                     }
                 }
                 catch (Exception ex)
@@ -119,7 +120,21 @@ namespace ArtScanner.ViewModels
             }
         });
 
-
+        public ICommand CheckedChangedCommand => new Command<CultureInfoModelExtended>((checkedObject) =>
+        {
+            try
+            {
+                if (checkedObject != null)
+                {
+                    AvailableCulturesList.Where(x => x != checkedObject).All(y => y.IsChecked = false);
+                    SelectedCulture = checkedObject;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.Log(ex);
+            }
+        });
 
     }
 }

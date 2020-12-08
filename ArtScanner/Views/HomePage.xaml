@@ -174,17 +174,17 @@
         </controls:Circle>
 
          <StackLayout
-             Opacity="{Binding OpacityButton}"
+            Spacing="13"
+            Opacity="{Binding OpacityButton}"
             IsVisible="{Binding IsFoldersListEmpty}"
             Grid.Row="0"
             Grid.RowSpan="2"
             Padding="0"
             Margin="0"
-            VerticalOptions="Center"
+            VerticalOptions="CenterAndExpand"
             HorizontalOptions="Center">
             <Label
                 IsVisible="{Binding IsMessageAlertVisible}"
-                Margin="0,0,0,10"
                 VerticalOptions="Start"
                 HorizontalOptions="Center"
                 FontSize="15"
@@ -193,6 +193,8 @@
                 Text="{x:Static resourcesResx:AppResources.PressAgain}"/>
 
             <controls:Circle
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
                 WidthRequest="120"       
                 HeightRequest="120"
                 Color="Black">

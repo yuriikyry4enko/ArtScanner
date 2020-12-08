@@ -11,6 +11,7 @@ using ArtScanner.Services;
 using ArtScanner.Utils.AuthConfigs;
 using ArtScanner.Utils.Constants;
 using ArtScanner.Utils.Helpers;
+using ArtScanner.Views;
 using MediaManager;
 using Prism.Commands;
 using Prism.Navigation;
@@ -198,10 +199,15 @@ namespace ArtScanner.ViewModels
                 }
                 else
                 {
-                    var resultId = await _itemDBService.InsertOrUpdateWithChildren(ItemModel);
-                    ItemModel.LocalId = resultId;
+                    ItemModel.LocalId = await _itemDBService.InsertOrUpdateWithChildren(ItemModel);
                     
                     await InitParentEntities();
+
+                    //Load&Save aduio
+                    if(ItemModel.AudioStream == null)
+                    {
+                        ItemModel.AudioStream = await _restService.GetMusicStreamById(ItemModel.Id, ItemModel.LangTag);
+                    }
 
                     await _itemDBService.SaveAudioFileFromStream(ItemModel);
                 }
@@ -241,20 +247,22 @@ namespace ArtScanner.ViewModels
         {
             try
             {
-                GeneralItemInfoModel result = await _restService.GetGeneralItemInfo(ItemModel.Id);
+                //GeneralItemInfoModel result = await _restService.GetGeneralItemInfo(ItemModel.Id);
 
-                await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
-                {
-                    LanguageTags = result.Languages,
-                    PopupResultAction = async (string langTagSelected) =>
-                    {
-                       
-                    },
-                    PageApologizeFinishedLoading = () =>
-                    {
-                        IsBusy = false;
-                    }
-                }));
+                //await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
+                //{
+                //    LanguageTags = result.Languages,
+                //    PopupResultAction = async (string langTagSelected) =>
+                //    {
+
+                //    },
+                //    PageApologizeFinishedLoading = () =>
+                //    {
+                //        IsBusy = false;
+                //    }
+                //}));
+
+                await _userDialogs.AlertAsync("this feature is still in development", "Not implemented", "Ok");
             }
             catch(Exception ex)
             {
@@ -324,9 +332,6 @@ namespace ArtScanner.ViewModels
                             }
                             else
                             {
-                                if(generalInfoParentItemEntity.IsFolder)
-                                    _appSettings.NeedToUpdateHomePage = true;
-
                                 await _itemDBService.InsertOrUpdateWithChildren(new ItemEntity
                                 {
                                     Id = _ParentItemEntityId,
@@ -338,6 +343,12 @@ namespace ArtScanner.ViewModels
                             }
 
                             _ParentItemEntityId = generalInfoParentItemEntity.ParentId.HasValue ? generalInfoParentItemEntity.ParentId.Value : -1;
+
+                            if (generalInfoParentItemEntity.IsFolder && _ParentItemEntityId == -1)
+                            {
+                                _appSettings.NeedToUpdateHomePage = true;
+                                //MessagingCenter.Send(typeof(HomePageViewModel),AppConstants.csHomePageUpdate);
+                            }
                         }
                         else
                         {

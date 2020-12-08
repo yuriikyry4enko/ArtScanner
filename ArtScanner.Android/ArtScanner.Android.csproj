@@ -83,7 +83,7 @@
     <Compile Include="Renderers\ProviderLoginPageRenderer.cs" />
     <Compile Include="Services\SQLite.cs" />
     <Compile Include="Services\FileService.cs" />
-    <Compile Include="MyAsyncTask.cs" />
+    <Compile Include="BackgroundAudioFileAsyncTask.cs" />
     <Compile Include="Services\DownloadFileService.cs" />
   </ItemGroup>
   <ItemGroup>

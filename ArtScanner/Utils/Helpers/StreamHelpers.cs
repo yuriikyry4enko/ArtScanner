@@ -11,7 +11,6 @@ namespace ArtScanner.Utils.Helpers
 
             using (var streamReader = new StreamReader(filepath))
             {
-
                 using (var memstream = new MemoryStream())
                 {
                     streamReader.BaseStream.CopyTo(memstream);

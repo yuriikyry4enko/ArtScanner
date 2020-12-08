@@ -26,8 +26,10 @@ namespace ArtScanner.Utils.Constants
 
     static class AppConstants
     {
-        public static string csLocalAnalyticsFilePath =
-                 Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal), "logs.txt");
+        public static string csHomePageUpdate = "HomePageUpdate";
+                 
+        //public static string csLocalAnalyticsFilePath =
+        //         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "logs.txt");
 
 
         public static string csSpecialFolder =

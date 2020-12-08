@@ -31,7 +31,7 @@
     <value>Select your item language preference</value>
 </data>
 <data name="Welcome" xml:space="preserve">
-    <value>Welcome to SmartBooklet</value>
+    <value>Wellcome to SmartBooklet</value>
 </data>    
     
   <data name="SaveToPref" xml:space="preserve">

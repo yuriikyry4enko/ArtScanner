@@ -9,7 +9,7 @@ namespace ArtScanner.Droid.Services
     {
         public void DownloadFile(string url)
         {
-            MyAsyncTask task = new MyAsyncTask();
+            BackgroundAudioFileAsyncTask task = new BackgroundAudioFileAsyncTask();
             task.Execute(new String[]
             {
                 url

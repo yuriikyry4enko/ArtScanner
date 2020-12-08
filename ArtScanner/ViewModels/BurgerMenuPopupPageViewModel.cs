@@ -22,6 +22,8 @@ namespace ArtScanner.ViewModels
 
     class BurgerMenuPopupPageViewModel : BaseViewModel
     {
+        private readonly IFileService _fileService;
+
         private ObservableCollection<MenuItem> _menuItems = new ObservableCollection<MenuItem>();
         public ObservableCollection<MenuItem> MenuItems
         {
@@ -33,7 +35,8 @@ namespace ArtScanner.ViewModels
         }
 
         public BurgerMenuPopupPageViewModel(
-          INavigationService navigationService) : base(navigationService)
+            IFileService fileService,
+            INavigationService navigationService) : base(navigationService)
         {
             _menuItems.Add(new MenuItem()
             {
@@ -104,7 +107,7 @@ namespace ArtScanner.ViewModels
                         emailMessage.To = new System.Collections.Generic.List<string>() { Utils.Constants.AppConstants.csEmailSupport };
                         emailMessage.Subject = Utils.Constants.AppConstants.csEmailSupportSubject;
                         emailMessage.Body = Utils.Constants.AppConstants.csEmailSupportBody;
-                        emailMessage.Attachments.Add(new Xamarin.Essentials.EmailAttachment(Utils.Constants.AppConstants.csLocalAnalyticsFilePath));
+                        emailMessage.Attachments.Add(new Xamarin.Essentials.EmailAttachment(_fileService.GetAbsolutPath("logs.txt")));
                         await Xamarin.Essentials.Email.ComposeAsync(emailMessage);
                       
                         break;

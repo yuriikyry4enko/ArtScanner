@@ -7,8 +7,9 @@
     xmlns:resourceResx="clr-namespace:ArtScanner.Resx"
     xmlns:resources="clr-namespace:ArtScanner.Resources"
     xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
-    xmlns:controls="clr-namespace:ArtScanner.Controls"
+    xmlns:controls="clr-namespace:ArtScanner.Controls" xmlns:prism="http://prismlibrary.com"
     x:Class="ArtScanner.Popups.ApologizeLanguagePopupPage"
+    x:Name="root"
     CloseWhenBackgroundIsClicked="False">
      <pages:PopupPage.Animation>
         <animations:ScaleAnimation 
@@ -85,7 +86,15 @@
                                         Text="{Binding NativeName}"/>
                                     <CheckBox
                                         HorizontalOptions="End"
-                                        VerticalOptions="Center"/>
+                                        VerticalOptions="Center"
+                                        IsChecked="{Binding IsChecked}">
+                                        <CheckBox.Behaviors>
+                                            <prism:EventToCommandBehavior
+                                                EventName="CheckedChanged"
+                                                Command="{Binding Path=BindingContext.CheckedChangedCommand,Source={x:Reference root}}"
+                                                CommandParameter="{Binding .}" />
+                                        </CheckBox.Behaviors>
+                                    </CheckBox>
                                 </StackLayout>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>

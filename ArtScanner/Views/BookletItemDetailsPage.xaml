@@ -190,6 +190,7 @@
         </Grid>
         
         <ListView
+            SeparatorColor="Transparent"
             x:Name="CollectionView"
             HasUnevenRows="True"
             Grid.Row="1"
