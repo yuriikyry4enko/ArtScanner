@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using ArtScanner.Models;
 using ArtScanner.Models.Analytics;
@@ -16,6 +18,28 @@ namespace ArtScanner.Services
         public RestService()
         {
 
+        }
+
+        public async Task<QRcodeDataResultModel> GetItemIdByShortCode(string itemShortCode, long folderId)
+        {
+            Uri uri = new Uri(string.Format(Utils.Constants.ApiConstants.GetItemIdBYShortCode, folderId, itemShortCode));
+            try
+            {
+                using (var bench = new Benchmark($"Get itemid by shortcode = {itemShortCode} and folder {folderId}"))
+                {
+                    using (client = new HttpClient())
+                    {
+                        var result = await client.GetStringAsync(uri);
+                        return JsonConvert.DeserializeObject<QRcodeDataResultModel>(result);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogService.Log(ex);
+            }
+
+            return null;
         }
 
         public async Task<GeneralItemInfoModel> GetGeneralItemInfo(long itemId)
@@ -133,136 +157,132 @@ namespace ArtScanner.Services
 
             return null;
         }
+
+       
+
+
     }
+    public class QueueStream : Stream
+    {
+        Stream writeStream;
+        Stream readStream;
+        long size;
+        bool done;
+        object plock = new object();
 
-    //  using (var memoryStream = new MemoryStream())
-    //                    {
-    //                        await stream.CopyToAsync(memoryStream);
-    //bytes = memoryStream.ToArray();
-    //                    }
+        public QueueStream(string storage)
+        {
+            writeStream = new FileStream(storage, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, 4096);
+            readStream = new FileStream(storage, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096);
+        }
 
+        public override bool CanRead
+        {
+            get { return true; }
+        }
 
-    //public class QueueStream : Stream
-    //{
-    //    Stream writeStream;
-    //    Stream readStream;
-    //    long size;
-    //    bool done;
-    //    object plock = new object();
+        public override bool CanSeek
+        {
+            get { return false; }
+        }
 
-    //    public QueueStream(string storage)
-    //    {
-    //        writeStream = new FileStream(storage, FileMode.Create, FileAccess.Write, FileShare.ReadWrite, 4096);
-    //        readStream = new FileStream(storage, FileMode.Open, FileAccess.Read, FileShare.ReadWrite, 4096);
-    //    }
+        public override bool CanWrite
+        {
+            get { return false; }
+        }
 
-    //    public override bool CanRead
-    //    {
-    //        get { return true; }
-    //    }
+        public override long Length
+        {
+            get { return readStream.Length; }
+        }
 
-    //    public override bool CanSeek
-    //    {
-    //        get { return false; }
-    //    }
+        public override long Position
+        {
+            get { return readStream.Position; }
+            set { throw new NotImplementedException(); }
+        }
 
-    //    public override bool CanWrite
-    //    {
-    //        get { return false; }
-    //    }
+        public override int Read(byte[] buffer, int offset, int count)
+        {
+            lock (plock)
+            {
+                while (true)
+                {
+                    if (Position < size)
+                    {
+                        int n = readStream.Read(buffer, offset, count);
+                        return n;
+                    }
+                    else if (done)
+                        return 0;
 
-    //    public override long Length
-    //    {
-    //        get { return readStream.Length; }
-    //    }
+                    try
+                    {
+                        Debug.WriteLine("Waiting for data");
+                        Monitor.Wait(plock);
+                        Debug.WriteLine("Waking up, data available");
+                    }
+                    catch
+                    {
+                    }
+                }
+            }
+        }
 
-    //    public override long Position
-    //    {
-    //        get { return readStream.Position; }
-    //        set { throw new NotImplementedException(); }
-    //    }
+        public void Push(byte[] buffer, int offset, int count)
+        {
+            lock (plock)
+            {
+                writeStream.Write(buffer, offset, count);
+                size += count;
+                writeStream.Flush();
+                Monitor.Pulse(plock);
+            }
+        }
 
-    //    public override int Read(byte[] buffer, int offset, int count)
-    //    {
-    //        lock (plock)
-    //        {
-    //            while (true)
-    //            {
-    //                if (Position < size)
-    //                {
-    //                    int n = readStream.Read(buffer, offset, count);
-    //                    return n;
-    //                }
-    //                else if (done)
-    //                    return 0;
+        public void Done()
+        {
+            lock (plock)
+            {
+                Monitor.Pulse(plock);
+                done = true;
+            }
+        }
 
-    //                try
-    //                {
-    //                    Debug.WriteLine("Waiting for data");
-    //                    Monitor.Wait(plock);
-    //                    Debug.WriteLine("Waking up, data available");
-    //                }
-    //                catch
-    //                {
-    //                }
-    //            }
-    //        }
-    //    }
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                readStream.Close();
+                readStream.Dispose();
+                writeStream.Close();
+                writeStream.Dispose();
+            }
+            base.Dispose(disposing);
+        }
 
-    //    public void Push(byte[] buffer, int offset, int count)
-    //    {
-    //        lock (plock)
-    //        {
-    //            writeStream.Write(buffer, offset, count);
-    //            size += count;
-    //            writeStream.Flush();
-    //            Monitor.Pulse(plock);
-    //        }
-    //    }
+        #region non implemented abstract members of Stream
 
-    //    public void Done()
-    //    {
-    //        lock (plock)
-    //        {
-    //            Monitor.Pulse(plock);
-    //            done = true;
-    //        }
-    //    }
+        public override void Flush()
+        {
+        }
 
-    //    protected override void Dispose(bool disposing)
-    //    {
-    //        if (disposing)
-    //        {
-    //            readStream.Close();
-    //            readStream.Dispose();
-    //            writeStream.Close();
-    //            writeStream.Dispose();
-    //        }
-    //        base.Dispose(disposing);
-    //    }
+        public override long Seek(long offset, SeekOrigin origin)
+        {
+            throw new NotImplementedException();
+        }
 
-    //    #region non implemented abstract members of Stream
+        public override void SetLength(long value)
+        {
+            throw new NotImplementedException();
+        }
 
-    //    public override void Flush()
-    //    {
-    //    }
+        public override void Write(byte[] buffer, int offset, int count)
+        {
+            throw new NotImplementedException();
+        }
 
-    //    public override long Seek(long offset, SeekOrigin origin)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
+        #endregion
 
-    //    public override void SetLength(long value)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    public override void Write(byte[] buffer, int offset, int count)
-    //    {
-    //        throw new NotImplementedException();
-    //    }
-
-    //    #endregion
-
-    //}
+    }
 }

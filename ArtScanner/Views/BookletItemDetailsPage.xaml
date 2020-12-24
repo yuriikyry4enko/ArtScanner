@@ -8,7 +8,7 @@
     xmlns:converters="clr-namespace:ArtScanner.Converters"
     xmlns:context="clr-namespace:ContextMenu.Views;assembly=ContextMenu"
     xmlns:forms="clr-namespace:FFImageLoading.Svg.Forms;assembly=FFImageLoading.Svg.Forms"
-    xmlns:templateSelectores="clr-namespace:ArtScanner.TemplateSelectors"
+    xmlns:templateSelectores="clr-namespace:ArtScanner.TemplateSelectors" xmlns:prism="http://prismlibrary.com"
     x:Name="root"
     x:Class="ArtScanner.Views.BookletItemDetailsPage">
      <ContentPage.Resources>
@@ -161,9 +161,9 @@
 
         </ResourceDictionary>
     </ContentPage.Resources>
-   <Grid>
+    <Grid>
        <Grid.RowDefinitions>
-           <RowDefinition Height="180"/>
+           <RowDefinition Height="210"/>
            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid
@@ -178,7 +178,7 @@
                 Aspect="AspectFill"
                 Source="{Binding NavigatedFolderItem.ImageByteArray, 
                             Converter={StaticResource ByteArrayToImage}}"/>
-            <Label
+            <!--<Label
                 Padding="30"
                 Margin="0,55,0,0"
                 TextColor="White"
@@ -187,6 +187,77 @@
                 VerticalOptions="Center"
                 HorizontalOptions="FillAndExpand"
                 Text="{Binding NavigatedFolderItem.Title}"/>
+
+             <Frame
+                HasShadow="False"
+                CornerRadius="20"
+                Margin="25,0,0,15"
+                Padding="5"
+                VerticalOptions="End"
+                HorizontalOptions="Start">
+                 <StackLayout
+                     Orientation="Horizontal">
+                     <Switch
+                         IsToggled="{Binding IsActiveFolder}"
+                         VerticalOptions="Center">
+                         <Switch.Behaviors>
+                            <prism:EventToCommandBehavior
+                                EventName="PropertyChanged"
+                                Command="{Binding IsActivePropertyChangedCommand}"/>
+                        </Switch.Behaviors>
+                    </Switch>
+                    <Label
+                        VerticalOptions="Center"
+                        Text="is active"/>
+
+                </StackLayout>
+
+            </Frame>-->
+
+
+            <controls:Circle
+                Padding="0"
+                HeightRequest="45"
+                Margin="25,0,0,15"
+                VerticalOptions="End"
+                HorizontalOptions="Start"
+                WidthRequest="45"
+                Color="White">
+                <controls:TintedCachedImage
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Source="{x:Static resources:Images.MobileTyping}"
+                    WidthRequest="20"   
+                    TintColor="Black"
+                    HeightRequest="20"/>
+                <controls:Circle.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CodeTypingCommand}"/>
+                </controls:Circle.GestureRecognizers>
+            </controls:Circle>
+
+
+
+
+            <controls:Circle
+                IsVisible="{Binding LikeIconVisible}"
+                HorizontalOptions="End"
+                VerticalOptions="End"
+                Padding="0"
+                HeightRequest="45"
+                Margin="0,30,25,15"
+                WidthRequest="45"
+                Color="White">
+                <controls:TintedCachedImage
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Source="{Binding LikeIcon}"
+                    WidthRequest="20"   
+                    TintColor="Black"
+                    HeightRequest="20"/>
+                <controls:Circle.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding LikeCommand}"/>
+                </controls:Circle.GestureRecognizers>
+            </controls:Circle>
         </Grid>
         
         <ListView

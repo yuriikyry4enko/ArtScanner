@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ArtScanner.Models.Analytics;
 using ArtScanner.Models.Entities;
@@ -183,5 +184,20 @@ namespace ArtScanner.Services
                 LogService.Log(ex);
             }
         }
+
+        //Stream GetQueueStream(ItemEntity item)
+        //{
+        //    var queueStream = new QueueStream(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + $"{item.Title.Replace(" ", string.Empty)}{ item.Id}.mp3");
+        //    var t = new Thread((x) => {
+        //        var tbuf = new byte[8192];
+        //        int count;
+
+        //        while ((count = item.AudioStream.Read(tbuf, 0, tbuf.Length)) != 0)
+        //            queueStream.Push(tbuf, 0, count);
+
+        //    });
+        //    t.Start();
+        //    return queueStream;
+        //}
     }
 }

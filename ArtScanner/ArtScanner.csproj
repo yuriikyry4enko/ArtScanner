@@ -73,6 +73,9 @@
     <None Remove="Resources\menu.svg" />
     <None Remove="Resources\cancel.svg" />
     <None Remove="Resources\tick.svg" />
+    <None Remove="Resources\mobile-app.svg" />
+    <None Remove="Resources\mobiletype.svg" />
+    <None Remove="Resources\smartphone.svg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\play.svg" />
@@ -92,6 +95,8 @@
     <EmbeddedResource Include="Resources\menu.svg" />
     <EmbeddedResource Include="Resources\cancel.svg" />
     <EmbeddedResource Include="Resources\tick.svg" />
+    <EmbeddedResource Include="Resources\mobiletype.svg" />
+    <EmbeddedResource Include="Resources\smartphone.svg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resx\AppResources.resx">

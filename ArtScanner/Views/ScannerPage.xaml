@@ -57,7 +57,7 @@
                 HeightRequest="70"
                 WidthRequest="70"/>-->
         </Grid>
-        <!--<controls:Circle
+        <controls:Circle
             VerticalOptions="Start"
             Padding="0"
             HeightRequest="45"
@@ -75,7 +75,7 @@
                 <controls:Circle.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding QRScanResultCommand}"/>
                 </controls:Circle.GestureRecognizers>
-        </controls:Circle>-->
+        </controls:Circle>
     </StackLayout>
 </views:BasePage>
 

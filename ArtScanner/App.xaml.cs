@@ -1,6 +1,4 @@
-﻿using System;
-using System.Globalization;
-using System.IO;
+﻿using System.Globalization;
 using System.Linq;
 using System.Threading;
 using Acr.UserDialogs;
@@ -24,6 +22,7 @@ namespace ArtScanner
     {
         public static double ScreenWidth;
         public static double ScreenHeight;
+
 
         protected override void OnStart()
         {
@@ -61,6 +60,7 @@ namespace ArtScanner
             {
                 NavigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(ChooseLanguagePage)}");
             }
+
         }
 
         protected override void RegisterTypes(IContainerRegistry containerRegistry)
@@ -71,10 +71,11 @@ namespace ArtScanner
             containerRegistry.RegisterInstance(DependencyService.Get<IDownloadFileService>());
             containerRegistry.RegisterInstance(DependencyService.Get<IFileService>());
 
+            containerRegistry.RegisterForNavigation<NavigationPage>();
 
             containerRegistry.RegisterSingleton<IAppSettings, AppSettings>();
             containerRegistry.RegisterSingleton<IAppConfig, AppConfig>();
-            containerRegistry.RegisterSingleton<IAppInfo, AppInfo>();
+            containerRegistry.RegisterSingleton<IAppInfo, Services.AppInfo>();
             containerRegistry.RegisterSingleton<IAppDatabase, AppDatabase>();
             containerRegistry.RegisterSingleton<IAppFileSystemService, AppFileSystemService>();
             containerRegistry.RegisterSingleton<IRestService, RestService>();
@@ -82,6 +83,7 @@ namespace ArtScanner
             containerRegistry.RegisterSingleton<IItemDBService, ItemDBService>();
             containerRegistry.RegisterSingleton<IAnalyticsService, AnalyticsService>();
 
+            
 
             IFileService fileService = (IFileService)Container.Resolve(typeof(IFileService));
 
@@ -92,27 +94,20 @@ namespace ArtScanner
 
             containerRegistry.RegisterForNavigation<ProviderLoginPage>();
             containerRegistry.RegisterForNavigation<SharedTransitionNavigationPage>();
-          
             containerRegistry.RegisterForNavigation<ItemGalleryDetailsPage, ItemGalleryDetailsPageViewModel>();
             containerRegistry.RegisterForNavigation<ChooseLanguagePage, ChooseLanguagePageViewModel>();
-
             containerRegistry.RegisterForNavigation<HomePage, HomePageViewModel>();
+            containerRegistry.RegisterForNavigation<CodeTypingPage, CodeTypingPageViewModel>();
             containerRegistry.RegisterForNavigation<StartPage, StartPageViewModel>();
             containerRegistry.RegisterForNavigation<ScannerPage, ScannerPageViewModel>();
             containerRegistry.RegisterForNavigation<BookletItemDetailsPage, BookletItemDetailsPageViewModel>();
             containerRegistry.RegisterForNavigation<ItemsGalleryPage, ItemsGalleryPageViewModel>();
             containerRegistry.RegisterForNavigation<ItemGalleryDetailsPage, ItemGalleryDetailsPageViewModel>();
-
             containerRegistry.RegisterForNavigation<SettingsPage, SettingsPageViewModel>();
-
             containerRegistry.RegisterForNavigation<ApologizeLanguagePopupPage, ApologizeLanguagePopupPageViewModel>();
             containerRegistry.RegisterForNavigation<LoadingPopupPage, LoadingPopupPageViewModel>();
             containerRegistry.RegisterForNavigation<BurgerMenuPopupPage, BurgerMenuPopupPageViewModel>();
 
-            containerRegistry.RegisterForNavigation<BurgerMenuPopupPage, BurgerMenuPopupPageViewModel>();
-
-
-            //dependencyService.Get<IAnalyticsService>().SetProvider(new Framework.Data.Models.Analytics.AnalyticsServiceFileProvider(Constants.csLocalAnalyticsFilePath));
             containerRegistry.RegisterPopupNavigationService();
         }
 

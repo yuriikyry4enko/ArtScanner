@@ -25,7 +25,7 @@ namespace ArtScanner.Resources
         public static string Menu => GetSvgImageUrl("menu");
         public static string Tick => GetSvgImageUrl("tick");
         public static string Cancel => GetSvgImageUrl("cancel");
-
+        public static string MobileTyping => GetSvgImageUrl("smartphone");
 
         static string GetSvgImageUrl(string name) => $"{SvgResourcesUrl}.{name}.svg";
     }

@@ -121,10 +121,10 @@ namespace ArtScanner.ViewModels
                         item.SelectedCulture = item.SelectedCultureIndex > 0 ? CulturesList.ElementAt(item.SelectedCultureIndex) : new CultureInfo(item.LangTag);
                         item.NativeName = item.SelectedCulture.NativeName;
 
-                        if(item.SelectedCultureIndex == 0 && !CulturesList.Contains(item.SelectedCulture))
+                        if (item.SelectedCultureIndex == 0 && !CulturesList.Contains(item.SelectedCulture))
                         {
                             CulturesList.Add(item.SelectedCulture);
-                            item.SelectedCultureIndex = CulturesList.IndexOf(item.SelectedCulture);                            
+                            item.SelectedCultureIndex = CulturesList.IndexOf(item.SelectedCulture);
                         }
 
                         LanguagePreferencesList.Add(item);
@@ -174,7 +174,7 @@ namespace ArtScanner.ViewModels
 
         public ICommand OnUpdateLangugeClickedCommand => new Command(async () =>
         {
-            foreach(var item in ItemsLangForDelete?.DistinctBy(x => x.LocalId))
+            foreach (var item in ItemsLangForDelete?.DistinctBy(x => x.LocalId))
             {
                 await baseDBService.DeleteAsync(item);
             }

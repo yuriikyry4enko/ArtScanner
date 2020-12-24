@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
@@ -28,9 +29,11 @@ namespace ArtScanner.ViewModels
         private IAppFileSystemService _appFileSystemService;
         private IRestService _restService;
         private IAppSettings _appSettings;
+        private IDownloadFileService downloadFileService;
 
         private long _ParentItemEntityId;
         private bool _firstTouchPlayButton = true;
+        private ItemGalleryDetailsNavigationArgs ItemGalleryDetailsNavigationArgs;
 
         #region Properties
 
@@ -97,6 +100,7 @@ namespace ArtScanner.ViewModels
             INavigationService navigationService,
             IItemDBService itemDBService,
             IRestService restService,
+            IDownloadFileService downloadFileService,
             IAppSettings appSettings,
             IAppFileSystemService appFileSystemService,
             IUserDialogs userDialogs) : base(navigationService)
@@ -106,6 +110,7 @@ namespace ArtScanner.ViewModels
             this._appFileSystemService = appFileSystemService;
             this._restService = restService;
             this._appSettings = appSettings;
+            this.downloadFileService = downloadFileService;
         }
 
         public override async void OnNavigatedTo(INavigationParameters parameters)
@@ -116,7 +121,9 @@ namespace ArtScanner.ViewModels
             {
                 if (parameters.GetNavigationMode() != NavigationMode.Back)
                 {
-                    ItemModel = GetParameters<ItemEntity>(parameters);
+                    ItemGalleryDetailsNavigationArgs = GetParameters<ItemGalleryDetailsNavigationArgs>(parameters);
+
+                    ItemModel = ItemGalleryDetailsNavigationArgs.ItemModel;
                                            
                     RaisePropertyChanged(nameof(ItemModel));
 
@@ -130,6 +137,8 @@ namespace ArtScanner.ViewModels
 
                     CrossMediaManager.Current.AutoPlay = false;
                     await CrossMediaManager.Current.Play(string.Format(ApiConstants.GetAudioStreamById, ItemModel.LangTag, ItemModel.Id));
+
+                    //downloadFileService.DownloadFile(string.Format(ApiConstants.GetAudioStreamById, ItemModel.LangTag, ItemModel.Id));
 
 
                     IsBusy = false;
@@ -196,6 +205,9 @@ namespace ArtScanner.ViewModels
                 {
                     await _itemDBService.DeleateItem(ItemModel);
                     ItemModel.LocalId = 0;
+
+                    _userDialogs.Toast(AppResources.GalleryUpdated);
+                    ItemGalleryDetailsNavigationArgs.NeedsToUpdatePrevious.Invoke();
                 }
                 else
                 {
@@ -209,10 +221,14 @@ namespace ArtScanner.ViewModels
                         ItemModel.AudioStream = await _restService.GetMusicStreamById(ItemModel.Id, ItemModel.LangTag);
                     }
 
-                    await _itemDBService.SaveAudioFileFromStream(ItemModel);
-                }
+                    _userDialogs.Toast(AppResources.GalleryUpdated);
+                    ItemGalleryDetailsNavigationArgs.NeedsToUpdatePrevious.Invoke();
 
-                _userDialogs.Toast(AppResources.GalleryUpdated);
+                    IsBusy = false;
+
+                    await _itemDBService.SaveAudioFileFromStream(ItemModel).ConfigureAwait(false);
+
+                }
             }
             catch(Exception ex)
             {
@@ -262,7 +278,7 @@ namespace ArtScanner.ViewModels
                 //    }
                 //}));
 
-                await _userDialogs.AlertAsync("this feature is still in development", "Not implemented", "Ok");
+                //await _userDialogs.AlertAsync("this feature is still in development", "Not implemented", "Ok");
             }
             catch(Exception ex)
             {
@@ -277,7 +293,14 @@ namespace ArtScanner.ViewModels
         {
             try
             {
-              
+                //var documentsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
+                //string localFilename = $"{ItemModel.Title.Replace(" ", string.Empty)}{ItemModel.Id}.mp3";
+                //string localPath = Path.Combine(documentsPath, localFilename);
+
+                //var generatedMediaItem =
+                // await CrossMediaManager.Current.Extractor.CreateMediaItem(localPath);
+
+                //await CrossMediaManager.Current.Play(generatedMediaItem);
                 IsPlayButtonEnable = false;
 
                 if (isPlaying)

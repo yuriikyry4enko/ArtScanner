@@ -28,5 +28,14 @@ namespace ArtScanner.Services
             get => Preferences.Get(NeedToUpdateHomePageKey, false);
             set => Preferences.Set(NeedToUpdateHomePageKey, value);
         }
+
+        private const string ActiveFolderIdKey = "ActiveFolderIdKey";
+
+        public long ActiveFolderId
+        {
+            get => Preferences.Get(ActiveFolderIdKey, 0);
+            set => Preferences.Set(ActiveFolderIdKey, value);
+        }
+
     }
 }

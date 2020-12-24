@@ -70,8 +70,8 @@ namespace ArtScanner.ViewModels
 
                 var foundedItem = new ItemEntity
                 {
-                    Id = Int64.Parse(Result?.Text),
-                    //Id = 5,
+                    //Id = Int64.Parse(Result?.Text),
+                    Id = 719,
                 };
 
                 Device.BeginInvokeOnMainThread(async () =>
@@ -116,10 +116,9 @@ namespace ArtScanner.ViewModels
                             intersectFirstItem = result.Languages.FirstOrDefault(x => langPrefs.Any(y => x == y.LangTag));
                         }
 
-
                         if (!isCanceled)
                         {
-                            if (intersectFirstItem != null || result.IsFolder)
+                            if (!string.IsNullOrEmpty(intersectFirstItem) || result.IsFolder)
                             {
                                 foundedItem.LangTag = intersectFirstItem;
                                 foundedItem.ParentId = result.ParentId.HasValue ? result.ParentId.Value : -1;
@@ -132,7 +131,15 @@ namespace ArtScanner.ViewModels
                                 }
                                 else
                                 {
-                                    await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(foundedItem));
+                                    await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(new ItemGalleryDetailsNavigationArgs
+                                    {
+                                        ItemModel = foundedItem,
+                                        NeedsToUpdatePrevious = () =>
+                                        {
+
+                                        }
+                                    }));
+
                                 }
                             }
                             else
@@ -158,7 +165,15 @@ namespace ArtScanner.ViewModels
                                             }
                                             else
                                             {
-                                                await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(foundedItem));
+                                                await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(new ItemGalleryDetailsNavigationArgs
+                                                {
+                                                    ItemModel = foundedItem,
+                                                    NeedsToUpdatePrevious = () =>
+                                                    {
+
+                                                    }
+                                                }));
+
                                             }
                                             IsBusy = false;
                                         }

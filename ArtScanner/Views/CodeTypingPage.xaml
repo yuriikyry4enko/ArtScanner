@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<views:BasePage
+    xmlns:views="clr-namespace:ArtScanner.Views"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:controls="clr-namespace:ArtScanner.Controls"
+    xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
+    x:Class="ArtScanner.Views.CodeTypingPage">
+    <Grid>
+         <controls:Circle
+            VerticalOptions="Start"
+            Padding="0"
+            HeightRequest="45"
+            Margin="25,25,0,25"
+            Color="White"
+            WidthRequest="45"
+            HorizontalOptions="Start">
+                <controls:TintedCachedImage
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Source="{x:Static resources:Images.BackArrow}"
+                WidthRequest="20"   
+                TintColor="Black"
+                HeightRequest="20"/>
+            <controls:Circle.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding BackCommand}"/>
+            </controls:Circle.GestureRecognizers>
+        </controls:Circle>
+        <StackLayout
+            VerticalOptions="Center"
+            HorizontalOptions="Center">
+            <Label
+                HorizontalOptions="Center"
+                Text="Enter item code:"/>
+            <Entry
+                Text="{Binding ItemCode}"
+                x:Name="codeEntry"
+                Keyboard="Numeric"
+                TextChanged="CodeEntry_OnTextChanged"
+                WidthRequest="0"
+                HeightRequest="0"/>
+            <StackLayout
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                Orientation="Horizontal"
+                Spacing="10"
+                Padding="0,20,0,10">
+                <StackLayout.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="CodeEntryTapped"/>
+                </StackLayout.GestureRecognizers>
+                <controls:RoundedCornerRectangleContentView
+                    WidthRequest="40"
+                    HeightRequest="60"
+                    CornerRadius="5">
+                    <Label 
+                        x:Name="digit1"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"/>
+                </controls:RoundedCornerRectangleContentView>
+                <controls:RoundedCornerRectangleContentView
+                    WidthRequest="40"
+                    HeightRequest="60"
+                    CornerRadius="5">
+                    <Label 
+                        x:Name="digit2"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"/>
+                </controls:RoundedCornerRectangleContentView>
+
+                <controls:RoundedCornerRectangleContentView
+                    WidthRequest="40"
+                    HeightRequest="60"
+                    CornerRadius="5">
+                    <Label 
+                        x:Name="digit3"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"/>
+                </controls:RoundedCornerRectangleContentView>
+            </StackLayout>
+
+            <Frame
+                BorderColor="Black"
+                Margin="0,20"
+                HasShadow="False"
+                Padding="20"
+                CornerRadius="20">
+                <StackLayout
+                    Orientation="Horizontal">
+                    <Label
+                        VerticalOptions="Center"
+                        HorizontalOptions="FillAndExpand"
+                        Text="Continue"/>
+                    <controls:TintedCachedImage
+                        VerticalOptions="Center"
+                        HorizontalOptions="End"
+                        Source="{x:Static resources:Images.BackArrow}"
+                        WidthRequest="18"
+                        RotationY="180"
+                        TintColor="Black"
+                        HeightRequest="18"/>
+                </StackLayout>
+                <Frame.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding ContinueCommand}"/>
+                </Frame.GestureRecognizers>
+            </Frame>
+        </StackLayout>
+    </Grid>
+</views:BasePage>

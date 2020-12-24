@@ -9,6 +9,8 @@ namespace ArtScanner.Services
         Audio,
     }
 
+    //TODO:Refactor functions for using FILE abstract (not img and audio for each type)
+
     class AppFileSystemService : IAppFileSystemService
     {
         private readonly IAppConfig appConfig;

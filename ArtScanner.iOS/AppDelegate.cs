@@ -39,10 +39,13 @@ namespace ArtScanner.iOS
             }
             else
             {
+
                 FFImageLoading.Forms.Platform.CachedImageRenderer.Init();
                 global::ZXing.Net.Mobile.Forms.iOS.Platform.Init();
                 AnimationViewRenderer.Init();
                 Rg.Plugins.Popup.Popup.Init();
+
+                Xamarin.Forms.Forms.SetFlags("RadioButton_Experimental");
 
                 global::Xamarin.Forms.Forms.Init();
 

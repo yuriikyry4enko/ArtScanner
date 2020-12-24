@@ -85,6 +85,7 @@
     </Compile>
     <None Include="Info.plist" />
     <Compile Include="Services\FileService.cs" />
+    <Compile Include="Renderers\RoundedCornerRectangleContentViewRenderer.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />

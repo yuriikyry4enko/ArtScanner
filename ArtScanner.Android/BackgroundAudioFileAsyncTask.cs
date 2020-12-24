@@ -37,7 +37,6 @@ namespace ArtScanner.Droid
                 while ((count = input.Read(data)) != -1)
                 {
                     total += count;
-                    PublishProgress("" + (int)((total * 100) / LengthOfFile));
                     output.Write(data, 0, count);
                 }
                 output.Flush();

@@ -10,6 +10,7 @@ using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
 using ArtScanner.Utils.Helpers;
 using ArtScanner.Views;
+using MediaManager.Media;
 using Plugin.Permissions;
 using Plugin.Permissions.Abstractions;
 using Prism.Navigation;
@@ -102,6 +103,16 @@ namespace ArtScanner.ViewModels
             await PopupNavigation.Instance.PopAsync();
         });
 
+        public ICommand CodeTypingCommand => new Command(async () =>
+        {
+            if(_appSettings.ActiveFolderId == 0)
+            {
+                await _userDialogs.AlertAsync("you need to activate some folder", "No active folders", "Ok");
+                return;
+            }
+
+            await navigationService.NavigateAsync(PageNames.CodeTypingPage);
+        });
 
         public ICommand SettingsCommand => new Command(async () => { await navigationService.NavigateAsync(PageNames.ChooseLanguagePage); });
         
@@ -183,18 +194,6 @@ namespace ArtScanner.ViewModels
             this._appDatabase.Initialize(_appFileSystemService.CurrentUserFolderPath);
 
             _appSettings.NeedToUpdateHomePage = true;
-
-            //MessagingCenter.Subscribe<BaseViewModel>(this, AppConstants.csHomePageUpdate, async (sender) =>
-            //{
-            //    await InitItemsList();
-            //});
-        }
-
-        public override void Destroy()
-        {
-            base.Destroy();
-
-            //MessagingCenter.Unsubscribe<HomePageViewModel>(this, AppConstants.csHomePageUpdate);
         }
 
         #endregion

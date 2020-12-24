@@ -1,4 +1,6 @@
 ﻿using System;
+using Plugin.Permissions;
+
 namespace ArtScanner.Models.Analytics
 {
     public class AnalyticsServiceFileProvider : AnalyticsServiceProvider

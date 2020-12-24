@@ -9,7 +9,7 @@ namespace ArtScanner.Utils.Constants
         internal static string consumerKey = "nRcidVJCvhwhUZcxnMsLq9GMo";
         internal static string consumerSecret = "L7bD6XwSH87vftpMfD9nhA53RALXMOYxQm97N6r59d6lz6ms4b";
 
-        public const string HOST_CORE = "https://via-net.de/art-scanner-backend-0-4";
+        public const string HOST_CORE = "https://via-net.de/art-scanner-backend-0-5";
 
         public const string GetJPGById = HOST_CORE + "/item/jpg/{0}";
 
@@ -22,6 +22,8 @@ namespace ArtScanner.Utils.Constants
         public const string GetIdByQRCode = HOST_CORE + "/qr-code/{0}";
 
         public const string GetGeneralById = HOST_CORE + "/item/general/{0}";
+
+        public const string GetItemIdBYShortCode = HOST_CORE + "/item/short-id/{0}/{1}";
     }
 
     static class AppConstants

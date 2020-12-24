@@ -96,8 +96,11 @@ namespace ArtScanner.Models
             {
                 IsPlayButtonEnable = false;
 
+       
+
                 if (firstPlaying)
                 {
+                    IsPlaying = true;
                     if (!string.IsNullOrEmpty(this.AudioFileName) && _appFileSystemService.DoesAudioExist(this.AudioFileName))
                     {
                         await CrossMediaManager.Current.Play(this.AudioFileName);

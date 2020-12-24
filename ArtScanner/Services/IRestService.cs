@@ -12,6 +12,7 @@ namespace ArtScanner.Services
         Task<GeneralItemInfoModel> GetGeneralItemInfo(long id);
         Task<QRcodeDataResultModel> GetIdByQRCode(string qrcodeData);
         Task<Stream> GetMusicStreamById(long id, string langTag);
+        Task<QRcodeDataResultModel> GetItemIdByShortCode(string itemShortCode, long folderId);
 
     }
 }

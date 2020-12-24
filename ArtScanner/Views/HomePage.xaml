@@ -53,23 +53,45 @@
                     FontAttributes="Bold"
                     Text="{x:Static resourcesResx:AppResources.PressAgain}"/>
 
-                <controls:Circle
-                    WidthRequest="80"
-                    HeightRequest="80"
-                    VerticalOptions="Center"
+                <StackLayout
                     HorizontalOptions="Center"
-                    Color="Black">
-                    <controls:TintedCachedImage
+                     Orientation="Horizontal">
+                    <controls:Circle
+                        WidthRequest="80"
+                        HeightRequest="80"
                         VerticalOptions="Center"
                         HorizontalOptions="Center"
-                        Source="{x:Static resources:Images.Scan}"
-                        WidthRequest="35"   
-                        TintColor="White"
-                        HeightRequest="35"/>
-                    <controls:Circle.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding ScannCommand}"/>
-                    </controls:Circle.GestureRecognizers>
-                </controls:Circle>
+                        Color="Black">
+                        <controls:TintedCachedImage
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            Source="{x:Static resources:Images.Scan}"
+                            WidthRequest="35"   
+                            TintColor="White"
+                            HeightRequest="35"/>
+                        <controls:Circle.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ScannCommand}"/>
+                        </controls:Circle.GestureRecognizers>
+                    </controls:Circle>
+
+                    <!--<controls:Circle
+                        WidthRequest="80"
+                        HeightRequest="80"
+                        VerticalOptions="Center"
+                        HorizontalOptions="Center"
+                        Color="Black">
+                        <controls:TintedCachedImage
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"
+                            Source="{x:Static resources:Images.MobileTyping}"
+                            WidthRequest="35"   
+                            TintColor="White"
+                            HeightRequest="35"/>
+                        <controls:Circle.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding CodeTypingCommand}"/>
+                        </controls:Circle.GestureRecognizers>
+                    </controls:Circle>-->
+                </StackLayout>
             </StackLayout>
         </Grid>
         <ListView x:Name="CollectionView"
@@ -209,6 +231,25 @@
                     <TapGestureRecognizer Command="{Binding ScannCommand}"/>
                 </controls:Circle.GestureRecognizers>
             </controls:Circle>
+
+
+            <!--<controls:Circle
+                VerticalOptions="Center"
+                HorizontalOptions="Center"
+                WidthRequest="120"       
+                HeightRequest="120"
+                Color="Black">
+                <controls:TintedCachedImage
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Source="{x:Static resources:Images.MobileTyping}"
+                    WidthRequest="60"   
+                    TintColor="White"
+                    HeightRequest="60"/>
+                <controls:Circle.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding CodeTypingCommand}"/>
+                </controls:Circle.GestureRecognizers>
+            </controls:Circle>-->
         </StackLayout>
     </Grid>
 </views:BasePage>

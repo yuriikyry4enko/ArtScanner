@@ -17,7 +17,7 @@ namespace ArtScanner.ViewModels
             set => SetProperty(ref _isBusy, value);
         }
 
-        public ICommand BackCommand => new Command(async () => { await navigationService.GoBackAsync(); });
+        public virtual ICommand BackCommand => new Command(async () => { await navigationService.GoBackAsync(); });
 
         public ICommand OpenBurgerMenuCommand => new Command(async () =>
         {
