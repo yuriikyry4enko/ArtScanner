@@ -5,9 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:controls="clr-namespace:ArtScanner.Controls"
     x:Class="ArtScanner.Views.ItemsGalleryPage"
-    xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
     x:Name="itemsGalleryPage"
-    sharedTransitions:SharedTransitionNavigationPage.TransitionSelectedGroup="{Binding SelectedId}"
     xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"
     xmlns:converters="clr-namespace:ArtScanner.Converters">
     <ContentPage.Resources>
@@ -79,6 +77,7 @@
 
 
         <StackLayout
+            Padding="0,15"
             Opacity="0"
             HeightRequest="0"
             VerticalOptions="End"
@@ -86,7 +85,7 @@
             BackgroundColor="White">
             <Label
                 Text="{Binding Path=BindingContext.CurrentCarouselItem.Title,Source={x:Reference itemsGalleryPage}}"
-                Margin="25,15,0,0"
+                Margin="25,0,0,0"
                 VerticalOptions="Start"
                 HorizontalOptions="Start"
                 TextColor="Black"
@@ -151,6 +150,26 @@
                             <TapGestureRecognizer Command="{Binding TwittCommand}"/>
                         </controls:Circle.GestureRecognizers>
                     </controls:Circle>
+
+
+                    <controls:Circle
+                        Color="Gray"
+                        VerticalOptions="Start"
+                        Padding="0"
+                        HeightRequest="60"
+                        WidthRequest="60"
+                        HorizontalOptions="Start">
+                        <Label
+                            FontSize="24"
+                             Text="{Binding Path=BindingContext.CurrentCarouselItem.LangTag,Source={x:Reference itemsGalleryPage}}"
+                            VerticalOptions="CenterAndExpand"
+                            HorizontalOptions="CenterAndExpand"
+                            TextColor="White"/>
+                        <!--<controls:Circle.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding ChangeLanguageCommand}"/>
+                        </controls:Circle.GestureRecognizers>-->
+                    </controls:Circle>
+
                 </StackLayout>
 
                 <StackLayout.GestureRecognizers>

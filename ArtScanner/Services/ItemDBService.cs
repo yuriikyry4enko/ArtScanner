@@ -172,9 +172,12 @@ namespace ArtScanner.Services
                         item.AudioByteArray = memoryStream.ToArray();
                     }
 
+                    GetQueueStream(item);
+
                     if (item.AudioByteArray != null)
                     {
                         item.AudioFileName = _appFileSystemService.SaveAudio(item.AudioByteArray, $"{item.Title.Replace(" ", string.Empty)}{item.Id}.mp3");
+                        //item.AudioFileName = $"{item.Title.Replace(" ", string.Empty)}{item.Id}.mp3";
                         await Connection.UpdateAsync(item);
                     }
                 }
@@ -185,19 +188,31 @@ namespace ArtScanner.Services
             }
         }
 
-        //Stream GetQueueStream(ItemEntity item)
-        //{
-        //    var queueStream = new QueueStream(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + $"{item.Title.Replace(" ", string.Empty)}{ item.Id}.mp3");
-        //    var t = new Thread((x) => {
-        //        var tbuf = new byte[8192];
-        //        int count;
+        Stream GetQueueStream(ItemEntity item)
+        {
+            try
+            {
+                using (var queueStream = new QueueStream(Environment.GetFolderPath(Environment.SpecialFolder.Personal) + $"{item.Title.Replace(" ", string.Empty)}{item.Id}.mp3"))
+                {
+                    var t = new Thread((x) =>
+                    {
+                        var tbuf = new byte[8192];
+                        int count;
 
-        //        while ((count = item.AudioStream.Read(tbuf, 0, tbuf.Length)) != 0)
-        //            queueStream.Push(tbuf, 0, count);
+                        while ((count = item.AudioStream.Read(tbuf, 0, tbuf.Length)) != 0)
+                            queueStream.Push(tbuf, 0, count);
 
-        //    });
-        //    t.Start();
-        //    return queueStream;
-        //}
+                    });
+                    t.Start();
+                    return queueStream;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.Log(ex);
+            }
+
+            return null;
+        }
     }
 }

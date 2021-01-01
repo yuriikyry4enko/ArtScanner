@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Input;
 using ArtScanner.Utils.Constants;
 using Prism.AppModel;
@@ -57,22 +58,22 @@ namespace ArtScanner.ViewModels
 
         public virtual void Initialize(INavigationParameters parameters)
         {
-
+            Debug.WriteLine($"**** {this.GetType().Name}.{nameof(Initialize)}");
         }
 
         public virtual void OnNavigatedFrom(INavigationParameters parameters)
         {
-
+            Debug.WriteLine($"**** {this.GetType().Name}.{nameof(OnNavigatedFrom)}");
         }
 
         public virtual void OnNavigatedTo(INavigationParameters parameters)
         {
-
+            Debug.WriteLine($"**** {this.GetType().Name}.{nameof(OnNavigatedTo)}");
         }
 
         public virtual void Destroy()
         {
-
+            Debug.WriteLine($"**** {this.GetType().Name}.{nameof(Destroy)}");
         }
 
         public virtual void OnAppearing()

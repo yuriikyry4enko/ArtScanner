@@ -3,6 +3,7 @@ namespace ArtScanner.Utils.Constants
 {
     static class PageNames
     {
+        public static string NavigationPage = nameof(Xamarin.Forms.NavigationPage);
         public static string HomePage = nameof(Views.HomePage);
         public static string StartPage = nameof(Views.StartPage);
         public static string ScannerPage = nameof(Views.ScannerPage);

@@ -22,7 +22,7 @@
             HorizontalOptions="Start"
             Color="White">
             <controls:TintedCachedImage
-                VerticalOptions="Center"
+                 VerticalOptions="Center"
                 HorizontalOptions="Center"
                 Source="{x:Static resources:Images.BackArrow}"
                 WidthRequest="20"   
@@ -41,6 +41,7 @@
                 x:Name="scanView"
                 ScanResultCommand="{Binding QRScanResultCommand}"
                 IsScanning="True"
+                IsAnalyzing="True"
                 Result="{Binding Result, Mode=TwoWay}"
                 WidthRequest="300"
                 HeightRequest="500"
@@ -57,7 +58,7 @@
                 HeightRequest="70"
                 WidthRequest="70"/>-->
         </Grid>
-        <controls:Circle
+        <!--<controls:Circle
             VerticalOptions="Start"
             Padding="0"
             HeightRequest="45"
@@ -75,7 +76,7 @@
                 <controls:Circle.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding QRScanResultCommand}"/>
                 </controls:Circle.GestureRecognizers>
-        </controls:Circle>
+        </controls:Circle>-->
     </StackLayout>
 </views:BasePage>
 

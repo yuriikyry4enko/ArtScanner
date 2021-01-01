@@ -3,7 +3,6 @@
     xmlns:views="clr-namespace:ArtScanner.Views"
     xmlns="http://xamarin.com/schemas/2014/forms"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:sharedTransitions="clr-namespace:Plugin.SharedTransitions;assembly=Plugin.SharedTransitions"
     xmlns:ffimageloading="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
     xmlns:controls="clr-namespace:ArtScanner.Controls"
     xmlns:resources="clr-namespace:ArtScanner.Resources;assembly=ArtScanner"

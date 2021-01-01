@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Acr.UserDialogs;
@@ -14,6 +15,7 @@ using ArtScanner.Utils.Constants;
 using ArtScanner.Utils.Helpers;
 using ArtScanner.Views;
 using MediaManager;
+using MediaManager.Library;
 using Prism.Commands;
 using Prism.Navigation;
 using Xamarin.Essentials;
@@ -30,6 +32,8 @@ namespace ArtScanner.ViewModels
         private IRestService _restService;
         private IAppSettings _appSettings;
         private IDownloadFileService downloadFileService;
+
+        private IMediaItem mediaItem;
 
         private long _ParentItemEntityId;
         private bool _firstTouchPlayButton = true;
@@ -135,8 +139,11 @@ namespace ArtScanner.ViewModels
                         await CheckForItemExistedInLocalDB();
                     }
 
-                    CrossMediaManager.Current.AutoPlay = false;
-                    await CrossMediaManager.Current.Play(string.Format(ApiConstants.GetAudioStreamById, ItemModel.LangTag, ItemModel.Id));
+                    //CrossMediaManager.Current.AutoPlay = false;
+                    var audioUrl = string.Format(ApiConstants.GetAudioStreamById, ItemModel.LangTag, ItemModel.Id);
+                    mediaItem = await CrossMediaManager.Current.Extractor.CreateMediaItem(audioUrl);
+                    mediaItem.MediaType = MediaManager.Library.MediaType.Audio;
+           
 
                     //downloadFileService.DownloadFile(string.Format(ApiConstants.GetAudioStreamById, ItemModel.LangTag, ItemModel.Id));
 
@@ -168,7 +175,7 @@ namespace ArtScanner.ViewModels
                 }
                 else
                 {
-                    await LoadTextInfoItemModel();
+                    await LoadTextInfoItemModel(ItemModel.LangTag, ItemModel.Id);
 
                     ItemModel.ImageByteArray = await _restService.GetImageById(ItemModel.Id);
 
@@ -207,7 +214,7 @@ namespace ArtScanner.ViewModels
                     ItemModel.LocalId = 0;
 
                     _userDialogs.Toast(AppResources.GalleryUpdated);
-                    ItemGalleryDetailsNavigationArgs.NeedsToUpdatePrevious.Invoke();
+                    ItemGalleryDetailsNavigationArgs.NeedsToUpdatePrevious?.Invoke();
                 }
                 else
                 {
@@ -222,7 +229,7 @@ namespace ArtScanner.ViewModels
                     }
 
                     _userDialogs.Toast(AppResources.GalleryUpdated);
-                    ItemGalleryDetailsNavigationArgs.NeedsToUpdatePrevious.Invoke();
+                    ItemGalleryDetailsNavigationArgs.NeedsToUpdatePrevious?.Invoke();
 
                     IsBusy = false;
 
@@ -263,22 +270,21 @@ namespace ArtScanner.ViewModels
         {
             try
             {
-                //GeneralItemInfoModel result = await _restService.GetGeneralItemInfo(ItemModel.Id);
-
-                //await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
-                //{
-                //    LanguageTags = result.Languages,
-                //    PopupResultAction = async (string langTagSelected) =>
-                //    {
-
-                //    },
-                //    PageApologizeFinishedLoading = () =>
-                //    {
-                //        IsBusy = false;
-                //    }
-                //}));
-
-                //await _userDialogs.AlertAsync("this feature is still in development", "Not implemented", "Ok");
+                if (ItemGalleryDetailsNavigationArgs.ItemLanguages.Count() > 1)
+                {
+                    await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
+                    {
+                        LanguageTags = ItemGalleryDetailsNavigationArgs.ItemLanguages,
+                        PopupResultAction = async (string langTagSelected) =>
+                        {
+                            await LoadTextInfoItemModel(langTagSelected, ItemModel.Id);
+                        },
+                        PageApologizeFinishedLoading = () =>
+                        {
+                            IsBusy = false;
+                        }
+                    }));
+                }
             }
             catch(Exception ex)
             {
@@ -293,15 +299,14 @@ namespace ArtScanner.ViewModels
         {
             try
             {
-                //var documentsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
-                //string localFilename = $"{ItemModel.Title.Replace(" ", string.Empty)}{ItemModel.Id}.mp3";
-                //string localPath = Path.Combine(documentsPath, localFilename);
-
-                //var generatedMediaItem =
-                // await CrossMediaManager.Current.Extractor.CreateMediaItem(localPath);
-
-                //await CrossMediaManager.Current.Play(generatedMediaItem);
                 IsPlayButtonEnable = false;
+                CrossMediaManager.Current.AutoPlay = true;
+
+                if (_firstTouchPlayButton)
+                {
+                    await CrossMediaManager.Current.Play(mediaItem);
+                    CrossMediaManager.Current.Queue.Current.IsMetadataExtracted = false;
+                }
 
                 if (isPlaying)
                 {
@@ -386,11 +391,11 @@ namespace ArtScanner.ViewModels
             }
         }
 
-        private async Task LoadTextInfoItemModel()
+        private async Task LoadTextInfoItemModel(string langTag, long itemId)
         {
             try
             {
-                var textModel = await _restService.GetTextById(ItemModel.LangTag, ItemModel.Id);
+                var textModel = await _restService.GetTextById(langTag, itemId);
                 if (textModel == null)
                 {
                     await _userDialogs.AlertAsync("Text for your language tag preferences was not found...", "Not found", "Ok");
@@ -399,6 +404,7 @@ namespace ArtScanner.ViewModels
                 }
 
                 ItemModel.Description = textModel.Description;
+                ItemModel.LangTag = langTag;
 
                 RaisePropertyChanged(nameof(ItemModel));
             }

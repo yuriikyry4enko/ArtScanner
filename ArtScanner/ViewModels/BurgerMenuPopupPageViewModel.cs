@@ -5,7 +5,6 @@ using System.Windows.Input;
 using ArtScanner.Services;
 using ArtScanner.Utils.Constants;
 using ArtScanner.Views;
-using Plugin.SharedTransitions;
 using Prism.Navigation;
 using Xamarin.Forms;
 using MenuItem = ArtScanner.Models.MenuItem;
@@ -94,7 +93,7 @@ namespace ArtScanner.ViewModels
 
                         if (actionPage.GetType() != typeof(HomePage))
                         {
-                            await navigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(HomePage)}");
+                            await navigationService.NavigateAsync($"/{nameof(HomePage)}");
                         }
                         else
                         {

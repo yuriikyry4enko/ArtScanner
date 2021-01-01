@@ -65,6 +65,33 @@ namespace ArtScanner.Models
 
         #region Commands
 
+
+        //public ICommand ChangeLanguageCommand => new Command(async () =>
+        //{
+        //    try
+        //    {
+        //if (ItemGalleryDetailsNavigationArgs.ItemLanguages.Count() > 1)
+        //{
+        //    await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
+        //    {
+        //        LanguageTags = ItemGalleryDetailsNavigationArgs.ItemLanguages,
+        //        PopupResultAction = async (string langTagSelected) =>
+        //        {
+        //            await LoadTextInfoItemModel(langTagSelected, ItemModel.Id);
+        //        },
+        //        PageApologizeFinishedLoading = () =>
+        //        {
+        //            IsBusy = false;
+        //        }
+        //    }));
+        //}
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        LogService.Log(ex);
+        //    }
+        //});
+
         public ICommand TwittCommand => new Command(async () =>
         {
             try
@@ -96,18 +123,21 @@ namespace ArtScanner.Models
             {
                 IsPlayButtonEnable = false;
 
-       
-
                 if (firstPlaying)
                 {
-                    IsPlaying = true;
+                    IsPlaying = false;
                     if (!string.IsNullOrEmpty(this.AudioFileName) && _appFileSystemService.DoesAudioExist(this.AudioFileName))
                     {
                         await CrossMediaManager.Current.Play(this.AudioFileName);
                     }
                     else
                     {
-                        await CrossMediaManager.Current.Play(string.Format(ApiConstants.GetAudioStreamById, LangTag, Id));
+                        var audioUrl = string.Format(ApiConstants.GetAudioStreamById, LangTag, Id);
+                        var mediaItem = await CrossMediaManager.Current.Extractor.CreateMediaItem(audioUrl);
+                        mediaItem.MediaType = MediaManager.Library.MediaType.Audio;
+
+                        await CrossMediaManager.Current.Play(mediaItem);
+                        CrossMediaManager.Current.Queue.Current.IsMetadataExtracted = false;
                     }
                     firstPlaying = false;
                 }

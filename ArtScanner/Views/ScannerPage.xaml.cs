@@ -18,13 +18,11 @@ namespace ArtScanner.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            scanView.IsAnalyzing = true;
         }
 
         protected override void OnDisappearing()
         {
             base.OnDisappearing();
-            scanView.IsAnalyzing = false;
         }
     }
 }

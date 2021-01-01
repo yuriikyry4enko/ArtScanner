@@ -15,7 +15,7 @@
             Color="White"
             WidthRequest="45"
             HorizontalOptions="Start">
-                <controls:TintedCachedImage
+            <controls:TintedCachedImage
                 VerticalOptions="Center"
                 HorizontalOptions="Center"
                 Source="{x:Static resources:Images.BackArrow}"
@@ -33,52 +33,84 @@
                 HorizontalOptions="Center"
                 Text="Enter item code:"/>
             <Entry
+                TextColor="White"
                 Text="{Binding ItemCode}"
                 x:Name="codeEntry"
                 Keyboard="Numeric"
-                TextChanged="CodeEntry_OnTextChanged"
-                WidthRequest="0"
-                HeightRequest="0"/>
-            <StackLayout
-                VerticalOptions="Center"
                 HorizontalOptions="Center"
-                Orientation="Horizontal"
-                Spacing="10"
-                Padding="0,20,0,10">
-                <StackLayout.GestureRecognizers>
-                    <TapGestureRecognizer Tapped="CodeEntryTapped"/>
-                </StackLayout.GestureRecognizers>
-                <controls:RoundedCornerRectangleContentView
-                    WidthRequest="40"
-                    HeightRequest="60"
-                    CornerRadius="5">
-                    <Label 
-                        x:Name="digit1"
-                        VerticalOptions="Center"
-                        HorizontalOptions="Center"/>
-                </controls:RoundedCornerRectangleContentView>
-                <controls:RoundedCornerRectangleContentView
-                    WidthRequest="40"
-                    HeightRequest="60"
-                    CornerRadius="5">
-                    <Label 
-                        x:Name="digit2"
-                        VerticalOptions="Center"
-                        HorizontalOptions="Center"/>
-                </controls:RoundedCornerRectangleContentView>
+                TextChanged="CodeEntry_OnTextChanged"
+                WidthRequest="1"
+                HeightRequest="1">
+            </Entry>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <StackLayout
+                    Grid.Column="1"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Center"
+                    Orientation="Horizontal"
+                    Spacing="10"
+                    Padding="0,20,0,10">
+                    <StackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="CodeEntryTapped"/>
+                    </StackLayout.GestureRecognizers>
+                    <controls:RoundedCornerRectangleContentView
+                        WidthRequest="40"
+                        HeightRequest="60"
+                        CornerRadius="5">
+                        <Label 
+                            x:Name="digit1"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"/>
+                    </controls:RoundedCornerRectangleContentView>
+                    <controls:RoundedCornerRectangleContentView
+                        WidthRequest="40"
+                        HeightRequest="60"
+                        CornerRadius="5">
+                        <Label 
+                            x:Name="digit2"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"/>
+                    </controls:RoundedCornerRectangleContentView>
 
-                <controls:RoundedCornerRectangleContentView
-                    WidthRequest="40"
-                    HeightRequest="60"
-                    CornerRadius="5">
-                    <Label 
-                        x:Name="digit3"
-                        VerticalOptions="Center"
-                        HorizontalOptions="Center"/>
-                </controls:RoundedCornerRectangleContentView>
-            </StackLayout>
+                    <controls:RoundedCornerRectangleContentView
+                        WidthRequest="40"
+                        HeightRequest="60"
+                        CornerRadius="5">
+                        <Label 
+                            x:Name="digit3"
+                            VerticalOptions="Center"
+                            HorizontalOptions="Center"/>
+                    </controls:RoundedCornerRectangleContentView>
+                </StackLayout>
 
-            <Frame
+                <controls:TintedCachedImage
+                    Grid.Column="2"
+                    Margin="15,0,0,0"
+                    VerticalOptions="Center"
+                    HorizontalOptions="Start"
+                    Source="{x:Static resources:Images.Clear}"
+                    WidthRequest="33"   
+                    TintColor="Black"
+                    HeightRequest="33">
+                    <controls:TintedCachedImage.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ClearCodeCommand}"/>
+                    </controls:TintedCachedImage.GestureRecognizers>
+                </controls:TintedCachedImage>
+
+            </Grid>
+
+             
+            <Label
+                TextColor="IndianRed"
+                HorizontalOptions="Center"
+                IsVisible="{Binding IsAlertMessageVisible}"
+                Text="{Binding AlertMessage}"/>
+            <!--<Frame
                 BorderColor="Black"
                 Margin="0,20"
                 HasShadow="False"
@@ -102,7 +134,7 @@
                 <Frame.GestureRecognizers>
                     <TapGestureRecognizer Command="{Binding ContinueCommand}"/>
                 </Frame.GestureRecognizers>
-            </Frame>
+            </Frame>-->
         </StackLayout>
     </Grid>
 </views:BasePage>

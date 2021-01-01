@@ -6,6 +6,10 @@ namespace ArtScanner.Models
 {
     public class ApologizeNavigationArgs
     {
+        public string Title { get; set; }
+
+        public string Description { get; set; }
+
         public IEnumerable<string> LanguageTags { get; set; }
 
         public Action<string> PopupResultAction { get; set; }

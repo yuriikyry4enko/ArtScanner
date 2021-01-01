@@ -122,13 +122,15 @@ namespace ArtScanner.ViewModels
             {
 
                 var status = await CrossPermissions.Current.CheckPermissionStatusAsync<CameraPermission>();
+
+                if (status == PermissionStatus.Granted)
+                {
+                    IsMessageAlertVisible = false;
+                    await navigationService.NavigateAsync(PageNames.ScannerPage);
+                }
+
                 if (status != PermissionStatus.Granted)
                 {
-                    if (await CrossPermissions.Current.ShouldShowRequestPermissionRationaleAsync(Permission.Camera))
-                    {
-                        //await DisplayAlert("Need permission", "", "OK");
-                    }
-
                     status = await CrossPermissions.Current.RequestPermissionAsync<CameraPermission>();
 
                     if (status == PermissionStatus.Granted)
@@ -137,16 +139,6 @@ namespace ArtScanner.ViewModels
                     }
 
                     return;
-                }
-
-                if (status == PermissionStatus.Granted)
-                {
-                    IsMessageAlertVisible = false;
-                    await navigationService.NavigateAsync(PageNames.ScannerPage);
-                }
-                else if (status != PermissionStatus.Unknown)
-                {
-                    status = await CrossPermissions.Current.RequestPermissionAsync<CameraPermission>();
                 }
             }
             catch (Exception ex)

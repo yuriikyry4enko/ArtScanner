@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using ArtScanner.Utils.Helpers;
+using ArtScanner.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -9,9 +11,32 @@ namespace ArtScanner.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class CodeTypingPage : BasePage
     {
+        CodeTypingPageViewModel viewModel;
+
         public CodeTypingPage()
         {
             InitializeComponent();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            codeEntry.Focus();
+        }
+
+        protected override void OnDisappearing()
+        {
+            base.OnDisappearing();
+
+            codeEntry.Unfocus();
+        }
+
+
+        protected override void OnBindingContextChanged()
+        {
+            base.OnBindingContextChanged();
+            viewModel = (CodeTypingPageViewModel)BindingContext;
         }
 
         private List<Label> digitsLabels;
@@ -20,7 +45,7 @@ namespace ArtScanner.Views
         {
             if (digitsLabels == null)
             {
-                digitsLabels = new List<Label>() { digit1, digit2, digit3};
+                digitsLabels = new List<Label>() { digit1, digit2, digit3 };
             }
 
             if (codeEntry.Text == null)
@@ -42,6 +67,11 @@ namespace ArtScanner.Views
             {
                 codeEntry.Text = digits;
                 return;
+            }
+
+            if (digits.Length == 3)
+            {
+                viewModel.ContinueCommand.Execute(null);
             }
 
 

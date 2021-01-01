@@ -24,7 +24,6 @@
     <PackageReference Include="Plugin.Permissions" Version="6.0.1" />
     <PackageReference Include="Acr.UserDialogs" Version="7.1.0.446" />
     <PackageReference Include="Xamarin.Forms.PancakeView" Version="2.1.0.714" />
-    <PackageReference Include="Xamarin.Plugin.SharedTransitions" Version="2.2.0" />
     <PackageReference Include="linqtotwitter" Version="5.1.2" />
     <PackageReference Include="Xamarin.Auth" Version="1.7.0" />
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
@@ -76,6 +75,7 @@
     <None Remove="Resources\mobile-app.svg" />
     <None Remove="Resources\mobiletype.svg" />
     <None Remove="Resources\smartphone.svg" />
+    <None Remove="Resources\clear.svg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\play.svg" />
@@ -97,6 +97,7 @@
     <EmbeddedResource Include="Resources\tick.svg" />
     <EmbeddedResource Include="Resources\mobiletype.svg" />
     <EmbeddedResource Include="Resources\smartphone.svg" />
+    <EmbeddedResource Include="Resources\clear.svg" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Resx\AppResources.resx">

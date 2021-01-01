@@ -6,9 +6,9 @@ using ArtScanner.Models.Analytics;
 using ArtScanner.Popups;
 using ArtScanner.Resx;
 using ArtScanner.Services;
+using ArtScanner.Utils.Constants;
 using ArtScanner.ViewModels;
 using ArtScanner.Views;
-using Plugin.SharedTransitions;
 using Prism;
 using Prism.Ioc;
 using Prism.Plugin.Popups;
@@ -54,11 +54,11 @@ namespace ArtScanner
                 var language = CultureInfo.GetCultures(CultureTypes.NeutralCultures).ToList().First(element => element.EnglishName.Contains(settings.LanguagePreferences)); ;
                 AppResources.Culture = language;
 
-                NavigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(HomePage)}");
+                NavigationService.NavigateAsync($"/{PageNames.NavigationPage}/{PageNames.HomePage}");
             }
             else
             {
-                NavigationService.NavigateAsync($"{nameof(SharedTransitionNavigationPage)}/{nameof(ChooseLanguagePage)}");
+                NavigationService.NavigateAsync($"/{PageNames.NavigationPage}/{PageNames.ChooseLanguagePage}");
             }
 
         }
@@ -71,7 +71,6 @@ namespace ArtScanner
             containerRegistry.RegisterInstance(DependencyService.Get<IDownloadFileService>());
             containerRegistry.RegisterInstance(DependencyService.Get<IFileService>());
 
-            containerRegistry.RegisterForNavigation<NavigationPage>();
 
             containerRegistry.RegisterSingleton<IAppSettings, AppSettings>();
             containerRegistry.RegisterSingleton<IAppConfig, AppConfig>();
@@ -92,8 +91,8 @@ namespace ArtScanner
             LogService.SetAnalyticsService(analyticsService);
 
 
+            containerRegistry.RegisterForNavigation<NavigationPage>();
             containerRegistry.RegisterForNavigation<ProviderLoginPage>();
-            containerRegistry.RegisterForNavigation<SharedTransitionNavigationPage>();
             containerRegistry.RegisterForNavigation<ItemGalleryDetailsPage, ItemGalleryDetailsPageViewModel>();
             containerRegistry.RegisterForNavigation<ChooseLanguagePage, ChooseLanguagePageViewModel>();
             containerRegistry.RegisterForNavigation<HomePage, HomePageViewModel>();

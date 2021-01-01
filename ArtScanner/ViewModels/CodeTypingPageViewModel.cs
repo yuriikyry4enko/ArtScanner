@@ -48,8 +48,14 @@ namespace ArtScanner.ViewModels
             if (parameters.GetNavigationMode() != Prism.Navigation.NavigationMode.Back)
             {
                 CodeTypingNavigationArgs = GetParameters<CodeTypingNavigationArgs>(parameters);
-                //await navigationService.GoBackAsync(animated: false);
             }
+        }
+
+        private bool _isAlertMessageVisible;
+        public bool IsAlertMessageVisible
+        {
+            get { return _isAlertMessageVisible; }
+            set { SetProperty(ref _isAlertMessageVisible, value); }
         }
 
         private string _itemCode;
@@ -59,10 +65,27 @@ namespace ArtScanner.ViewModels
             set { SetProperty(ref _itemCode, value); }
         }
 
+
+        private string _alertMessage = "There is no item with this code for this folder";
+        public string AlertMessage
+        {
+            get { return _alertMessage; }
+            set { SetProperty(ref _alertMessage, value); }
+        }
+
+        public ICommand ClearCodeCommand => new Command(() =>
+        {
+            ItemCode = string.Empty;
+        });
+
         public ICommand ContinueCommand => new Command(async () =>
         {
             try
             {
+                string intersectFirstItem = string.Empty;
+                List<LangPreferencesItemEntity> langPrefs;
+                GeneralItemInfoModel generalItemInfoModel;
+
                 if (string.IsNullOrWhiteSpace(ItemCode)
                   || ItemCode.Length < 3)
                 {
@@ -80,14 +103,21 @@ namespace ArtScanner.ViewModels
 
                 var foundedItemId = await _restService.GetItemIdByShortCode(ItemCode, CodeTypingNavigationArgs.ActiveFolderEntity.Id);
 
+                if(foundedItemId == null)
+                {
+                    IsAlertMessageVisible = true;
+                    return;
+                }
+                else
+                {
+                    IsAlertMessageVisible = false;
+                }
+
                 var foundedItem = new ItemEntity
                 {
                     Id = foundedItemId.ItemId,
                 };
 
-           
-                string intersectFirstItem = string.Empty;
-                List<LangPreferencesItemEntity> langPrefs;
 
                 await navigationService.NavigateAsync(PageNames.LoadingPopupPage, CreateParameters(new LoadingNavigationArgs()
                 {
@@ -99,19 +129,19 @@ namespace ArtScanner.ViewModels
                     },
                 }));
 
-                GeneralItemInfoModel result = await _restService.GetGeneralItemInfo(foundedItemId.ItemId);
+                generalItemInfoModel = await _restService.GetGeneralItemInfo(foundedItemId.ItemId);
 
-                if (result == null)
+                if (generalItemInfoModel == null)
                 {
                     await navigationService.GoBackAsync();
 
                     return;
                 }
 
-                if (!result.IsFolder)
+                if (!generalItemInfoModel.IsFolder)
                 {
                     langPrefs = await _baseDBService.GetAllAsync<LangPreferencesItemEntity>();
-                    intersectFirstItem = result.Languages.FirstOrDefault(x => langPrefs.Any(y => x == y.LangTag));
+                    intersectFirstItem = generalItemInfoModel.Languages.FirstOrDefault(x => langPrefs.Any(y => x == y.LangTag));
                 }
 
                 if (!isCanceled)
@@ -119,9 +149,9 @@ namespace ArtScanner.ViewModels
                     if (!string.IsNullOrEmpty(intersectFirstItem))
                     {
                         foundedItem.LangTag = intersectFirstItem;
-                        foundedItem.ParentId = result.ParentId.HasValue ? result.ParentId.Value : -1;
-                        foundedItem.IsFolder = result.IsFolder;
-                        foundedItem.Title = result.DefaultTitle;
+                        foundedItem.ParentId = generalItemInfoModel.ParentId.HasValue ? generalItemInfoModel.ParentId.Value : -1;
+                        foundedItem.IsFolder = generalItemInfoModel.IsFolder;
+                        foundedItem.Title = generalItemInfoModel.DefaultTitle;
 
                         //Close Loading popup
                         await navigationService.GoBackAsync();
@@ -129,6 +159,7 @@ namespace ArtScanner.ViewModels
                         await navigationService.NavigateAsync($"../{PageNames.ItemsGalleryDetailsPage}", CreateParameters(new ItemGalleryDetailsNavigationArgs
                         {
                             ItemModel = foundedItem,
+                            ItemLanguages = generalItemInfoModel.Languages,
                             NeedsToUpdatePrevious = () =>
                             {
                                 CodeTypingNavigationArgs.PageUpdated.Invoke(null);
@@ -140,37 +171,25 @@ namespace ArtScanner.ViewModels
                         //Close Loading popup
                         await navigationService.GoBackAsync();
 
-                        await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
+                        if (generalItemInfoModel.Languages.Count() > 1)
                         {
-                            LanguageTags = result.Languages,
-                            PopupResultAction = async (string langTagSelected) =>
+                            await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
                             {
-                                if (!string.IsNullOrEmpty(langTagSelected))
+                                LanguageTags = generalItemInfoModel.Languages,
+                                PopupResultAction = async (string langTagSelected) =>
                                 {
-                                    foundedItem.ParentId = result.ParentId.Value;
-                                    foundedItem.LangTag = langTagSelected;
-                                    foundedItem.IsFolder = result.IsFolder;
-                                    foundedItem.Title = result.DefaultTitle;
-
-
-                                    await navigationService.NavigateAsync($"../{PageNames.ItemsGalleryDetailsPage}", CreateParameters(new ItemGalleryDetailsNavigationArgs
-                                    {
-                                        ItemModel = foundedItem,
-                                        NeedsToUpdatePrevious = () =>
-                                        {
-                                            CodeTypingNavigationArgs.PageUpdated.Invoke(null);
-                                        }
-                                    }));
-
-                                    
+                                    await UseResultToContinueNavigate(langTagSelected, foundedItem, generalItemInfoModel);
+                                },
+                                PageApologizeFinishedLoading = () =>
+                                {
                                     IsBusy = false;
                                 }
-                            },
-                            PageApologizeFinishedLoading = () =>
-                            {
-                                IsBusy = false;
-                            }
-                        }));
+                            }));
+                        }
+                        else
+                        {
+                            await UseResultToContinueNavigate(generalItemInfoModel.Languages.FirstOrDefault(), foundedItem, generalItemInfoModel);
+                        }
                     }
                 }
                 else
@@ -183,5 +202,38 @@ namespace ArtScanner.ViewModels
                 LogService.Log(ex);
             }
         });
+
+        public async Task UseResultToContinueNavigate(string langTagSelected, ItemEntity foundedItem, GeneralItemInfoModel generalItemInfoModel)
+        {
+
+            try
+            {
+                if (!string.IsNullOrEmpty(langTagSelected))
+                {
+                    foundedItem.ParentId = generalItemInfoModel.ParentId.Value;
+                    foundedItem.LangTag = langTagSelected;
+                    foundedItem.IsFolder = generalItemInfoModel.IsFolder;
+                    foundedItem.Title = generalItemInfoModel.DefaultTitle;
+
+
+                    await navigationService.NavigateAsync($"../{PageNames.ItemsGalleryDetailsPage}", CreateParameters(new ItemGalleryDetailsNavigationArgs
+                    {
+                        ItemModel = foundedItem,
+                        ItemLanguages = generalItemInfoModel.Languages,
+                        NeedsToUpdatePrevious = () =>
+                        {
+                            CodeTypingNavigationArgs.PageUpdated.Invoke(null);
+                        }
+                    }));
+
+
+                    IsBusy = false;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.Log(ex);
+            }
+        }
     }
 }

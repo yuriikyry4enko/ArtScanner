@@ -127,6 +127,8 @@ namespace ArtScanner.ViewModels
 
         #region Commands
 
+
+
         public ICommand NavigateToItemDetail => new DelegateCommand<ItemEntityViewModel>(async(itemModel) =>
         {
             SelectedId = itemModel.LocalId.ToString();

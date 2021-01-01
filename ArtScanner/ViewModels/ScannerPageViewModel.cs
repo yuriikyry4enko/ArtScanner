@@ -70,24 +70,14 @@ namespace ArtScanner.ViewModels
 
                 var foundedItem = new ItemEntity
                 {
-                    //Id = Int64.Parse(Result?.Text),
-                    Id = 719,
+                    Id = Int64.Parse(Result?.Text),
+                    //Id = 719,
                 };
 
                 Device.BeginInvokeOnMainThread(async () =>
                 {
                     try
                     {
-
-                        if (_networkAccess != NetworkAccess.Internet)
-                        {
-                            await _userDialogs.AlertAsync("No internet connection", "Network error", "Ok");
-                            IsScannerEnabled = true;
-                            return;
-                        }
-
-                        string intersectFirstItem = string.Empty;
-                        List<LangPreferencesItemEntity> langPrefs;
 
                         await navigationService.NavigateAsync(PageNames.LoadingPopupPage, CreateParameters(new LoadingNavigationArgs()
                         {
@@ -100,9 +90,21 @@ namespace ArtScanner.ViewModels
                             },
                         }));
 
-                        GeneralItemInfoModel result = await _restService.GetGeneralItemInfo(foundedItem.Id);
+                        string intersectFirstItem = string.Empty;
+                        List<LangPreferencesItemEntity> langPrefs;
+                        GeneralItemInfoModel generalItemInfo;
 
-                        if (result == null)
+                        if (_networkAccess != NetworkAccess.Internet)
+                        {
+                            await _userDialogs.AlertAsync("No internet connection", "Network error", "Ok");
+                            IsScannerEnabled = true;
+                            return;
+                        }
+
+                       
+                        generalItemInfo = await _restService.GetGeneralItemInfo(foundedItem.Id);
+
+                        if (generalItemInfo == null)
                         {
                             await _userDialogs.AlertAsync(AppResources.СouldNotFindQRCODE + "id: " + foundedItem.Id, "Oops", "Ok");
                             await navigationService.GoBackAsync();
@@ -110,20 +112,20 @@ namespace ArtScanner.ViewModels
                             return;
                         }
 
-                        if (!result.IsFolder)
+                        if (!generalItemInfo.IsFolder)
                         {
                             langPrefs = await _baseDBService.GetAllAsync<LangPreferencesItemEntity>();
-                            intersectFirstItem = result.Languages.FirstOrDefault(x => langPrefs.Any(y => x == y.LangTag));
+                            intersectFirstItem = generalItemInfo.Languages.FirstOrDefault(x => langPrefs.Any(y => x == y.LangTag));
                         }
 
                         if (!isCanceled)
                         {
-                            if (!string.IsNullOrEmpty(intersectFirstItem) || result.IsFolder)
+                            if (!string.IsNullOrEmpty(intersectFirstItem) || generalItemInfo.IsFolder)
                             {
                                 foundedItem.LangTag = intersectFirstItem;
-                                foundedItem.ParentId = result.ParentId.HasValue ? result.ParentId.Value : -1;
-                                foundedItem.IsFolder = result.IsFolder;
-                                foundedItem.Title = result.DefaultTitle;
+                                foundedItem.ParentId = generalItemInfo.ParentId.HasValue ? generalItemInfo.ParentId.Value : -1;
+                                foundedItem.IsFolder = generalItemInfo.IsFolder;
+                                foundedItem.Title = generalItemInfo.DefaultTitle;
 
                                 if (foundedItem.IsFolder)
                                 {
@@ -134,10 +136,7 @@ namespace ArtScanner.ViewModels
                                     await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(new ItemGalleryDetailsNavigationArgs
                                     {
                                         ItemModel = foundedItem,
-                                        NeedsToUpdatePrevious = () =>
-                                        {
-
-                                        }
+                                        ItemLanguages = generalItemInfo.Languages,
                                     }));
 
                                 }
@@ -147,46 +146,26 @@ namespace ArtScanner.ViewModels
                                 //Close Loading popup
                                 await navigationService.GoBackAsync();
 
-                                await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
+
+                                if (generalItemInfo.Languages.Count() > 1)
                                 {
-                                    LanguageTags = result.Languages,
-                                    PopupResultAction = async (string langTagSelected) =>
+                                    await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
                                     {
-                                        if (!string.IsNullOrEmpty(langTagSelected))
+                                        LanguageTags = generalItemInfo.Languages,
+                                        PopupResultAction = async (string langTagSelected) =>
                                         {
-                                            foundedItem.ParentId = result.ParentId.Value;
-                                            foundedItem.LangTag = langTagSelected;
-                                            foundedItem.IsFolder = result.IsFolder;
-                                            foundedItem.Title = result.DefaultTitle;
-
-                                            if (result.IsFolder)
-                                            {
-                                                await navigationService.NavigateAsync(PageNames.BookletItemDetailsPage, CreateParameters(foundedItem));
-                                            }
-                                            else
-                                            {
-                                                await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(new ItemGalleryDetailsNavigationArgs
-                                                {
-                                                    ItemModel = foundedItem,
-                                                    NeedsToUpdatePrevious = () =>
-                                                    {
-
-                                                    }
-                                                }));
-
-                                            }
+                                            await UseResultToContinueNavigate(langTagSelected, foundedItem, generalItemInfo);
+                                        },
+                                        PageApologizeFinishedLoading = () =>
+                                        {
                                             IsBusy = false;
                                         }
-                                        else
-                                        {
-                                            IsScannerEnabled = true;
-                                        }
-                                    },
-                                    PageApologizeFinishedLoading = () =>
-                                    {
-                                        IsBusy = false;
-                                    }
-                                }));
+                                    }));
+                                }
+                                else
+                                {
+                                    await UseResultToContinueNavigate(generalItemInfo.Languages.FirstOrDefault(), foundedItem, generalItemInfo);
+                                }
                             }
                         }
                         else
@@ -205,6 +184,42 @@ namespace ArtScanner.ViewModels
 
             IsScannerEnabled = false;
         });
+
+        public async Task UseResultToContinueNavigate(string langTagSelected, ItemEntity foundedItem, GeneralItemInfoModel generalItemInfoModel)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(langTagSelected))
+                {
+                    foundedItem.ParentId = generalItemInfoModel.ParentId.Value;
+                    foundedItem.LangTag = langTagSelected;
+                    foundedItem.IsFolder = generalItemInfoModel.IsFolder;
+                    foundedItem.Title = generalItemInfoModel.DefaultTitle;
+
+                    if (generalItemInfoModel.IsFolder)
+                    {
+                        await navigationService.NavigateAsync(PageNames.BookletItemDetailsPage, CreateParameters(foundedItem));
+                    }
+                    else
+                    {
+                        await navigationService.NavigateAsync(PageNames.ItemsGalleryDetailsPage, CreateParameters(new ItemGalleryDetailsNavigationArgs
+                        {
+                            ItemModel = foundedItem,
+                            ItemLanguages = generalItemInfoModel.Languages,
+                        }));
+                    }
+                    IsBusy = false;
+                }
+                else
+                {
+                    IsScannerEnabled = true;
+                }
+            }
+            catch(Exception ex)
+            {
+                LogService.Log(ex);
+            }
+        }
 
         #endregion
     }
