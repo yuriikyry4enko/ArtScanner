@@ -36,7 +36,7 @@
     <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <MtouchLink>None</MtouchLink>
+    <MtouchLink>SdkOnly</MtouchLink>
     <MtouchArch>x86_64</MtouchArch>
     <CodesignProvision>VS: WildCard Development</CodesignProvision>
     <CodesignKey>Apple Development: Yurii Kyrychenko (4N6HVSF8RN)</CodesignKey>
@@ -86,6 +86,7 @@
     <None Include="Info.plist" />
     <Compile Include="Services\FileService.cs" />
     <Compile Include="Renderers\RoundedCornerRectangleContentViewRenderer.cs" />
+    <Compile Include="Services\DownloadFileService.cs" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />

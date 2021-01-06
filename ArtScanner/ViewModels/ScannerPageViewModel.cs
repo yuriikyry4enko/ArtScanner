@@ -71,14 +71,13 @@ namespace ArtScanner.ViewModels
                 var foundedItem = new ItemEntity
                 {
                     Id = Int64.Parse(Result?.Text),
-                    //Id = 719,
+                    //Id = 3,
                 };
 
                 Device.BeginInvokeOnMainThread(async () =>
                 {
                     try
                     {
-
                         await navigationService.NavigateAsync(PageNames.LoadingPopupPage, CreateParameters(new LoadingNavigationArgs()
                         {
                             PageLoadingCanceled = async () =>

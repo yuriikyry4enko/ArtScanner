@@ -157,11 +157,9 @@ namespace ArtScanner.Services
 
             return null;
         }
-
-       
-
-
     }
+
+
     public class QueueStream : Stream
     {
         Stream writeStream;

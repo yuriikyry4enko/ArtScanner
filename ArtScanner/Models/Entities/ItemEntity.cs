@@ -40,6 +40,12 @@ namespace ArtScanner.Models.Entities
         public Stream AudioStream { get; set; }
 
 
+        public string GetAudioFileName()
+        {
+            return $"{Title.Replace(" ", string.Empty)}{Id}.mp3"; 
+        }
+
+
 
     }
 }

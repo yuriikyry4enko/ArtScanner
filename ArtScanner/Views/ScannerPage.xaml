@@ -57,6 +57,7 @@
                 HorizontalOptions="Center"
                 HeightRequest="70"
                 WidthRequest="70"/>-->
+
         </Grid>
         <!--<controls:Circle
             VerticalOptions="Start"

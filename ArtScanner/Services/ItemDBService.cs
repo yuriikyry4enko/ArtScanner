@@ -13,12 +13,15 @@ namespace ArtScanner.Services
     class ItemDBService : BaseDBService, IItemDBService
     {
         private IAppFileSystemService _appFileSystemService;
+        private IDownloadFileService downloadFileService;
 
         public ItemDBService(
+            IDownloadFileService downloadFileService,
            IAppFileSystemService appFileSystemService,
            IAppDatabase appDatabase) : base(appDatabase)
         {
             this._appFileSystemService = appFileSystemService;
+            this.downloadFileService = downloadFileService;
         }
 
         public async Task<ItemEntity> GetByServerId(long id)
@@ -164,23 +167,24 @@ namespace ArtScanner.Services
         {
             try
             {
-                using (var bench = new Benchmark($"Save audio stream to file with id {item.Id} and lang {item.LangTag}"))
+                await downloadFileService.DownloadFile(item.MusicUrl, item.GetAudioFileName(), item.AudioStream);
+                //using (var bench = new Benchmark($"Save audio stream to file with id {item.Id} and lang {item.LangTag}"))
+                //{
+                //    using (var memoryStream = new MemoryStream())
+                //    {
+                //        await item.AudioStream.CopyToAsync(memoryStream);
+                //        item.AudioByteArray = memoryStream.ToArray();
+                //    }
+
+                //    GetQueueStream(item);
+
+                if (item.AudioByteArray != null)
                 {
-                    using (var memoryStream = new MemoryStream())
-                    {
-                        await item.AudioStream.CopyToAsync(memoryStream);
-                        item.AudioByteArray = memoryStream.ToArray();
-                    }
-
-                    GetQueueStream(item);
-
-                    if (item.AudioByteArray != null)
-                    {
-                        item.AudioFileName = _appFileSystemService.SaveAudio(item.AudioByteArray, $"{item.Title.Replace(" ", string.Empty)}{item.Id}.mp3");
-                        //item.AudioFileName = $"{item.Title.Replace(" ", string.Empty)}{item.Id}.mp3";
-                        await Connection.UpdateAsync(item);
-                    }
+                    item.AudioFileName = $"{item.Title.Replace(" ", string.Empty)}{item.Id}.mp3";//_appFileSystemService.SaveAudio(item.AudioByteArray, $"{item.Title.Replace(" ", string.Empty)}{item.Id}.mp3");
+                    //item.AudioFileName = $"{item.Title.Replace(" ", string.Empty)}{item.Id}.mp3";
+                    await Connection.UpdateAsync(item);
                 }
+                //}
             }
             catch (Exception ex)
             {

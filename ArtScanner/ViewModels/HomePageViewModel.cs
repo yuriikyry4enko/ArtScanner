@@ -171,10 +171,7 @@ namespace ArtScanner.ViewModels
         {
             base.OnNavigatedTo(parameters);
 
-            if (BookletItems.Count() == 0)
-            {
-                await InitItemsList();
-            }
+            await InitItemsList();
 
         }
 
@@ -207,7 +204,7 @@ namespace ArtScanner.ViewModels
                     OpacityButton = 0;
                 }
 
-                if (_appSettings.NeedToUpdateHomePage && BookletItems.Count() == 0)
+                if (_appSettings.NeedToUpdateHomePage || BookletItems.Count() == 0)
                 {
                     BookletItems.Clear();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Windows.Input;
 using ArtScanner.Resources;
 using ArtScanner.Services;
@@ -61,36 +62,14 @@ namespace ArtScanner.Models
             get { return IsPlaying ? Images.Pause : Images.Play; }
         }
 
+        public string GetAudioFileName()
+        {
+            return $"{Title.Replace(" ", string.Empty)}{Id}.mp3";
+        }
+
         #endregion
 
         #region Commands
-
-
-        //public ICommand ChangeLanguageCommand => new Command(async () =>
-        //{
-        //    try
-        //    {
-        //if (ItemGalleryDetailsNavigationArgs.ItemLanguages.Count() > 1)
-        //{
-        //    await navigationService.NavigateAsync(PageNames.ApologizeLanguagePopupPage, CreateParameters(new ApologizeNavigationArgs
-        //    {
-        //        LanguageTags = ItemGalleryDetailsNavigationArgs.ItemLanguages,
-        //        PopupResultAction = async (string langTagSelected) =>
-        //        {
-        //            await LoadTextInfoItemModel(langTagSelected, ItemModel.Id);
-        //        },
-        //        PageApologizeFinishedLoading = () =>
-        //        {
-        //            IsBusy = false;
-        //        }
-        //    }));
-        //}
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        LogService.Log(ex);
-        //    }
-        //});
 
         public ICommand TwittCommand => new Command(async () =>
         {
@@ -118,7 +97,7 @@ namespace ArtScanner.Models
         });
 
         public ICommand PlayCommand => new Command(async () =>
-        {
+        {   
             try
             {
                 IsPlayButtonEnable = false;
@@ -126,9 +105,14 @@ namespace ArtScanner.Models
                 if (firstPlaying)
                 {
                     IsPlaying = false;
-                    if (!string.IsNullOrEmpty(this.AudioFileName) && _appFileSystemService.DoesAudioExist(this.AudioFileName))
+                    if (_appFileSystemService.DoesAudioExist(GetAudioFileName()) && Device.RuntimePlatform == Device.Android)
                     {
-                        await CrossMediaManager.Current.Play(this.AudioFileName);
+                        var documentsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.Personal));
+                        string localFilename = GetAudioFileName();
+                        string localPath = Path.Combine(documentsPath, localFilename);
+
+                        CrossMediaManager.Current.AutoPlay = true;
+                        await CrossMediaManager.Current.Play("file://" + localPath);
                     }
                     else
                     {
@@ -139,6 +123,7 @@ namespace ArtScanner.Models
                         await CrossMediaManager.Current.Play(mediaItem);
                         CrossMediaManager.Current.Queue.Current.IsMetadataExtracted = false;
                     }
+
                     firstPlaying = false;
                 }
 

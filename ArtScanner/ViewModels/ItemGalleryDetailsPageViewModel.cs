@@ -143,7 +143,9 @@ namespace ArtScanner.ViewModels
                     var audioUrl = string.Format(ApiConstants.GetAudioStreamById, ItemModel.LangTag, ItemModel.Id);
                     mediaItem = await CrossMediaManager.Current.Extractor.CreateMediaItem(audioUrl);
                     mediaItem.MediaType = MediaManager.Library.MediaType.Audio;
-           
+
+
+                    ItemModel.MusicUrl = audioUrl;
 
                     //downloadFileService.DownloadFile(string.Format(ApiConstants.GetAudioStreamById, ItemModel.LangTag, ItemModel.Id));
 

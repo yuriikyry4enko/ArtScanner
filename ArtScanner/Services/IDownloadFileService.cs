@@ -1,8 +1,11 @@
 ﻿using System;
+using System.IO;
+using System.Threading.Tasks;
+
 namespace ArtScanner.Services
 {
     public interface IDownloadFileService
     {
-        void DownloadFile(string url);
+        Task DownloadFile(string url, string fileName, Stream responseStream = null);
     }
 }

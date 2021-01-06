@@ -53,7 +53,7 @@
         </StackLayout>
 
         <Label
-            Text="1.0.39"
+            Text="1.0.41"
             VerticalOptions="End"
             HorizontalOptions="Start"
             FontSize="20"

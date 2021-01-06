@@ -83,6 +83,7 @@
     <Compile Include="BackgroundAudioFileAsyncTask.cs" />
     <Compile Include="Services\DownloadFileService.cs" />
     <Compile Include="Renderers\RoundedCornerRectangleContentViewRenderer.cs" />
+    <Compile Include="Services\AudioSerivce.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\AboutResources.txt" />
